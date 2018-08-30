@@ -1,0 +1,34 @@
+---
+# example playbook for module 'irmc_setnextboot'
+# to configure iRMC to force next boot to specified option
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_setnextboot - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Set Bios to next boot from Virtual CD
+    # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
+    - name: Set Bios to next boot from Virtual CD
+      irmc_setnextboot:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        bootsource: "Cd"
+        bootoverride: "Once"
+        bootmode: "Legacy"
+      delegate_to: localhost
+

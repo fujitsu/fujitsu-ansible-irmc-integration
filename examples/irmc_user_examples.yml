@@ -1,0 +1,71 @@
+---
+# example playbook for module 'irmc_user'
+# to manage iRMC user accounts
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_user - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Create new user account
+    - name: "Create new user account"
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "create"
+        name: "ansibleuser"
+        password: "password"
+      delegate_to: localhost
+    
+    # Get user account data
+    - name: Get user account data
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        name: "ansibleuser"
+      register: user
+      delegate_to: localhost
+    - name: Show iRMC user details
+      debug:
+        msg: "{{ user.user }}"
+    
+    # Change user account data
+    - name: Change user account data
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "change"
+        name: "ansibleuser"
+        description: "ansible user description"
+      delegate_to: localhost
+    
+    # Delete user account
+    - name: "Delete user account"
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "delete"
+        name: "ansibleuser"
+      delegate_to: localhost
+

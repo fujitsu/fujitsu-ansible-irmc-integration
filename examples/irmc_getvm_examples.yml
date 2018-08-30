@@ -1,0 +1,35 @@
+---
+# example playbook for module 'irmc_getvm'
+# to get iRMC Virtual Media Data
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_getvm - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Get Virtual Media data
+    - name: Get Virtual Media data
+      irmc_getvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        vm_type: CDImage
+      register: vmdata
+      delegate_to: localhost
+    - name: Show Virtual Media data
+      debug:
+        msg: "{{ vmdata.virtual_media_data }}"
+

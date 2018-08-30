@@ -1,0 +1,48 @@
+---
+# example playbook for module 'irmc_certificate'
+# to manage iRMC certificates
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_certificate - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Get SSL certificates
+    - name: Get SSL certificates
+      irmc_certificate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: certificates
+      delegate_to: localhost
+    - name: show certificates
+      debug:
+        msg: "{{ certificates.certificates }}"
+    
+    # Set SSL certificates
+    - name: Set SSL certificates
+      irmc_certificate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        private_key_path: "{{ private_key_path }}"
+        ssl_cert_path: "{{ ssl_cert_path }}"
+        ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
+      delegate_to: localhost
+

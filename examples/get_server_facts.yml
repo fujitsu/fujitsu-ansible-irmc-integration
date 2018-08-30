@@ -1,0 +1,48 @@
+---
+# example playbook get server facts via iRMC
+
+# variables not defined in this playbook are expexted to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: get server facts via iRMC
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Get basic server and iRMC facts
+    - name: Get basic server and iRMC facts
+      irmc_facts:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: facts
+      delegate_to: localhost
+    - name: Show server and iRMC facts
+      debug:
+        msg: "{{ facts.facts }}"
+
+    # Get Virtual Media data
+    - name: Get Virtual Media data
+      irmc_getvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        vm_type: CDImage
+      register: vmdata
+      delegate_to: localhost
+    - name: Show Virtual Media data
+      debug:
+        msg: "{{ vmdata.virtual_media_data }}"
+

@@ -1,0 +1,116 @@
+---
+# example playbook to boot an ISO image on a PRIMERGY server via iRMC
+# e.g. to deploy an OS to a bare-metal-server
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+# Notes:
+#    - server must be off for playbook to succeed
+#    - boot from virtual CD might fail, if a 'real' DVD drive exists
+
+- name: boot a PRIMERGY server to an ISO image
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+    # server: "192.168.2.1"
+    # share: "share"
+    # image: "ISO.iso"
+    # share_type: "NFS"
+    # vm_domain: "domain"
+    # vm_user: "domain_user"
+    # vm_password: "domain_password"
+
+  gather_facts: no
+
+  tasks:
+    - name: Get system power state
+      irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: powerstate
+      delegate_to: localhost
+
+    - name: Check that server is 'Off'
+      fail:
+        msg: "Cannot continue, server is 'On'"
+      when: powerstate.power_state=="On"
+
+    - name: Disconnect Virtual CD
+      irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "DisconnectCD"
+      delegate_to: localhost
+
+    - name: Set Virtual Media Data
+      irmc_setvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        server: "{{ server }}"
+        share: "{{ share }}"
+        image: "{{ image }}"
+        share_type: "{{ share_type }}"
+        vm_domain: "{{ vm_domain }}"
+        vm_user: "{{ vm_user }}"
+        vm_password: "{{ vm_password }}"
+        force_remotemount_enabled: true
+        force_mediatype_active: true
+      delegate_to: localhost
+
+    - name: Connect Virtual CD
+      irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "ConnectCD"
+      delegate_to: localhost
+
+    - name: Set Bios to next boot from Virtual CD
+      irmc_setnextboot:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        bootsource: "Cd"
+        bootoverride: "Once"
+        bootmode: "Legacy"
+      delegate_to: localhost
+
+    - name: Get Virtual Media data
+      irmc_getvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        vm_type: CDImage
+      register: vmdata
+      delegate_to: localhost
+    - name: Show Virtual Media data
+      debug:
+        msg: "{{ vmdata.virtual_media_data }}"
+
+    - name: PowerOn System
+      irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        state: "PowerOn"
+      delegate_to: localhost
+

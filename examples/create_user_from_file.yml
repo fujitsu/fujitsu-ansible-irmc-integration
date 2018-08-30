@@ -1,0 +1,72 @@
+---
+# example playbook get user data from iRMC and store
+# in a file in JSON format
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: Create iRMC user from stored data
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+    # new_user_name: "TestUser"
+    # new_user_password: "test123"
+    # path to file to read user data from
+    # user_data_file: "UserData.json"
+    user_data: "{{ lookup('file','{{ user_data_file }}') | from_json }}"
+
+  gather_facts: no
+
+  tasks:
+    - name: Create new user account
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "create"
+        name: "{{ new_user_name }}"
+        password: "{{ new_user_password }}"
+        description: "{{ user_data.description }}"
+        enabled: "{{ user_data.enabled }}"
+        lan_privilege: "{{ user_data.lan_privilege }}"
+        serial_privilege: "{{ user_data.serial_privilege }}"
+        config_user_enabled: "{{ user_data.config_user_enabled }}"
+        config_bmc_enabled: "{{ user_data.config_bmc_enabled }}"
+        avr_enabled: "{{ user_data.avr_enabled }}"
+        storage_enabled: "{{ user_data.storage_enabled }}"
+        redfish_enabled: "{{ user_data.redfish_enabled }}"
+        redfish_role: "{{ user_data.redfish_role }}"
+        shell: "{{ user_data.shell }}"
+        snmpv3_enabled: "{{ user_data.snmpv3_enabled }}"
+        snmpv3_access: "{{ user_data.snmpv3_access }}"
+        snmpv3_auth: "{{ user_data.snmpv3_auth }}"
+        snmpv3_privacy: "{{ user_data.snmpv3_privacy }}"
+        ssh_public_key: "{{ user_data.ssh_public_key }}"
+        ssh_certificate: "{{ user_data.ssh_certificate }}"
+        email_enabled: "{{ user_data.email_enabled }}"
+        email_encrypted: "{{ user_data.email_encrypted }}"
+        email_type: "{{ user_data.email_type }}"
+        email_server: "{{ user_data.email_server }}"
+        email_address: "{{ user_data.email_address }}"
+        alert_fans: "{{ user_data.alert_fans }}"
+        alert_temperatures: "{{ user_data.alert_temperatures }}"
+        alert_hwerrors: "{{ user_data.alert_hwerrors }}"
+        alert_syshang: "{{ user_data.alert_syshang }}"
+        alert_posterrors: "{{ user_data.alert_posterrors }}"
+        alert_security: "{{ user_data.alert_security }}"
+        alert_sysstatus: "{{ user_data.alert_sysstatus }}"
+        alert_hderrors: "{{ user_data.alert_hderrors }}"
+        alert_network: "{{ user_data.alert_network }}"
+        alert_remote: "{{ user_data.alert_remote }}"
+        alert_power: "{{ user_data.alert_power }}"
+        alert_memory: "{{ user_data.alert_memory }}"
+        alert_others: "{{ user_data.alert_others }}"
+      delegate_to: localhost
+

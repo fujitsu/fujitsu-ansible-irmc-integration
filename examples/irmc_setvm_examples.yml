@@ -1,0 +1,34 @@
+---
+# example playbook for module 'irmc_setvm'
+# to set iRMC Virtual Media Data
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_setvm - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Set Virtual Media Data
+    - name: Set Virtual Media Data
+      irmc_setvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        server: "{{ server }}"
+        share: "{{ share }}"
+        image: "{{ image }}"
+        share_type: "{{ share_type }}"
+      delegate_to: localhost
+

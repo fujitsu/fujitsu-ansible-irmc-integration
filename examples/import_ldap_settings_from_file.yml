@@ -1,0 +1,60 @@
+---
+# example playbook get user data from iRMC and store
+# in a file in JSON format
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: Import LDAP settings from stored data
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+    # path to file to read LDAP settings from
+    # ldap_settings_file: "UserData.json"
+    # ldap_user: "ldap_user"
+    # ldap_password: "ldap_password"
+    ldap_settings: "{{ lookup('file','{{ ldap_settings_file }}') | from_json }}"
+
+  gather_facts: no
+
+  tasks:
+    - name: Import LDAP Settings
+      irmc_ldap:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        enabled: "{{ ldap_settings.enabled }}"
+        ssl_enabled: "{{ ldap_settings.ssl_enabled }}"
+        local_login_disabled: "{{ ldap_settings.local_login_disabled }}"
+        always_use_ssl: "{{ ldap_settings.always_use_ssl }}"
+        directory_type: "{{ ldap_settings.directory_type }}"
+        auth_type: "{{ ldap_settings.auth_type }}"
+        primary_server: "{{ ldap_settings.primary_server }}"
+        primary_port: "{{ ldap_settings.primary_port }}"
+        primary_ssl_port: "{{ ldap_settings.primary_ssl_port }}"
+        backup_server: "{{ ldap_settings.backup_server }}"
+        backup_port: "{{ ldap_settings.backup_port }}"
+        backup_ssl_port: "{{ ldap_settings.backup_ssl_port }}"
+        domain_name: "{{ ldap_settings.domain_name }}"
+        department_name: "{{ ldap_settings.department_name }}"
+        base_dn: "{{ ldap_settings.base_dn }}"
+        group_dn: "{{ ldap_settings.group_dn }}"
+        user_search_context: "{{ ldap_settings.user_search_context }}"
+        ldap_user: "{{ ldap_user }}"
+        ldap_password: "{{ ldap_password }}"
+        user_dn: "{{ ldap_settings.user_dn }}"
+        append_base_to_user_dn: "{{ ldap_settings.append_base_to_user_dn }}"
+        enhanced_user_login: "{{ ldap_settings.enhanced_user_login }}"
+        user_login_filter: "{{ ldap_settings.user_login_filter }}"
+        alert_email_enabled: "{{ ldap_settings.alert_email_enabled }}"
+        alert_table_refresh: "{{ ldap_settings.alert_table_refresh }}"
+      delegate_to: localhost
+

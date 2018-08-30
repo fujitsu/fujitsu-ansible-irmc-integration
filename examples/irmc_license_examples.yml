@@ -1,0 +1,46 @@
+---
+# example playbook for module 'irmc_license'
+# to manage iRMC user accounts
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_license - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Get iRMC license key
+    - name: Get iRMC license key
+      irmc_license:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: license
+      delegate_to: localhost
+    - name: show certificates
+      debug:
+        msg: "{{ license.license_key }}"
+    
+    # Set iRMC license key
+    - name: Set iRMC license key
+      irmc_license:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        license_key: "{{ license_key }}"
+      delegate_to: localhost
+

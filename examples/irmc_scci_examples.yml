@@ -1,0 +1,47 @@
+---
+# example playbook for module 'irmc_scci'
+# to execute iRMC remote SCCI commands
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_scci - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: no
+
+  tasks:
+    # Write server location
+    - name: Write server location
+      irmc_scci:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set_cs"
+        opcodeext: 0x200
+        data: "In a galaxy far, far away ..."
+      delegate_to: localhost
+    
+    # Read server location
+    - name: "Read server location"
+      irmc_scci:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        command: "get_cs"
+        opcodeext: 0x200
+      register: scci
+      delegate_to: localhost
+    - name: Show server location
+      debug:
+        msg: "{{ scci.data }}"
+

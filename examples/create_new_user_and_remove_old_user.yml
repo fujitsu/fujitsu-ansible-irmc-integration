@@ -1,0 +1,114 @@
+---
+# example playbook get user data from iRMC and store
+# in a file in JSON format
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: Create new iRMC user from original user and remove original user
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+    # original user to be deleted
+    #     Note: make sure this user has all the right it needs
+    # original_user: "admin"
+    # original_password: "admin"
+    # new user to be created
+    #     Note: make sure this user does not yet exist
+    # new_user: "root"
+    # new_password: "root"
+  gather_facts: no
+
+  tasks:
+    # Get original user account data
+    - name: Get original user '{{ original_user }}' account data
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ original_user }}"
+        irmc_password: "{{ original_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        name: "{{ original_user }}"
+      register: original_data
+      delegate_to: localhost
+    - name: Show original iRMC user details
+      debug:
+        msg: "{{ original_data.user }}"
+
+    # Create new user account
+    - name: "Create new user account"
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ original_user }}"
+        irmc_password: "{{ original_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "create"
+        name: "{{ new_user }}"
+        password: "{{ new_password }}"
+        description: "{{ original_data.user.description }}"
+        enabled: "{{ original_data.user.enabled }}"
+        lan_privilege: "{{ original_data.user.lan_privilege }}"
+        serial_privilege: "{{ original_data.user.serial_privilege }}"
+        config_user_enabled: "{{ original_data.user.config_user_enabled }}"
+        config_bmc_enabled: "{{ original_data.user.config_bmc_enabled }}"
+        avr_enabled: "{{ original_data.user.avr_enabled }}"
+        storage_enabled: "{{ original_data.user.storage_enabled }}"
+        redfish_enabled: "{{ original_data.user.redfish_enabled }}"
+        redfish_role: "{{ original_data.user.redfish_role }}"
+        shell: "{{ original_data.user.shell }}"
+        snmpv3_enabled: "{{ original_data.user.snmpv3_enabled }}"
+        snmpv3_access: "{{ original_data.user.snmpv3_access }}"
+        snmpv3_auth: "{{ original_data.user.snmpv3_auth }}"
+        snmpv3_privacy: "{{ original_data.user.snmpv3_privacy }}"
+        ssh_public_key: "{{ original_data.user.ssh_public_key }}"
+        ssh_certificate: "{{ original_data.user.ssh_certificate }}"
+        email_enabled: "{{ original_data.user.email_enabled }}"
+        email_encrypted: "{{ original_data.user.email_encrypted }}"
+        email_type: "{{ original_data.user.email_type }}"
+        email_server: "{{ original_data.user.email_server }}"
+        email_address: "{{ original_data.user.email_address }}"
+        alert_fans: "{{ original_data.user.alert_fans }}"
+        alert_temperatures: "{{ original_data.user.alert_temperatures }}"
+        alert_hwerrors: "{{ original_data.user.alert_hwerrors }}"
+        alert_syshang: "{{ original_data.user.alert_syshang }}"
+        alert_posterrors: "{{ original_data.user.alert_posterrors }}"
+        alert_security: "{{ original_data.user.alert_security }}"
+        alert_sysstatus: "{{ original_data.user.alert_sysstatus }}"
+        alert_hderrors: "{{ original_data.user.alert_hderrors }}"
+        alert_network: "{{ original_data.user.alert_network }}"
+        alert_remote: "{{ original_data.user.alert_remote }}"
+        alert_power: "{{ original_data.user.alert_power }}"
+        alert_memory: "{{ original_data.user.alert_memory }}"
+        alert_others: "{{ original_data.user.alert_others }}"
+      delegate_to: localhost
+
+    # Get new user account data
+    - name: Get new user account data
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ new_user }}"
+        irmc_password: "{{ new_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        name: "{{ new_user }}"
+      register: new_data
+      delegate_to: localhost
+    - name: Show original iRMC user details
+      debug:
+        msg: "{{ new_data.user }}"
+
+    # Delete original user account
+    - name: "Delete original user account"
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ new_user }}"
+        irmc_password: "{{ new_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "delete"
+        name: "{{ original_user }}"
+      delegate_to: localhost
+

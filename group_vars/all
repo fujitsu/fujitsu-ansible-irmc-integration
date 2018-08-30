@@ -1,0 +1,39 @@
+---
+# variables to successfully run the automatic example playbooks
+
+# irmc_user: "admin"
+# irmc_password: "admin"
+# Note: set validate_certificate to false for self-signed certificate
+# validate_certificate: false
+
+# private_key_path: "path_to_private_key"
+# ssl_cert_path: "path_to_ssl_cert"
+# ssl_ca_cert_path: "path_to_ssl_ca_cert"
+
+# license_key: "ABDC-EFGH-IJKL-MNOP-QRST-UVWX-YZ"
+
+# server: "192.168.2.1"
+# share: "share"
+# image: "image.iso"
+# share_type: "NFS"
+# vm_domain: ""
+# vm_user: ""
+# vm_password: ""
+
+# profile1_path: "./Profile1.json"
+# profile2_path: "./Profile2.json"
+
+# export_user: "admin"
+# user_data_file: "./args/UserData.json"
+# new_user_name: "TestUser"
+# new_user_password: "test123"
+
+# ldap_settings_file: "./args/LdapSettings.json"
+# ldap_user: "ldap_user"
+# ldap_password: "ldap_password"
+
+# original_user: "oldroot"
+# original_password: "password"
+# new_user: "newroot"
+# new_password: "password"
+
