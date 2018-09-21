@@ -121,4 +121,4 @@ GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses
 
 ## Authors
 
-* [FujitsuPrimergy](http://github.com/FujitsuPrimergy)
+* [Fujitsu Server PRIMERGY](http://github.com/FujitsuPrimergy)
