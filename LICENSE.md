@@ -674,5 +674,3 @@ Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 
-This work is licensed under the Creative Commons Attribution 3.0 Unported License. 
-To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/deed.en_US. 

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,44 +22,45 @@ short_description: configure iRMC to force next boot to specified option
 
 description:
     - Ansible module to configure iRMC to force next boot to specified option.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     bootsource:
-        description: the source for the next boot
+        description: The source for the next boot.
         required:    false
         default:     BiosSetup
         choices:     ['None', 'Pxe', 'Floppy', 'Cd', 'Hdd', 'BiosSetup']
     bootoverride:
-        description: boot override type
+        description: Boot override type.
         required:    false
         default:     Once
         choices:     ['Once', 'Continuous']
     bootmode:
-        description: the mode for the next boot
+        description: The mode for the next boot.
         required:    false
         choices:     ['Legacy', 'UEFI']
 
@@ -84,14 +85,10 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-result:
-    description: nextboot action result
-    returned: always
-    type: dict
+Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 import json
 from ansible.module_utils.basic import AnsibleModule
 
@@ -111,7 +108,7 @@ def irmc_setnextboot(module):
     # Get iRMC system data
     status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
     if status < 100:
-        module.fail_json(msg=msg, exception=sysdata)
+        module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
@@ -120,6 +117,7 @@ def irmc_setnextboot(module):
     if module.params['bootsource'] not in bootsourceallowed:
         result['msg'] = "Invalid parameter '" + module.params['bootsource'] + "' for function. Allowed: " + \
                         json.dumps(bootsourceallowed)
+        result['status'] = 10
         module.fail_json(**result)
 
     # evaluate parameters
@@ -127,6 +125,7 @@ def irmc_setnextboot(module):
     if module.params['bootoverride'] not in bootoverrideallowed:
         result['msg'] = "Invalid parameter '" + module.params['bootoverride'] + "' for function. Allowed: " + \
                         json.dumps(bootoverrideallowed)
+        result['status'] = 11
         module.fail_json(**result)
 
     # Set iRMC system data
@@ -141,7 +140,7 @@ def irmc_setnextboot(module):
     etag = get_irmc_json(sysdata.json(), "@odata.etag")
     status, patch, msg = irmc_redfish_patch(module, "redfish/v1/Systems/0/", json.dumps(body), etag)
     if status < 100:
-        module.fail_json(msg=msg, exception=patch)
+        module.fail_json(msg=msg, status=status, exception=patch)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 

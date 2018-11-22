@@ -25,7 +25,7 @@
     # ldap_password: "ldap_password"
     ldap_settings: "{{ lookup('file','{{ ldap_settings_file }}') | from_json }}"
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     - name: Import LDAP Settings
@@ -61,4 +61,3 @@
         alert_email_enabled: "{{ ldap_settings.alert_email_enabled }}"
         alert_table_refresh: "{{ ldap_settings.alert_table_refresh }}"
       delegate_to: localhost
-

@@ -25,7 +25,7 @@
     #     Note: make sure this user does not yet exist
     # new_user: "root"
     # new_password: "root"
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Get original user account data
@@ -115,4 +115,3 @@
         command: "delete"
         name: "{{ original_user }}"
       delegate_to: localhost
-

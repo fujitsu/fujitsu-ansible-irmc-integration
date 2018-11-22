@@ -20,7 +20,7 @@
     # Note: set validate_certificate to false for self-signed certificate
     # validate_certificate: false
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Set Virtual Media Data
@@ -35,4 +35,3 @@
         image: "{{ image }}"
         share_type: "{{ share_type }}"
       delegate_to: localhost
-

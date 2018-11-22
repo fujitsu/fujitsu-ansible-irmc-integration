@@ -20,7 +20,7 @@
     # Note: set validate_certificate to false for self-signed certificate
     # validate_certificate: false
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Get Virtual Media data
@@ -36,4 +36,3 @@
     - name: Show Virtual Media data
       debug:
         msg: "{{ vmdata.virtual_media_data }}"
-

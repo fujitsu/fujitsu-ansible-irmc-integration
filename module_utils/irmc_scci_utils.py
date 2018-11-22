@@ -1,18 +1,19 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
+from builtins import str
 
 import traceback
 from xml.etree import cElementTree as ElementTree
 import requests
 from requests.auth import HTTPBasicAuth
-from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 
 scci_body_start = """<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ>\n"""
@@ -38,10 +39,25 @@ def setup_sccirequest(module, scci_map):
     return body
 
 
+def setup_commandlist(cmdlist, ctype, scci_map):
+    body = scci_body_start
+    data = ""
+    for elem in scci_map:
+        if elem[0] not in cmdlist:
+            continue
+        if elem[4] is not None and cmdlist[elem[0]] is not None:
+            data = get_key_for_value(cmdlist[elem[0]], elem[4])
+        else:
+            data = cmdlist[elem[0]]
+        body += add_scci_command(ctype, scci_map, elem[1], elem[3], data)
+    body += scci_body_end
+    return body
+
+
 def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
-    if ctype not in ["SET", "GET", "CREATE", "DELETE"]:
+    if ctype not in ("SET", "GET", "CREATE", "DELETE"):
         return ""
-    if ctype == "CREATE" or ctype == "DELETE":
+    if ctype in ("CREATE", "DELETE"):
         ctype = "SET"
     if ctype == "SET" and data is None:
         return ""
@@ -72,7 +88,6 @@ def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
     return body
 
 
-# pylint: disable=too-many-branches
 def get_scciresult(data, opcodeextcode):
     # extract XML data
     # things are complicated, as the return string is not necessarily well-formed.
@@ -109,13 +124,13 @@ def get_scciresult(data, opcodeextcode):
         # sccidata = "Error: no results from command list."
         # sccicontext = sccidata
         pass
-    except Exception as e:    # pylint: disable=broad-except
+    except Exception as e:
         scciresult = 95
         sccidata = "SCCI result was not correct XML: {0}".format(str(e))
         sccicontext = traceback.format_exc()
 
     # User SSH key is empty
-    if scciresult == 1 and (opcodeextcode == 0x19A1 or opcodeextcode == 0x19A2 or opcodeextcode == 0x19A3):
+    if scciresult == 1 and opcodeextcode in (0x19A1, 0x19A2, 0x19A3):
         scciresult = 0
         sccidata = sccicontext = ""
 
@@ -154,7 +169,7 @@ def irmc_scci_post(module, body):
     ''' Post a SCCI command at iRMC config URI. '''
     try:
         ElementTree.fromstring(body)
-    except Exception as e:    # pylint: disable=broad-except
+    except Exception as e:
         data = traceback.format_exc()
         msg = "POST request got invalid XML body: {0}".format(body)
         return 98, data, msg
@@ -172,15 +187,45 @@ def irmc_scci_post(module, body):
         data.connection.close()
 
         status = data.status_code
-        if status != 200 and status != 204:
+        if status not in (200, 202, 204):
             try:
                 msg = "POST request was not successful ({0}): {1}".format(url, data.json()['error']['message'])
-            except Exception:    # pylint: disable=broad-except
+            except Exception:
+                msg = "POST request was not successful ({0}).".format(url)
+
+        if "Login required to continue." in str(data.content):
+            return 1, "Invalid login data.", "Login required to continue."
+    except Exception as e:
+        status = 99
+        data = traceback.format_exc()
+        msg = "POST request encountered exception ({0}): {1}".format(url, str(e))
+
+    return status, data, msg
+
+
+def irmc_scci_update(module, update_url):
+    session = requests.Session()
+    retries = Retry(total=5, backoff_factor=0.1)
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+
+    url = "http://{0}/{1}".format(module.params['irmc_url'], update_url)
+    msg = "OK"
+    try:
+        data = session.post(url, verify=module.params['validate_certs'],
+                            auth=HTTPBasicAuth(module.params['irmc_username'], module.params['irmc_password']))
+        data.connection.close()
+
+        status = data.status_code
+        if status not in (200, 202, 204):
+            try:
+                msg = "POST request was not successful ({0}): {1}".format(url, data.json()['error']['message'])
+            except Exception:
                 msg = "POST request was not successful ({0}).".format(url)
 
         if "Login required to continue." in data.content:
             return 1, "Invalid login data.", "Login required to continue."
-    except Exception as e:    # pylint: disable=broad-except
+    except Exception as e:
         status = 99
         data = traceback.format_exc()
         msg = "POST request encountered exception ({0}): {1}".format(url, str(e))
@@ -193,7 +238,7 @@ def get_key_for_value(value, dictionary):
         return ""
     if dictionary is None or not isinstance(dictionary, dict):
         return ""
-    for dictkey, dictvalue in dictionary.iteritems():
+    for dictkey, dictvalue in dictionary.items():
         value = str(value)
         if value.lower() == dictvalue.lower():
             return dictkey
@@ -202,19 +247,21 @@ def get_key_for_value(value, dictionary):
 
 def get_sccicode(param_or_name, scci_map):
     for elem in scci_map:
-        if elem[0] == param_or_name or elem[1] == param_or_name:
+        if param_or_name in (elem[0], elem[1]):
             return elem[2]
     return 0
 
 
-def setup_datadict(module):
+def setup_datadict(module, emptyAllowed=True):
     spcount = 0
     datadict = dict()
-    for key, value in module.params.iteritems():
-        if key != "irmc_url" and key != "irmc_username" and key != "irmc_password" and \
-           key != "validate_certs" and key != "command":
+    for key, value in module.params.items():
+        if key not in ("irmc_url", "irmc_username", "irmc_password", "validate_certs", "command"):
             if value is not None:
-                spcount += 1
+                if emptyAllowed is True or value != "":
+                    spcount += 1
+                else:
+                    value = None
             datadict[key] = value
 
     return datadict, spcount

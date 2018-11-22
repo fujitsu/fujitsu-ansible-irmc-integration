@@ -24,7 +24,7 @@
     # user_data_file: "UserData.json"
     # export_user: "admin"
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Get user account data

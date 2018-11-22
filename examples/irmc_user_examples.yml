@@ -20,7 +20,7 @@
     # Note: set validate_certificate to false for self-signed certificate
     # validate_certificate: false
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Create new user account
@@ -72,4 +72,3 @@
         command: "delete"
         name: "ansibleuser"
       delegate_to: localhost
-

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,34 +22,35 @@ short_description: get iRMC Virtual Media Data
 
 description:
     - Ansible module to get iRMC Virtual Media Data via iRMC RedFish interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     vm_type:
-        description: the virtual media type whose data are to be read
+        description: The virtual media type whose data are to be read.
         required:    false
         default:     CDImage
         choices:     ['CDImage', 'FDImage', 'HDImage']
@@ -76,14 +77,65 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-virtual_media_data:
-    description: iRMC Virtual Media data
-    returned: always
-    type: dict
+# virtual_media_data returned by requesting data for e.g. 'CDImage':
+    CDImage:
+        description: state of image
+        returned: always
+        type: string
+        sample: Connected
+    bootmode:
+        description: boot source override mode for the next boot
+        returned: always
+        type: string
+        sample: UEFI
+    bootoverride:
+        description: boot override type
+        returned: always
+        type: string
+        sample: Once
+    bootsource:
+        description: boot device override for next boot
+        returned: always
+        type: string
+        sample: BiosSetup
+    image_name:
+        description: name of the virtual image
+        returned: always
+        type: string
+        sample: mybootimage.iso
+    server:
+        description: remote server where the image is located
+        returned: always
+        type: string
+        sample: 192.168.2.1
+    share_name:
+        description: path on the remote server where the image is located
+        returned: always
+        type: string
+        sample: isoimages
+    share_type:
+        description: share type (NFS or SMB)
+        returned: always
+        type: string
+        sample: NFS
+    usb_attach_mode:
+        description: remote image attach mode
+        returned: always
+        type: string
+        sample: AutoAttach
+    user_domain:
+        description: user domain for SMB share
+        returned: always
+        type: string
+        sample: local.net
+    user_name:
+        description: user name for SM share
+        returned: always
+        type: string
+        sample: test
 '''
 
 
-# pylint: disable=wrong-import-position
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible.module_utils.irmc import irmc_redfish_get, get_irmc_json
@@ -102,7 +154,7 @@ def irmc_getvirtualmedia(module):
     # get iRMC system data
     status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
     if status < 100:
-        module.fail_json(msg=msg, exception=sysdata)
+        module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
@@ -127,21 +179,21 @@ def irmc_getvirtualmedia(module):
     # eet iRMC Virtual Media data
     status, vmdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/VirtualMedia/")
     if status < 100:
-        module.fail_json(msg=msg, exception=vmdata)
+        module.fail_json(msg=msg, status=status, exception=vmdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
     # extract specified Virtual Media data
     remotemountenabled = get_irmc_json(vmdata.json(), "RemoteMountEnabled")
     if not remotemountenabled:
-        vmdict['remote_mount_disabled'] = "WARNING: Remote Mount of Virtual Media is not enabled!"
+        vmdict['remote_mount_disabled'] = "Remote Mount of Virtual Media is not enabled!"
     vmdict['usb_attach_mode'] = get_irmc_json(vmdata.json(), "UsbAttachMode")
     vmdict['bootsource'] = get_irmc_json(sysdata.json(), ["Boot", "BootSourceOverrideTarget"])
     vmdict['bootoverride'] = get_irmc_json(sysdata.json(), ["Boot", "BootSourceOverrideEnabled"])
     vmdict['bootmode'] = get_irmc_json(sysdata.json(), ["Boot", "BootSourceOverrideMode"])
     maxdevno = get_irmc_json(vmdata.json(), [module.params['vm_type'], "MaximumNumberOfDevices"])
     if maxdevno == 0:
-        vmdict['no_vm_configured'] = "WARNING: No Virtual Media of Type '" + module.params['vm_type'] + \
+        vmdict['no_vm_configured'] = "No Virtual Media of Type '" + module.params['vm_type'] + \
                                      "' is configured!"
     else:
         vmdict['image_name'] = get_irmc_json(vmdata.json(), [module.params['vm_type'], "ImageName"])
