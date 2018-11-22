@@ -1,0 +1,49 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook for module 'irmc_ntp'
+# to manage iRMC time options
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_ntp - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: false
+
+  tasks:
+    # Get iRMC time settings
+    - name: Get iRMC time settingsa
+      irmc_ntp:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: time
+      delegate_to: localhost
+    - name: Show iRMC time settings
+      debug:
+        msg: "{{ time.time_settings }}"
+    
+    # Set iRMC time option(s)
+    - name: Set iRMC time option(s)
+      irmc_ntp:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        time_mode: "System RTC"
+      delegate_to: localhost

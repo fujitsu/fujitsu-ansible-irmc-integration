@@ -1,0 +1,31 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook for module 'irmc_compare_profiles'
+# to compare two iRMC profiles
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_compare_profiles - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: false
+
+  tasks:
+    # Compare iRMC profiles against each other
+    - name: Compare iRMC profiles
+      irmc_compare_profiles:
+        profile_path1: "{{ profile1_path }}"
+        profile_path2: "{{ profile2_path }}"
+      delegate_to: localhost

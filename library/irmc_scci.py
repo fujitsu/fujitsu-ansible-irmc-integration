@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,61 +22,62 @@ short_description: execute iRMC remote SCCI commands
 
 description:
     - Ansible module to execute iRMC Remote Scripting (SCCI) commands.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     command:
-        description: SCCI remote scripting command (opcode)
+        description: SCCI remote scripting command.
         required:    true
         choices:
-            - get_cs               # ConfigSpace Read
-            - set_cs               # ConfigSpace Write
-            - power_on             # Power-On the Server
-            - power_off            # Power-Off the Server
-            - power_cycle          # Power Cycle the Server
-            - reset                # Hard Reset the Server
-            - nmi                  # Pulse the NMI (Non Maskable Interrupt)
-            - graceful_shutdown    # Graceful Shutdown, requires running Agent
-            - graceful_reboot      # Graceful Reboot, requires running Agent
-            - cancel_shutdown      # Cancel a Shutdown Request
-            - reset_firmware       # Perform a BMC Reset
-            - connect_fd           # Connect/Disconnect a Floppy image on a Remote Share (iRMC S4 only)
-            - connect_cd           # Connect/Disconnect a CD/DVD image on a Remote Share (iRMC S4 only)
-            - connect_hd           # Connect/Disconnect a HDD image on a Remote Share (iRMC S4 only)
+            - get_cs            (ConfigSpace Read)
+            - set_cs            (ConfigSpace Write)
+            - power_on          (Power-On the Server)
+            - power_off         (Power-Off the Server)
+            - power_cycle       (Power Cycle the Server)
+            - reset             (Hard Reset the Server)
+            - nmi               (Pulse the NMI (Non Maskable Interrupt))
+            - graceful_shutdown (Graceful Shutdown, requires running Agent)
+            - graceful_reboot   (Graceful Reboot, requires running Agent)
+            - cancel_shutdown   (Cancel a Shutdown Request)
+            - reset_firmware    (Perform a BMC Reset)
+            - connect_fd        (Connect/Disconnect a Floppy image on a Remote Share (iRMC S4 only))
+            - connect_cd        (Connect/Disconnect a CD/DVD image on a Remote Share (iRMC S4 only))
+            - connect_hd        (Connect/Disconnect a HDD image on a Remote Share (iRMC S4 only))
     opcodeext:
-        description: SCCI opcode extension
+        description: SCCI opcode extension.
         required:    false
     index:
-        description: SCCI index
+        description: SCCI index.
         required:    false
     cabid:
-        description: SCCI cabinet ID
+        description: SCCI cabinet ID.
         default:     -1 (main cabinet)
         required:    false
     data:
-        description: data for commands which require data, ignored otherwise
+        description: Data for commands which require data, ignored otherwise.
         required:    false
 
 notes:
@@ -113,14 +114,18 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-data:
-    description: SCCI command result
-    returned: always
-    type: str
+# For command "get_cs":
+    data:
+        description: result of requested SCCI command
+        returned: always
+        type: string
+        sample: In a galaxy far, far away ...
+
+# For all other commands:
+    Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible.module_utils.irmc_scci_utils import setup_sccirequest, get_scciresult, irmc_scci_post
@@ -157,6 +162,7 @@ def irmc_scci(module):
 
     if module.params['command'] == "set_cs" and module.params['data'] is None:
         result['msg'] = "SCCI SET command requires 'data' parameter!"
+        result['status'] = 10
         module.fail_json(**result)
 
     body = setup_sccirequest(module, scci_code_map)
@@ -164,16 +170,16 @@ def irmc_scci(module):
     # send command to scripting interface
     status, data, msg = irmc_scci_post(module, body)
     if status < 100:
-        module.fail_json(msg=msg, exception=data)
-    elif status != 200 and status != 204:
+        module.fail_json(msg=msg, status=status, exception=data)
+    elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
     # evaluate command result
-    sccidata, result['sccistatus'], sccicontext = get_scciresult(data.content, module.params['opcodeext'])
-    if result['sccistatus'] != 0:
+    sccidata, result['status'], sccicontext = get_scciresult(data.content, module.params['opcodeext'])
+    if result['status'] != 0:
         result['msg'] = "SCCI '{0}' command was not successful. Return code {1}: {2}". \
-                        format(module.params['command'], result['sccistatus'], sccicontext)
-        if result['sccistatus'] == 95:
+                        format(module.params['command'], result['status'], sccicontext)
+        if result['status'] == 95:
             result['exception'] = sccidata
         module.fail_json(**result)
 

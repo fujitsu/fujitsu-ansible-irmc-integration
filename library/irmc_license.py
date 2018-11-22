@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,38 +22,39 @@ short_description: manage iRMC user accounts
 
 description:
     - Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     command:
-        description: license key management to be executed
+        description: License key management to be executed.
         required:    false
         default:     get
         choices:     ['get', 'set']
     license_key:
-        description: iRMC license key to be set
+        description: iRMC license key to be set.
         required:    false
 
 notes:
@@ -91,17 +92,20 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-license_key:
-    description: iRMC license key
-    returned: always
-    type: string
+# For command "get":
+    license_key:
+        description: system-locked iRMC license key
+        returned: always
+        type: string
+
+# For command "set":
+    Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import get_scciresult,irmc_scci_post, add_scci_command, \
+from ansible.module_utils.irmc_scci_utils import get_scciresult, irmc_scci_post, add_scci_command, \
                                                  scci_body_start, scci_body_end
 
 
@@ -123,6 +127,7 @@ def irmc_license(module):
 
     if module.params['command'] == "set" and module.params['license_key'] is None:
         result['msg'] = "Command 'set' requires 'license_key' to be set!"
+        result['status'] = 10
         module.fail_json(**result)
 
     body = scci_body_start
@@ -134,14 +139,13 @@ def irmc_license(module):
 
     status, data, msg = irmc_scci_post(module, body)
     if status < 100:
-        module.fail_json(msg=msg, exception=data)
-    elif status != 200 and status != 204:
+        module.fail_json(msg=msg, status=status, exception=data)
+    elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
     licensekey, scciresult, sccicontext = get_scciresult(data.content, 0x1980)
     if scciresult != 0:
-        result['msg'] = sccicontext
-        module.fail_json(**result)
+        module.fail_json(msg=sccicontext, status=scciresult)
 
     if module.params['command'] == "get":
         result['license_key'] = licensekey

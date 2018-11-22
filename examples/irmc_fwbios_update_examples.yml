@@ -1,0 +1,67 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook for module 'irmc_fwbios_update'
+# to update iRMC Firmware or server BIOS
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_fwbios_update - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: false
+
+  tasks:
+    # Get irmc firmware and BIOS update settings
+    - name: Get irmc firmware and BIOS update settings
+      irmc_fwbios_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: fw_settings
+      delegate_to: localhost
+    - name: Show irmc firmware and BIOS update settings
+      debug:
+        msg: "{{ fw_settings.fw_update_configuration }}"
+    
+    # Update server BIOS from local file
+    - name: Update server BIOS from local file
+      irmc_fwbios_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "update"
+        update_source: "file"
+        update_type: "bios"
+        file_name: "{{ bios_filename }}"
+      delegate_to: localhost
+    
+    # Update iRMC FW
+    - name: Update iRMC FW via TFTP
+      irmc_fwbios_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "update"
+        update_source: "tftp"
+        update_type: "irmc"
+        server_name: "{{ tftp_server }}"
+        file_name: "{{ irmc_filename }}"
+        irmc_flash_selector: "Auto"
+        irmc_boot_selector: "Auto"
+      delegate_to: localhost

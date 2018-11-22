@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,112 +22,113 @@ short_description: manage iRMC LDAP settings
 
 description:
     - Ansible module to manage iRMC LDAP settings via iRMC remote scripting interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     command:
-        description: get or set iRMC LDAP data
+        description: Get or set iRMC LDAP data.
         required:    false
         default:     get
         choices:     ['get', 'set']
     enabled:
-        description: LDAP enabled
+        description: LDAP enabled.
         required:    false
     ssl_enabled:
-        description: LDAP SSL enabled
+        description: LDAP SSL enabled.
         required:    false
     local_login_disabled:
-        description: local login disabled
+        description: Local login disabled.
         required:    false
     always_use_ssl:
-        description: always use SSL login
+        description: Always use SSL login.
         required:    false
     directory_type:
-        description: directory server type
+        description: Directory server type.
         required:    false
         choices:     ['MS Active Directory', 'Novell eDirector', 'Sun ePlanet', 'OpenLDAP', 'OpenDS / OpenDJ']
     auth_type:
-        description: authorization type
+        description: Authorization type.
         required:    false
-        choices:     ['Automatic', 'Settings stored on iRMC', 'Settings stored on LDAP']
+        choices:     ['Automatic', 'Stored on iRMC', 'Stored on LDAP']
     primary_server:
-        description: primary LDAP server
+        description: Primary LDAP server.
         required:    false
     primary_port:
-        description: non-SL port of primary LDAP server
+        description: Non-SL port of primary LDAP server.
         required:    false
     primary_ssl_port:
-        description: SSL port of primary LDAP server
+        description: SSL port of primary LDAP server.
         required:    false
     backup_server:
-        description: backup LDAP server
+        description: Backup LDAP server.
         required:    false
     backup_port:
-        description: non-SL port of backup LDAP server
+        description: Non-SL port of backup LDAP server.
         required:    false
     backup_ssl_port:
-        description: SSL port of backup LDAP server
+        description: SSL port of backup LDAP server.
         required:    false
     domain_name:
-        description: domain name
+        description: Domain name.
         required:    false
     department_name:
-        description: department name
+        description: Department name.
         required:    false
     base_dn:
-        description: base DN
+        description: Base DN.
         required:    false
     group_dn:
-        description: groups directory as sub-tree from base DN
+        description: Groups directory as sub-tree from base DN.
         required:    false
     user_search_context:
-        description: user search context
+        description: User search context.
         required:    false
     ldap_user:
-        description: LDAP user name
+        description: LDAP user name.
         required:    false
     ldap_password:
-        description: LDAP user password
+        description: LDAP user password.
         required:    false
     user_dn:
-        description: principal user DN
+        description: Principal user DN.
         required:    false
     append_base_to_user_dn:
-        description: append base DN to principal user DN
+        description: Append base DN to principal user DN.
         required:    false
     enhanced_user_login:
-        description: enhanced user login
+        description: Enhanced user login.
         required:    false
     user_login_filter:
-        description: user login search filter
+        description: User login search filter.
         required:    false
     alert_email_enabled:
-        description: LDAP email alert enabled
+        description: LDAP email alert enabled.
         required:    false
     alert_table_refresh:
-        description: LDAP alert table refresh in hours (0 = never)
+        description: LDAP alert table refresh in hours (0 = never).
         required:    false
 
 notes:
@@ -164,29 +165,147 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-ldap:
-    description: LDAP information
-    returned: always
-    type: dict
+# ldap data returned by command "get":
+    alert_email_enabled:
+        description: LDAP email alert enabled
+        returned: always
+        type: bool
+        sample: False
+    alert_table_refresh:
+        description: LDAP alert table refresh in hours
+        returned: always
+        type: string
+        sample: 0
+    always_use_ssl:
+        description: always use SSL login
+        returned: always
+        type: bool
+        sample: False
+    append_base_to_user_dn:
+        description: append base DN to principal user DN
+        returned: always
+        type: bool
+        sample: False
+    auth_type:
+        description: authorization type
+        returned: always
+        type: string
+        sample: Automatic
+    backup_port:
+        description: non-SL port of backup LDAP server
+        returned: always
+        type: string
+        sample: 389
+    backup_server:
+        description: backup LDAP server
+        returned: always
+        type: string
+        sample: ldap_backup.local
+    backup_ssl_port:
+        description: SSL port of backup LDAP server
+        returned: always
+        type: string
+        sample: 636
+    base_dn:
+        description: base DN
+        returned: always
+        type: string
+        sample:
+    department_name:
+        description: department name
+        returned: always
+        type: string
+        sample: department
+    directory_type:
+        description: directory server type
+        returned: always
+        type: string
+        sample: MS Active Directory
+    domain_name:
+        description: domain name
+        returned: always
+        type: string
+        sample: domain.local
+    enabled:
+        description: LDAP enabled
+        returned: always
+        type: bool
+        sample: True
+    enhanced_user_login:
+        description: enhanced user login
+        returned: always
+        type: string
+        sample: False
+    group_dn:
+        description: groups directory as sub-tree from base DN
+        returned: always
+        type: string
+        sample: ou=ldaptest
+    ldap_user:
+        description: LDAP user name
+        returned: always
+        type: string
+        sample: Administrator
+    local_login_disabled:
+        description: local login disabled
+        returned: always
+        type: bool
+        sample: False
+    primary_port:
+        description: non-SL port of primary LDAP server
+        returned: always
+        type: string
+        sample: 389
+    primary_server:
+        description: primary LDAP server
+        returned: always
+        type: string
+        sample: ldap_primary.local
+    primary_ssl_port:
+        description: SSL port of primary LDAP server
+        returned: always
+        type: string
+        sample: 636
+    ssl_enabled:
+        description: LDAP SSL enabled
+        returned: always
+        type: bool
+        sample: False
+    user_dn:
+        description: principal user DN
+        returned: always
+        type: string
+        sample:
+    user_login_filter:
+        description: user login search filter
+        returned: always
+        type: string
+        sample: (&(objectclass=person)(cn=%s))
+    user_search_context:
+        description: user search context
+        returned: always
+        type: string
+        sample:
+
+# For command "set":
+    Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
-                                                 get_key_for_value, add_scci_command, \
-                                                 scci_body_start, scci_body_end
+                                                 setup_commandlist
 
 
 ldap_dir = {"0": "MS Active Directory", "1": "Novell eDirectory", "2": "Sun ePlanet", "3": "OpenLDAP",
             "4": "OpenDS / OpenDJ"}
-ldap_auth = {"0": "Automatic", "1": "Settings stored on iRMC", "2": "Settings stored on LDAP"}
+ldap_auth = {"0": "Automatic", "1": "Stored on iRMC", "2": "Stored on LDAP"}
 true_false = {"0": "False", "1": "True"}
 param_scci_map = [
     # Param, SCCI Name, SCCI Code, index, value dict
     ["enabled", "ConfBMCLDAPEnable", 0x1971, 0, true_false],                            # iRMC: LDAP Enabled
-    ["ssl_enabled", "ConfBMCLDAPSSLEnable", 0x1972, 0, true_false],                     # iRMC: LDPA SSL Enabled
+    ["ssl_enabled", "ConfBMCLDAPSSLEnable", 0x1972, 0, true_false],                     # iRMC: LDAP SSL Enabled
     ["local_login_disabled", "ConfBMCLDAPLocalLoginDisabled", 0x197B, 0, true_false],   # iRMC: Disable Local Login
     ["always_use_ssl", "ConfBMCLDAPBrowserLoginDisabled", 0x197C, 0, true_false],       # iRMC: always use SSL Login
     ["directory_type", "ConfBMCLDAPDirectoryType", 0x1974, 0, ldap_dir],                # iRMC: Directory Server Type
@@ -208,8 +327,8 @@ param_scci_map = [
     ["append_base_to_user_dn", "ConfBMCLdapAppendBaseDNtoUserDN", 0x197F, 0, true_false],  # iRMC: Append Base DN
     ["enhanced_user_login", "ConfLDAPUseUserFilter", 0x1995, 0, true_false],            # iRMC: Enhanced User Login
     ["user_login_filter", "ConfLdapUserFilter", 0x1994, 0, None],                       # iRMC: User Login Search filter
-    ["alert_email_enabled", "ConfBMCLDAPAlertEnable", 0x1973, 0, true_false],                 # iRMC: Email Alert Enable
-    ["alert_table_refresh", "ConfBMCLdapAlertRefreshTime", 0x1991, 0, None],             # iRMC: Alert Table Refresh
+    ["alert_email_enabled", "ConfBMCLDAPAlertEnable", 0x1973, 0, true_false],           # iRMC: Email Alert Enable
+    ["alert_table_refresh", "ConfBMCLdapAlertRefreshTime", 0x1991, 0, None],            # iRMC: Alert Table Refresh
 ]
 
 
@@ -228,6 +347,7 @@ def irmc_ldap(module):
     # preliminary parameter check
     if module.params['command'] == "set" and setparam_count == 0:
         result['msg'] = "Command 'set' requires at least one parameter to be set!"
+        result['status'] = 10
         module.fail_json(**result)
 
     if module.params['command'] == "set":
@@ -238,38 +358,24 @@ def irmc_ldap(module):
     # send command list to scripting interface
     status, data, msg = irmc_scci_post(module, body)
     if status < 100:
-        module.fail_json(msg=msg, exception=data)
-    elif status != 200 and status != 204:
+        module.fail_json(msg=msg, status=status, exception=data)
+    elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
     # evaluate results list
     ldapdata, scciresult, sccicontext = get_scciresultlist(data.content, ldapdata, param_scci_map)
     if scciresult != 0:
-        result['msg'] = sccicontext
-        module.fail_json(**result)
+        module.fail_json(msg=sccicontext, status=scciresult)
 
     if module.params['command'] == "get":
-        result['ldap'] = setup_resultdict(ldapdata)
+        result['ldap'] = setup_resultdata(ldapdata)
     else:
         result['changed'] = True
 
     module.exit_json(**result)
 
 
-def setup_commandlist(cmdlist, ctype, scci_map):
-    body = scci_body_start
-    data = ""
-    for elem in scci_map:
-        if elem[4] is not None and cmdlist[elem[0]] is not None:
-            data = get_key_for_value(cmdlist[elem[0]], elem[4])
-        else:
-            data = cmdlist[elem[0]]
-        body += add_scci_command(ctype, scci_map, elem[1], elem[3], data)
-    body += scci_body_end
-    return body
-
-
-def setup_resultdict(data):
+def setup_resultdata(data):
     data = {
         'enabled': true_false.get(data['enabled']),
         'ssl_enabled': true_false.get(data['ssl_enabled']),
@@ -289,7 +395,6 @@ def setup_resultdict(data):
         'group_dn': data['group_dn'],
         'user_search_context': data['user_search_context'],
         'ldap_user': data['ldap_user'],
-        'ldap_password': data['ldap_password'],
         'user_dn': data['user_dn'],
         'append_base_to_user_dn': true_false.get(data['append_base_to_user_dn']),
         'enhanced_user_login': true_false.get(data['enhanced_user_login']),
@@ -316,7 +421,7 @@ def main():
                             choices=["MS Active Directory", "Novell eDirectory", "Sun ePlanet", "OpenLDAP",
                                      "OpenDS / OpenDJ"]),
         auth_type=dict(required=False, type="str",
-                       choices=["Automatic", "Settings stored on iRMC", "Settings stored on LDA"]),
+                       choices=["Automatic", "Stored on iRMC", "Stored on LDAP"]),
         primary_server=dict(required=False, type="str"),
         primary_port=dict(required=False, type="int"),
         primary_ssl_port=dict(required=False, type="int"),

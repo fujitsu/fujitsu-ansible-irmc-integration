@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,167 +22,168 @@ short_description: manage iRMC user accounts
 
 description:
     - Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     command:
-        description: user management to be executed
+        description: User management to be executed.
         required:    false
         default:     get
         choices:     ['get', 'create', 'change', 'delete']
     name:
-        description: user account name
+        description: User account name.
         required:    true
     password:
-        description: user account password
+        description: User account password.
         required:    false
     description:
-        description: user account desciption
+        description: User account desciption.
         required:    false
     enabled:
-        description: user account enabled
+        description: User account enabled.
         required:    false
     lan_privilege:
-        description: IPMI LAN channel privilege
+        description: IPMI LAN channel privilege.
         required:    false
         choices:     ['Reserved', 'Callback', 'User', 'Operator', 'Administrator', 'OEM', 'NoAccess']
     serial_privilege:
-        description: IPMI serial channel privilege
+        description: IPMI serial channel privilege.
         required:    false
         choices:     ['Reserved', 'Callback', 'User', 'Operator', 'Administrator', 'OEM', 'NoAccess']
     config_user_enabled:
-        description: user may configure user accounts
+        description: User may configure user accounts.
         required:    false
     config_bmc_enabled:
-        description: user may configure iRMC settings
+        description: User may configure iRMC settings.
         required:    false
     avr_enabled:
-        description: user may use Advanved Video Redirection (AVR)
+        description: User may use Advanved Video Redirection (AVR)
         required:    false
     storage_enabled:
-        description: user may use Remote Storage
+        description: User may use Remote Storage.
         required:    false
     redfish_enabled:
-        description: user may use iRMC Redfish interface
+        description: User may use iRMC Redfish interface.
         required:    false
     redfish_role:
-        description: user account Redfish role
+        description: User account Redfish role.
         required:    false
         choices:     ['NoAccess', 'Operator', 'Administrator', 'ReadOnly']
     shell:
-        description: user text access type
+        description: User text access type.
         required:    false
         choices:     ['SMASH CLP', 'CLI', 'Remote Manager', 'IPMI basic mode', 'IPMI terminal mode', 'None']
     snmpv3_enabled:
-        description: user may use SNMPv3
+        description: User may use SNMPv3.
         required:    false
     snmpv3_access:
-        description: user account SNMPV3 access privilege
+        description: User account SNMPV3 access privilege.
         required:    false
         choices:     ['ReadOnly', 'ReadWrite', 'Other']
     snmpv3_auth:
-        description: user account SNMPv3 authentication
+        description: User account SNMPv3 authentication.
         required:    false
         choices:     ['Undefined', 'SHA', 'MD5', 'None']
     snmpv3_privacy:
-        description: user account SNMPv3 privacy type
+        description: User account SNMPv3 privacy type.
         required:    false
         choices:     ['Undefined', 'AES', 'DES', 'None']
     ssh_public_key:
-        description: user account SSH public key
+        description: user account SSH public key.
         required:    false
     ssh_certificate:
-        description: user account SSH certificate
+        description: User account SSH certificate.
         required:    false
     email_enabled:
-        description: alert email enabled
+        description: Alert email enabled.
         required:    false
     email_encrypted:
-        description: alert email is encrypted
+        description: Alert email is encrypted.
         required:    false
     email_type:
-        description: alert email format
+        description: Alert email format.
         required:    false
         choices:     ['Standard', 'ITS-Format', 'REMCS', 'Fixed Subject', 'SMS']
     email_server:
-        description: preferred mail server for alert email
+        description: Preferred mail server for alert email.
         required:    false
         choices:     ['Automatic', 'Primary', 'Secondary']
     email_address:
-        description: alert email address
+        description: Alert email address.
         required:    false
     alert_fans:
-        description: define alert level for fan sensors
+        description: Define alert level for fan sensors.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_temperatures:
-        description: define alert level for temperature sensors
+        description: Define alert level for temperature sensors.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_hwerrors:
-        description: define alert level for critical hardware errors
+        description: Define alert level for critical hardware errors.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_syshang:
-        description: define alert level for system hang
+        description: Define alert level for system hang.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_posterrors:
-        description: define alert level for POST errors
+        description: Define alert level for POST errors.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_security:
-        description: define alert level for security
+        description: Define alert level for security.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_sysstatus:
-        description: define alert level for system status
+        description: Define alert level for system status.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_hderrors:
-        description: define alert level for disk drivers & controllers
+        description: Define alert level for disk drivers & controllers.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_network:
-        description: define alert level for network interface
+        description: Define alert level for network interface.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_remote:
-        description: define alert level for remote management
+        description: Define alert level for remote management.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_power:
-        description: define alert level for system power
+        description: Define alert level for system power.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_memory:
-        description: define alert level for memory
+        description: Define alert level for memory.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
     alert_others:
-        description: define alert level for other
+        description: Define alert level for other.
         required:    false
         choices:     ['None', 'Critical', 'Warning', 'All']
 
@@ -244,14 +245,197 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-user:
-    description: user account information
-    returned: always
-    type: dict
+# user data returned for command "get":
+    alert_fans:
+        description: alert level for fan sensors
+        returned: always
+        type: string
+        sample: Warning
+    alert_hderrors:
+        description: alert level for disk drivers & controllers
+        returned: always
+        type: string
+        sample: Critical
+    alert_hwerrors:
+        description: alert level for critical hardware errors
+        returned: always
+        type: string
+        sample: All
+    alert_memory:
+        description: alert level for memory
+        returned: always
+        type: string
+        sample: Critical
+    alert_network:
+        description: alert level for network interface
+        returned: always
+        type: string
+        sample: Warning
+    alert_others:
+        description: alert level for other
+        returned: always
+        type: string
+        sample: None
+    alert_posterrors:
+        description: alert level for POST errors
+        returned: always
+        type: string
+        sample: All
+    alert_power:
+        description: alert level for system power
+        returned: always
+        type: string
+        sample: Warning
+    alert_remote:
+        description: alert level for remote management
+        returned: always
+        type: string
+        sample: Critical
+    alert_security:
+        description: alert level for security
+        returned: always
+        type: string
+        sample: Warning
+    alert_syshang:
+        description: alert level for system hang
+        returned: always
+        type: string
+        sample: Critical
+    alert_sysstatus:
+        description: alert level for system status
+        returned: always
+        type: string
+        sample: None
+    alert_temperatures:
+        description: alert level for temperature sensors
+        returned: always
+        type: string
+        sample: Warning
+    avr_enabled:
+        description: user may use Advanved Video Redirection (AVR)
+        returned: always
+        type: bool
+        sample: True
+    config_bmc_enabled:
+        description: user may configure iRMC settings
+        returned: always
+        type: bool
+        sample: True
+    config_user_enabled:
+        description: user may configure user accounts
+        returned: always
+        type: bool
+        sample: True
+    description:
+        description: user account desciption
+        returned: always
+        type: string
+        sample: Admin User
+    email_address:
+        description: alert email address
+        returned: always
+        type: string
+        sample: admin@irmc.local
+    email_enabled:
+        description: alert email enabled
+        returned: always
+        type: bool
+        sample: False
+    email_encrypted:
+        description: alert email is encrypted
+        returned: always
+        type: bool
+        sample: False
+    email_server:
+        description: preferred mail server for alert email
+        returned: always
+        type: string
+        sample: Automatic
+    email_type:
+        description: alert email format
+        returned: always
+        type: string
+        sample: Standard
+    enabled:
+        description: user account enabled
+        returned: always
+        type: bool
+        sample: True
+    id:
+        description: user ID
+        returned: always
+        type: int
+        sample: 0
+    lan_privilege:
+        description: IPMI LAN channel privilege
+        returned: always
+        type: string
+        sample: Administrator
+    name:
+        description: user account name
+        returned: always
+        type: string
+        sample: admin
+    redfish_enabled:
+        description: user may use iRMC Redfish interface
+        returned: always
+        type: bool
+        sample: True
+    redfish_role:
+        description: user account Redfish role
+        returned: always
+        type: string
+        sample: Administrator
+    serial_privilege:
+        description: IPMI serial channel privilege
+        returned: always
+        type: string
+        sample: Administrator
+    shell:
+        description: user text access type
+        returned: always
+        type: string
+        sample: Remote Manager
+    snmpv3_access:
+        description: user account SNMPV3 access privilege
+        returned: always
+        type: string
+        sample: ReadOnly
+    snmpv3_auth:
+        description: user account SNMPv3 authentication
+        returned: always
+        type: string
+        sample: SHA
+    snmpv3_enabled:
+        description: user may use SNMPv3
+        returned: always
+        type: bool
+        sample: False
+    snmpv3_privacy:
+        description: user account SNMPv3 privacy type
+        returned: always
+        type: string
+        sample: DES
+    ssh_certificate:
+        description: user account SSH certificate
+        returned: always
+        type: string
+    ssh_public_key:
+        description: user account SSH public key
+        returned: always
+        type: string
+    storage_enabled:
+        description: user may use Remote Storage
+        returned: always
+        type: bool
+        sample: True
+
+# For all other commands:
+    Default return values:
+
 '''
 
 
-# pylint: disable=wrong-import-position
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible.module_utils.irmc_scci_utils import get_scciresult, get_scciresultlist, irmc_scci_post, \
@@ -314,7 +498,7 @@ param_scci_map = [
 ]
 
 
-def irmc_user(module):        # pylint: disable=too-many-branches,too-many-statements
+def irmc_user(module):
     result = dict(
         changed=False,
         status=0
@@ -330,13 +514,16 @@ def irmc_user(module):        # pylint: disable=too-many-branches,too-many-state
     if module.params['command'] == "change":
         if setparam_count <= 1:
             result['msg'] = "Command 'change' requires at least one parameter to be changed!"
+            result['status'] = 10
             module.fail_json(**result)
     if module.params['command'] == "create":
         if module.params['password'] is None:
             result['msg'] = "Command 'create' requires at least 'password' parameter to be set!"
+            result['status'] = 11
             module.fail_json(**result)
     if module.params['description'] is not None and len(module.params['description']) > 32:
         result['msg'] = "Description can only be 32 characters long!"
+        result['status'] = 12
         module.fail_json(**result)
 
     # determine user ID (free or otherwise)
@@ -347,8 +534,8 @@ def irmc_user(module):        # pylint: disable=too-many-branches,too-many-state
                scci_body_end
         status, data, msg = irmc_scci_post(module, body)
         if status < 100:
-            module.fail_json(msg=msg, exception=data)
-        elif status != 200 and status != 204:
+            module.fail_json(msg=msg, status=status, exception=data)
+        elif status not in (200, 202, 204):
             module.fail_json(msg=msg, status=status)
 
         username, sccistatus, sccicontext = get_scciresult(data.content, 0x1451)
@@ -379,16 +566,17 @@ def irmc_user(module):        # pylint: disable=too-many-branches,too-many-state
                 module.exit_json(**result)
             else:
                 result['msg'] = "Requested user '{0}' could not be found.".format(module.params['name'])
+                result['status'] = 20
                 module.fail_json(**result)
 
     # set up command list
     if module.params['command'] == "get":
-        body = setup_commandlist(userdata, "GET", param_scci_map, userdata['id'])
+        body = setup_user_commandlist(userdata, "GET", param_scci_map, userdata['id'])
     elif module.params['command'] == "change":
-        body = setup_commandlist(userdata, "SET", param_scci_map, userdata['id'])
+        body = setup_user_commandlist(userdata, "SET", param_scci_map, userdata['id'])
     elif module.params['command'] == "create":
         userdata = set_default(userdata)
-        body = setup_commandlist(userdata, "CREATE", param_scci_map, userdata['id'])
+        body = setup_user_commandlist(userdata, "CREATE", param_scci_map, userdata['id'])
     elif module.params['command'] == "delete":
         body = scci_body_start
         body += add_scci_command("DELETE", param_scci_map, "ConfBMCAcctUserName", userdata['id'], "")
@@ -398,15 +586,14 @@ def irmc_user(module):        # pylint: disable=too-many-branches,too-many-state
     # send command list to scripting interface
     status, data, msg = irmc_scci_post(module, body)
     if status < 100:
-        module.fail_json(msg=msg, exception=data)
-    elif status != 200 and status != 204:
+        module.fail_json(msg=msg, status=status, exception=data)
+    elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
-    # evalaute result list
+    # evaluate result list
     userdata, scciresult, sccicontext = get_scciresultlist(data.content, userdata, param_scci_map)
     if scciresult != 0:
-        result['msg'] = sccicontext
-        module.fail_json(**result)
+        module.fail_json(msg=sccicontext, status=scciresult)
 
     userdata['name'] = module.params['name']
     if module.params['command'] == "get":
@@ -417,7 +604,7 @@ def irmc_user(module):        # pylint: disable=too-many-branches,too-many-state
     module.exit_json(**result)
 
 
-def setup_commandlist(cmdlist, ctype, scci_map, user_id):
+def setup_user_commandlist(cmdlist, ctype, scci_map, user_id):
     body = scci_body_start
     data = ""
     for elem in scci_map:

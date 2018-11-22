@@ -3,7 +3,7 @@
 # Copyright 2018 FUJITSU LIMITED
 # GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-# example playbook get user data from iRMC and store
+# example playbook to get user data from iRMC and store
 # in a file in JSON format
 
 # variables not defined in this playbook are expected to be provided
@@ -25,7 +25,7 @@
     # user_data_file: "UserData.json"
     user_data: "{{ lookup('file','{{ user_data_file }}') | from_json }}"
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     - name: Create new user account
@@ -73,4 +73,3 @@
         alert_memory: "{{ user_data.alert_memory }}"
         alert_others: "{{ user_data.alert_others }}"
       delegate_to: localhost
-

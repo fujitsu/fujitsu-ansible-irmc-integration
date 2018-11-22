@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,39 +22,40 @@ short_description: get or set server ID LED
 
 description:
     - Ansible module to get or set server ID LED via iRMC RedFish interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     command:
-        description: get or set server ID LED state
+        description: Get or set server ID LED state.
         required:    false
         default:     get
         choices:     ['get', 'set']
     state:
-        description: desired server ID LED state for command 'set', ignored otherwise
+        description: Desired server ID LED state for command 'set', ignored otherwise.
         required:    false
         choices:     ['Off', 'Lit', 'Blinking']
 
@@ -91,14 +92,18 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-idled_state:
-    description: server ID LED state
-    returned: always
-    type: str
+# For command "get":
+    idled_state:
+        description: server ID LED state
+        returned: always
+        type: string
+        sample: Blinking
+
+# For command "set":
+    Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 import json
 from ansible.module_utils.basic import AnsibleModule
 
@@ -118,12 +123,13 @@ def irmc_idled(module):
     # preliminary parameter check
     if module.params['command'] == "set" and module.params['state'] is None:
         result['msg'] = "Command 'set' requires 'state' parameter to be set!"
+        result['status'] = 10
         module.fail_json(**result)
 
     # get iRMC system data
     status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
     if status < 100:
-        module.fail_json(msg=msg, exception=sysdata)
+        module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
@@ -142,6 +148,7 @@ def irmc_idled(module):
     if module.params['state'] not in allowedparams:
         result['msg'] = "Invalid parameter '{0}'. Allowed: {1}".format(module.params['state'],
                                                                        json.dumps(allowedparams))
+        result['status'] = 11
         module.fail_json(**result)
 
     # set iRMC system data
@@ -149,7 +156,7 @@ def irmc_idled(module):
     etag = get_irmc_json(sysdata.json(), "@odata.etag")
     status, patch, msg = irmc_redfish_patch(module, "redfish/v1/Systems/0/", json.dumps(body), etag)
     if status < 100:
-        module.fail_json(msg=msg, exception=patch)
+        module.fail_json(msg=msg, status=status, exception=patch)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 

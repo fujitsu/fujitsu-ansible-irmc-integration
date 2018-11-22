@@ -1,19 +1,17 @@
 #!/usr/bin/python
 
-# see https://www.relaxdiego.com/2016/09/writing-ansible-modules-002.html
-
-
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
+from builtins import str
 
-import mock
 import requests
 from requests.exceptions import Timeout
 from lxml import objectify, etree
+import mock
 
 from ansible.compat.tests import unittest
 from ansible.compat.tests.mock import create_autospec, patch
@@ -22,9 +20,7 @@ from ansible.module_utils.basic import AnsibleModule
 from module_utils import irmc_scci_utils
 
 
-# pylint: disable=too-many-public-methods
-# pylint: disable=unused-argument
-class TestIrmcScci(unittest.TestCase):
+class TestIrmcScciUtils(unittest.TestCase):
 
     # preparing the tests
     def setUp(self):
@@ -119,10 +115,12 @@ class TestIrmcScci(unittest.TestCase):
                        """</CMD>""".format("E001", format(self.mod.params['opcodeext'], 'x'),
                                            format(self.mod.params['index'], 'x'), self.mod.params['cabid'])
         expectedxml += irmc_scci_utils.scci_body_end
+        expectedxml = expectedxml.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         body = irmc_scci_utils.setup_sccirequest(self.mod, self.scci_code_map)
+        body = body.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__setup_sccirequest__all_is_well_set_string(self):
         self.mod.params['command'] = "set_cs"
@@ -135,10 +133,12 @@ class TestIrmcScci(unittest.TestCase):
                                            format(self.mod.params['index'], 'x'), self.mod.params['cabid'],
                                            self.mod.params['data'])
         expectedxml += irmc_scci_utils.scci_body_end
+        expectedxml = expectedxml.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         body = irmc_scci_utils.setup_sccirequest(self.mod, self.scci_code_map)
+        body = body.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__setup_sccirequest__all_is_well_set_int(self):
         self.mod.params['command'] = "set_cs"
@@ -151,10 +151,12 @@ class TestIrmcScci(unittest.TestCase):
                                            format(self.mod.params['index'], 'x'), self.mod.params['cabid'],
                                            self.mod.params['data'])
         expectedxml += irmc_scci_utils.scci_body_end
+        expectedxml = expectedxml.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         body = irmc_scci_utils.setup_sccirequest(self.mod, self.scci_code_map)
+        body = body.replace(irmc_scci_utils.scci_body_start, '<CMDSEQ>\n')
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__get_scciresult__all_is_well_data_string_1455(self):
         datastr = "TestData"
@@ -166,8 +168,8 @@ class TestIrmcScci(unittest.TestCase):
         sccireturndata += irmc_scci_utils.scci_body_end
         sccidata, scciresult, sccicontext = irmc_scci_utils.get_scciresult(sccireturndata, 0x1455)
         self.assertEqual(status, scciresult)
-        self.assertEquals("", sccicontext)
-        self.assertEquals(datastr, sccidata)
+        self.assertEqual("", sccicontext)
+        self.assertEqual(datastr, sccidata)
 
     def test__get_scciresult__all_is_well_data_integer_1457(self):
         dataint = "999"     # param data is always a string
@@ -179,8 +181,8 @@ class TestIrmcScci(unittest.TestCase):
         sccireturndata += irmc_scci_utils.scci_body_end
         sccidata, scciresult, sccicontext = irmc_scci_utils.get_scciresult(sccireturndata, 0x1457)
         self.assertEqual(status, scciresult)
-        self.assertEquals("", sccicontext)
-        self.assertEquals(dataint, sccidata)
+        self.assertEqual("", sccicontext)
+        self.assertEqual(dataint, sccidata)
 
     def test__get_scciresult__all_is_well_overall(self):
         status = 0
@@ -192,8 +194,8 @@ class TestIrmcScci(unittest.TestCase):
                          """</Status>""".format(status)
         sccidata, scciresult, sccicontext = irmc_scci_utils.get_scciresult(sccireturndata, 0)
         self.assertEqual(status, scciresult)
-        self.assertEquals("", sccicontext)
-        self.assertEquals("", sccidata)
+        self.assertEqual("", sccicontext)
+        self.assertEqual("", sccidata)
 
     def test__get_scciresult__bad_xml(self):
         sccireturndata = """<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ><CMD></CMDSEQ>"""
@@ -215,8 +217,8 @@ class TestIrmcScci(unittest.TestCase):
                          """</Status>""".format(status, format(opcode, 'X'), datastr)
         sccidata, scciresult, sccicontext = irmc_scci_utils.get_scciresult(sccireturndata, opcode)
         self.assertEqual(status, scciresult)
-        self.assertEquals("OpCodeExt 0x{0}: {1} ({2})".format(format(opcode, 'X'), datastr, status), sccicontext)
-        self.assertEquals(datastr, sccidata)
+        self.assertEqual("OpCodeExt 0x{0}: {1} ({2})".format(format(opcode, 'X'), datastr, status), sccicontext)
+        self.assertEqual(datastr, sccidata)
 
     def test__get_scciresult__bad_overall_status(self):
         datastr = ""
@@ -230,8 +232,8 @@ class TestIrmcScci(unittest.TestCase):
                          """</Status>""".format(status)
         sccidata, scciresult, sccicontext = irmc_scci_utils.get_scciresult(sccireturndata, opcode)
         self.assertEqual(status, scciresult)
-        self.assertEquals("Error {0}".format(status), sccicontext)
-        self.assertEquals(datastr, sccidata)
+        self.assertEqual("Error {0}".format(status), sccicontext)
+        self.assertEqual(datastr, sccidata)
 
     def test__get_scciresultlist__all_is_well_results_1455_1457(self):
         datastr = "TestData"
@@ -249,9 +251,9 @@ class TestIrmcScci(unittest.TestCase):
         sccidata, scciresult, sccicontext = \
             irmc_scci_utils.get_scciresultlist(sccireturndata, self.userdata, self.param_scci_map)
         self.assertEqual(status, scciresult)
-        self.assertEquals("", sccicontext)
-        self.assertEquals(datastr, sccidata['description'])
-        self.assertEquals(dataint, sccidata['enabled'])
+        self.assertEqual("", sccicontext)
+        self.assertEqual(datastr, sccidata['description'])
+        self.assertEqual(dataint, sccidata['enabled'])
 
     def test__get_scciresultlist__bad_scci_status_1455_1457(self):
         datastr = "String setting failed."
@@ -272,8 +274,8 @@ class TestIrmcScci(unittest.TestCase):
         self.assertEqual(status * 2, scciresult)
         self.assertIn("OpCodeExt 0x{0}: {1} ({2})\n".format(format(opcode1, 'X'), datastr, status) +
                       "OpCodeExt 0x{0}: {1} ({2})".format(format(opcode2, 'X'), dataint, status), sccicontext)
-        self.assertEquals(datastr, sccidata['description'])
-        self.assertEquals(dataint, sccidata['enabled'])
+        self.assertEqual(datastr, sccidata['description'])
+        self.assertEqual(dataint, sccidata['enabled'])
 
     def test__get_scciresultlist__bad_overall_status(self):
         status = 0
@@ -286,9 +288,9 @@ class TestIrmcScci(unittest.TestCase):
         sccidata, scciresult, sccicontext = \
             irmc_scci_utils.get_scciresultlist(sccireturndata, self.userdata, self.param_scci_map)
         self.assertEqual(status, scciresult)
-        self.assertEquals("", sccicontext)
-        self.assertEquals("", sccidata['description'])
-        self.assertEquals("", sccidata['enabled'])
+        self.assertEqual("", sccicontext)
+        self.assertEqual("", sccidata['description'])
+        self.assertEqual("", sccidata['enabled'])
 
     def test__add_scci_command__all_is_well_get(self):
         scci_type = "GET"
@@ -300,7 +302,7 @@ class TestIrmcScci(unittest.TestCase):
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__add_scci_command__all_is_well_set_string(self):
         scci_type = "SET"
@@ -313,7 +315,7 @@ class TestIrmcScci(unittest.TestCase):
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__add_scci_command__all_is_well_set_integer(self):
         scci_type = "SET"
@@ -326,7 +328,7 @@ class TestIrmcScci(unittest.TestCase):
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__add_scci_command__all_is_well_create_integer(self):
         scci_type = "CREATE"
@@ -339,7 +341,7 @@ class TestIrmcScci(unittest.TestCase):
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__add_scci_command__all_is_well_delete_integer(self):
         scci_type = "CREATE"
@@ -352,7 +354,7 @@ class TestIrmcScci(unittest.TestCase):
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
         expect = etree.tostring(objectify.fromstring(expectedxml))
         result = etree.tostring(objectify.fromstring(body))
-        self.assertEquals(expect, result)
+        self.assertEqual(expect, result)
 
     def test__add_scci_command__all_is_well_set_empty(self):
         scci_type = "SET"
@@ -360,7 +362,7 @@ class TestIrmcScci(unittest.TestCase):
         data = None
         expectedxml = ""
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
-        self.assertEquals(expectedxml, body)
+        self.assertEqual(expectedxml, body)
 
     def test__add_scci_command__all_is_well_create_empty(self):
         scci_type = "CREATE"
@@ -368,7 +370,7 @@ class TestIrmcScci(unittest.TestCase):
         data = None
         expectedxml = ""
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
-        self.assertEquals(expectedxml, body)
+        self.assertEqual(expectedxml, body)
 
     def test__add_scci_command__bad_opcode(self):
         scci_type = "CREATE"
@@ -376,7 +378,7 @@ class TestIrmcScci(unittest.TestCase):
         data = ""
         expectedxml = ""
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
-        self.assertEquals(expectedxml, body)
+        self.assertEqual(expectedxml, body)
 
     def test__add_scci_command__bad_opcode_type(self):
         scci_type = "UNKNOWN"
@@ -384,19 +386,19 @@ class TestIrmcScci(unittest.TestCase):
         data = ""
         expectedxml = ""
         body = irmc_scci_utils.add_scci_command(scci_type, self.param_scci_map, scci_text, 0, data)
-        self.assertEquals(expectedxml, body)
+        self.assertEqual(expectedxml, body)
 
     def test__get_key_for_value__all_is_well(self):
         mydict = {"0": "zero", "1": "one", "2": "two"}
         myvalue = "two"
         mykey = irmc_scci_utils.get_key_for_value(myvalue, mydict)
-        self.assertEquals("2", mykey)
+        self.assertEqual("2", mykey)
 
     def test__get_key_for_value__no_value(self):
         mydict = {"0": "zero", "1": "one", "2": "two"}
         myvalue = None
         mykey = irmc_scci_utils.get_key_for_value(myvalue, mydict)
-        self.assertEquals("", mykey)
+        self.assertEqual("", mykey)
 
     def test__get_key_for_value__bad_value(self):
         mydict = {"0": "zero", "1": "one", "2": "two"}

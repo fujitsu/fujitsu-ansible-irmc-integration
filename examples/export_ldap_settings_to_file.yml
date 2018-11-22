@@ -23,7 +23,7 @@
     #   make sure to not overwrite this file if you do not intend to
     # ldap_settings_file: "LdapSettings.json"
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Get LDAP data

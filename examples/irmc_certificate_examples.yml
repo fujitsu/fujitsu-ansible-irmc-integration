@@ -20,7 +20,7 @@
     # Note: set validate_certificate to false for self-signed certificate
     # validate_certificate: false
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     # Get SSL certificates
@@ -49,4 +49,3 @@
         ssl_cert_path: "{{ ssl_cert_path }}"
         ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
       delegate_to: localhost
-

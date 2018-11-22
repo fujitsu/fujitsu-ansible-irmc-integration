@@ -37,3 +37,14 @@
 # new_user: "newroot"
 # new_password: "password"
 
+# boot_key: "DeviceName"
+# boot_device: "(Bus 02 Dev 00)PCI RAID Adapter"
+# next_boot_device: "HL-DT-ST DVDRAM GHB0N"
+
+# bios_filename: "D3289_09.08F_sdr03.73.bin"
+# irmc_filename: "D3289-A1x.R1.36.0.UPC"
+# tftp_server: "192.168.2.1"
+
+# irmc_sysconfig_file: "./SystemConfig.json"
+# irmc_hwconfig_file: "./HWConfiguration.json"
+

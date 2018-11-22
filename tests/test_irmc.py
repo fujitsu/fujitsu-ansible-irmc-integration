@@ -1,19 +1,17 @@
 #!/usr/bin/python
 
-# see https://www.relaxdiego.com/2016/09/writing-ansible-modules-002.html
-
-
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
+from builtins import str
 
 import json
-import mock
 import requests
 from requests.exceptions import Timeout
+import mock
 
 from ansible.compat.tests import unittest
 from ansible.compat.tests.mock import create_autospec, patch
@@ -22,8 +20,6 @@ from ansible.module_utils.basic import AnsibleModule
 from module_utils import irmc
 
 
-# pylint: disable=too-many-public-methods
-# pylint: disable=unused-argument
 class TestIrmc(unittest.TestCase):
 
     # preparing the tests
@@ -95,7 +91,7 @@ class TestIrmc(unittest.TestCase):
         self.assertIn("GET request encountered exception (" + self.url + ")", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__all_is_well(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__all_is_well(self, patch):
         requests.Session.patch.return_value = self.mockdata
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), 12345)
         self.assertEqual(self.mockdata.status_code, status)
@@ -103,7 +99,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("OK", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__etag_is_good_string(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__etag_is_good_string(self, patch):
         requests.Session.patch.return_value = self.mockdata
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}),
                                                     "12345")
@@ -112,7 +108,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("OK", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__etag_is_extra_large(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__etag_is_extra_large(self, patch):
         requests.Session.patch.return_value = self.mockdata
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}),
                                                     1234567890123456789)
@@ -121,7 +117,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("OK", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__bad_etag(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__bad_etag(self, patch):
         requests.Session.patch.return_value = self.mockdata
         etag = "abcde"
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), etag)
@@ -130,7 +126,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("etag is no number: " + etag, msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__bad_status_without_reason(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__bad_status_without_reason(self, patch):
         requests.Session.patch.return_value = self.mockdata
         self.mockdata.status_code = 100
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), 12345)
@@ -139,7 +135,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("PATCH request was not successful (" + self.url + ").", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__bad_status_with_reason(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__bad_status_with_reason(self, patch):
         requests.Session.patch.return_value = self.mockdata
         self.mockdata.json.return_value = self.mockdata.bad_return
         self.mockdata.status_code = 100
@@ -149,7 +145,7 @@ class TestIrmc(unittest.TestCase):
         self.assertEqual("PATCH request was not successful (" + self.url + "): " + self.mockdata.reason, msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__bad_body(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__bad_body(self, patch):
         requests.Session.patch.return_value = self.mockdata
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", "{ 'Patch': 'mockpatch' }", 12345)
         self.assertEqual(98, status)
@@ -157,7 +153,7 @@ class TestIrmc(unittest.TestCase):
         self.assertIn("PATCH request got invalid JSON body", msg)
 
     @patch.object(requests.Session, 'patch')
-    def test__irmc_redfish_patch__exception(self, patch):    # pylint: disable=redefined-outer-name
+    def test__irmc_redfish_patch__exception(self, patch):
         requests.Session.patch.side_effect = Timeout()
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), 12345)
         self.assertEqual(99, status)
@@ -231,6 +227,26 @@ class TestIrmc(unittest.TestCase):
         key = "InvalidKey"
         result = irmc.get_irmc_json(self.mockjson, key)
         self.assertEqual("Key does not exist: '" + key + "'", result)
+
+    @patch.object(requests.Session, 'get')
+    def test__waitForSessionToFinish__session_terminated(self, get):
+        requests.Session.get.return_value = self.mockdata
+        self.mockdata.json.return_value = {'Session': {'Status': 'terminated'}}
+        status, data, msg = irmc.waitForSessionToFinish(self.mod, 1)
+        self.assertEqual(self.mockdata.status_code, status)
+        self.assertEqual(self.mockdata.json.return_value, data.json.return_value)
+        self.assertEqual("Session result: terminated", msg)
+
+    @patch.object(requests.Session, 'get')
+    def test__waitForSessionToFinish__session_error(self, get):
+        requests.Session.get.return_value = self.mockdata
+        self.mockdata.json.return_value = {'Session': {'Status': 'terminated with error'}}
+        status, data, msg = irmc.waitForSessionToFinish(self.mod, 1)
+        self.assertEqual(self.mockdata.status_code, status)
+        self.assertEqual(self.mockdata.json.return_value, data)
+        self.assertEqual("Session result: terminated with error", msg)
+
+    # Cannot test actually waiting for a session to finish ...
 
 
 if __name__ == '__main__':

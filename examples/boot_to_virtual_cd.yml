@@ -31,7 +31,7 @@
     # vm_user: "domain_user"
     # vm_password: "domain_password"
 
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     - name: Get system power state
@@ -117,4 +117,3 @@
         command: "set"
         state: "PowerOn"
       delegate_to: localhost
-

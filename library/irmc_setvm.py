@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-# FUJITSU Limited
+# FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
-# GNU General Public License v3.0+ (see LICENSE.md or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division)
 __metaclass__ = type
 
@@ -22,64 +22,65 @@ short_description: set iRMC Virtual Media Data
 
 description:
     - Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
-    - Module Version V1.0.1.
+    - Module Version V1.1.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - "python >= 2.6"
+    - Python >= 2.6
+    - Python module 'future'
 
 version_added: "2.4"
 
 author:
-    - FujitsuPrimergy (@FujitsuPrimergy)
+    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
 
 options:
     irmc_url:
-        description: IP address of the iRMC to be requested for data
+        description: IP address of the iRMC to be requested for data.
         required:    true
     irmc_username:
-        description: iRMC user for basic authentication
+        description: iRMC user for basic authentication.
         required:    true
     irmc_password:
-        description: password for iRMC user for basic authentication
+        description: Password for iRMC user for basic authentication.
         required:    true
     validate_certs:
-        description: evaluate SSL certificate (set to false for self-signed certificate)
+        description: Evaluate SSL certificate (set to false for self-signed certificate).
         required:    false
         default:     true
     vm_type:
-        description: the virtual media type to be set
+        description: The virtual media type to be set.
         required:    false
         default:     CDImage
         choices:     ['CDImage', 'FDImage', 'HDImage']
     server:
-        description: remote server (IP or DNS name) where the image is located
+        description: Remote server (IP or DNS name) where the image is located.
         required:    true
     share:
-        description: path on the remote server where the image is located
+        description: Path on the remote server where the image is located.
         required:    true
     image:
-        description: name of the remote image
+        description: Name of the remote image.
         required:    true
     share_type:
-        description: share type (NFS share or SMB share)
+        description: Share type (NFS share or SMB share).
         required:    false
         choices:     ['NFS', 'SMB']
     vm_domain:
-        description: user domain in case of SMB share
+        description: User domain in case of SMB share.
         required:    false
     vm_user:
-        description: user account in case of SMB share
+        description: User account in case of SMB share.
         required:    false
     vm_password:
-        description: user password in case of SMB share
+        description: User password in case of SMB share.
         required:    false
     force_remotemount_enabled:
-        description: forces iRMC to enable the remote mount feature
+        description: Forces iRMC to enable the remote mount feature.
         required:    false
     force_mediatype_active:
-        description: forces iRMC to activate one of the required remote media types
+        description: Forces iRMC to activate one of the required remote media types.
         required:    false
 
 notes:
@@ -103,14 +104,10 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-result:
-    description: virtual media set action result
-    returned: always
-    type: dict
+Default return values:
 '''
 
 
-# pylint: disable=wrong-import-position
 import json
 from ansible.module_utils.basic import AnsibleModule
 
@@ -128,12 +125,12 @@ def irmc_setvirtualmedia(module):
         result['msg'] = "module was not run"
         module.exit_json(**result)
 
-    vmparams, count = setup_datadict(module)    # pylint: disable=unused-variable
+    vmparams, count = setup_datadict(module)
 
     # Get iRMC Virtual Media data
     status, vmdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/VirtualMedia/")
     if status < 100:
-        module.fail_json(msg=msg, exception=vmdata)
+        module.fail_json(msg=msg, status=status, exception=vmdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
@@ -142,6 +139,7 @@ def irmc_setvirtualmedia(module):
     if maxdevno == 0:
         if not module.params['force_mediatype_active']:
             result['warnings'] = "No Virtual Media of Type '" + module.params['vm_type'] + "' is configured!"
+            result['status'] = 20
             module.fail_json(**result)
         else:
             new_maxdevno = 1
@@ -150,7 +148,8 @@ def irmc_setvirtualmedia(module):
 
     remotemountenabled = get_irmc_json(vmdata.json(), "RemoteMountEnabled")
     if not remotemountenabled and not module.params['force_remotemount_enabled']:
-        result['warnings'] = "Remote Mount of Virtual Media is not enabled!"
+        result['msg'] = "Remote Mount of Virtual Media is not enabled!"
+        result['status'] = 30
         module.fail_json(**result)
 
     # Set iRMC system data
@@ -159,7 +158,7 @@ def irmc_setvirtualmedia(module):
     status, patch, msg = irmc_redfish_patch(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/VirtualMedia/",
                                             json.dumps(body), etag)
     if status < 100:
-        module.fail_json(msg=msg, exception=patch)
+        module.fail_json(msg=msg, status=status, exception=patch)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
