@@ -3,7 +3,7 @@
 # FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
+from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 
@@ -22,13 +22,13 @@ short_description: get or set PRIMERGY server and iRMC facts
 
 description:
     - Ansible module to get or set basic iRMC and PRIMERGY server data via iRMC RedFish interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -47,10 +47,11 @@ options:
         required:    true
     validate_certs:
         description: Evaluate SSL certificate (set to false for self-signed certificate).
+        type:        bool
         required:    false
         default:     true
     command:
-        description: Get or set server facts.
+        description: How to access server facts.
         required:    false
         default:     get
         choices:     ['get', 'set']
@@ -103,7 +104,7 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-# facts returned by command "get":
+# facts returned by "get":
     hardware.ethernetinterfaces:
         description:
              dict with total number (count)
@@ -286,13 +287,13 @@ def irmc_facts(module):
         module.exit_json(**result)
 
     # parameter check
-    if module.params['command'] == "set" and \
-       module.params['asset_tag'] is None and module.params['description'] is None and \
-       module.params['helpdesk_message'] is None and module.params['location'] is None and \
-       module.params['contact'] is None:
-        result['msg'] = "Command 'set' requires at least one parameter to be set!"
-        result['status'] = 10
-        module.fail_json(**result)
+    if module.params['command'] == "set":
+        if module.params['asset_tag'] is None and module.params['description'] is None and \
+           module.params['helpdesk_message'] is None and module.params['location'] is None and \
+           module.params['contact'] is None:
+            result['msg'] = "Command 'set' requires at least one parameter to be set!"
+            result['status'] = 10
+            module.fail_json(**result)
 
     # Get iRMC OEM system data
     status, oemdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/System")

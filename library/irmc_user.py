@@ -22,12 +22,12 @@ short_description: manage iRMC user accounts
 
 description:
     - Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -498,11 +498,14 @@ param_scci_map = [
 ]
 
 
+# Global
+result = dict()
+
+
 def irmc_user(module):
-    result = dict(
-        changed=False,
-        status=0
-    )
+    # initialize result
+    result['changed'] = False
+    result['status'] = 0
 
     if module.check_mode:
         result['msg'] = "module was not run"
@@ -510,64 +513,10 @@ def irmc_user(module):
 
     userdata, setparam_count = setup_datadict(module)
 
-    # preliminary parameter checks
-    if module.params['command'] == "change":
-        if setparam_count <= 1:
-            result['msg'] = "Command 'change' requires at least one parameter to be changed!"
-            result['status'] = 10
-            module.fail_json(**result)
-    if module.params['command'] == "create":
-        if module.params['password'] is None:
-            result['msg'] = "Command 'create' requires at least 'password' parameter to be set!"
-            result['status'] = 11
-            module.fail_json(**result)
-    if module.params['description'] is not None and len(module.params['description']) > 32:
-        result['msg'] = "Description can only be 32 characters long!"
-        result['status'] = 12
-        module.fail_json(**result)
+    preliminary_parameter_check(module, setparam_count)
 
     # determine user ID (free or otherwise)
-    usernumber = newuser = 0
-    userdata['id'] = None
-    while True:
-        body = scci_body_start + add_scci_command("GET", param_scci_map, "ConfBMCAcctUserName", usernumber, "") + \
-               scci_body_end
-        status, data, msg = irmc_scci_post(module, body)
-        if status < 100:
-            module.fail_json(msg=msg, status=status, exception=data)
-        elif status not in (200, 202, 204):
-            module.fail_json(msg=msg, status=status)
-
-        username, sccistatus, sccicontext = get_scciresult(data.content, 0x1451)
-        if (sccistatus != 0 or username == "" or username is None) and newuser == 0:
-            newuser = usernumber
-
-        if username == module.params['name']:
-            userdata['id'] = usernumber
-            break
-
-        usernumber += 1
-        if usernumber >= 15:
-            break
-
-    # more parameter checks
-    if module.params['command'] == "create":
-        if userdata['id'] is not None:
-            result['skipped'] = True
-            result['msg'] = "User '{0}' already exists.".format(module.params['name'])
-            module.exit_json(**result)
-        else:
-            userdata['id'] = newuser
-    else:
-        if userdata['id'] is None:
-            if module.params['command'] == "delete":
-                result['skipped'] = True
-                result['msg'] = "User '{0}' does not exist.".format(module.params['name'])
-                module.exit_json(**result)
-            else:
-                result['msg'] = "Requested user '{0}' could not be found.".format(module.params['name'])
-                result['status'] = 20
-                module.fail_json(**result)
+    userdata['id'] = determine_userid(module)
 
     # set up command list
     if module.params['command'] == "get":
@@ -604,6 +553,68 @@ def irmc_user(module):
     module.exit_json(**result)
 
 
+def preliminary_parameter_check(module, setparam_count):
+    if module.params['command'] == "change":
+        if setparam_count <= 1:
+            result['msg'] = "Command 'change' requires at least one parameter to be changed!"
+            result['status'] = 10
+            module.fail_json(**result)
+    if module.params['command'] == "create":
+        if module.params['password'] is None:
+            result['msg'] = "Command 'create' requires at least 'password' parameter to be set!"
+            result['status'] = 11
+            module.fail_json(**result)
+    if module.params['description'] is not None and len(module.params['description']) > 32:
+        result['msg'] = "Description can only be 32 characters long!"
+        result['status'] = 12
+        module.fail_json(**result)
+
+
+def determine_userid(module):
+    usernumber = newuser = 0
+    userid = None
+    while True:
+        body = scci_body_start + add_scci_command("GET", param_scci_map, "ConfBMCAcctUserName", usernumber, "") + \
+               scci_body_end
+        status, data, msg = irmc_scci_post(module, body)
+        if status < 100:
+            module.fail_json(msg=msg, status=status, exception=data)
+        elif status not in (200, 202, 204):
+            module.fail_json(msg=msg, status=status)
+
+        username, sccistatus, msg = get_scciresult(data.content, 0x1451)
+        if (sccistatus != 0 or username == "" or username is None) and newuser == 0:
+            newuser = usernumber
+
+        if username == module.params['name']:
+            userid = usernumber
+            break
+
+        usernumber += 1
+        if usernumber >= 15:
+            break
+
+    if module.params['command'] == "create":
+        if userid is not None:
+            result['skipped'] = True
+            result['msg'] = "User '{0}' already exists.".format(module.params['name'])
+            module.exit_json(**result)
+        else:
+            userid = newuser
+    else:
+        if userid is None:
+            if module.params['command'] == "delete":
+                result['skipped'] = True
+                result['msg'] = "User '{0}' does not exist.".format(module.params['name'])
+                module.exit_json(**result)
+            else:
+                result['msg'] = "Requested user '{0}' could not be found.".format(module.params['name'])
+                result['status'] = 20
+                module.fail_json(**result)
+
+    return userid
+
+
 def setup_user_commandlist(cmdlist, ctype, scci_map, user_id):
     body = scci_body_start
     data = ""
@@ -627,7 +638,7 @@ def set_default(data):
 
 
 def setup_resultdata(data):
-    result = {
+    resultdata = {
         'name': data['name'],
         'id': data['id'],
         # 'password': data['password'],
@@ -668,7 +679,7 @@ def setup_resultdata(data):
         'alert_memory': alerts.get(data['alert_memory']),
         'alert_others': alerts.get(data['alert_others']),
     }
-    return result
+    return resultdata
 
 
 def main():

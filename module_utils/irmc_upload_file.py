@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -10,17 +8,31 @@ from builtins import str
 
 import ntpath
 import traceback
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.adapters import HTTPAdapter
-import urllib3
-from urllib3.util.retry import Retry
-from urllib3.exceptions import InsecureRequestWarning
-from requests_toolbelt import MultipartEncoder
-urllib3.disable_warnings(InsecureRequestWarning)
+
+try:
+    import requests
+    from requests.auth import HTTPBasicAuth
+    from requests.adapters import HTTPAdapter
+    import urllib3
+    from urllib3.util.retry import Retry
+    from urllib3.exceptions import InsecureRequestWarning
+    urllib3.disable_warnings(InsecureRequestWarning)
+    HAS_REQUESTS = True
+except:
+    HAS_REQUESTS = False
+try:
+    from requests_toolbelt import MultipartEncoder
+    HAS_REQUESTS_TOOLBELT = True
+except:
+    HAS_REQUESTS_TOOLBELT = False
 
 
 def irmc_redfish_post_file(module, uri, filename):
+    if not HAS_REQUESTS:
+        return 90, "Python 'requests' module not found.", "iRMC module requires 'requests' module"
+    if not HAS_REQUESTS_TOOLBELT:
+        return 91, "Python 'requests_toolbelt' module not found.", "iRMC module requires 'requests_toolbelt' module"
+
     try:
         filedata = open(filename, 'rb')
     except Exception as e:

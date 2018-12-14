@@ -48,3 +48,19 @@
 # irmc_sysconfig_file: "./SystemConfig.json"
 # irmc_hwconfig_file: "./HWConfiguration.json"
 
+# elcm_server: "https://support.ts.fujitsu.com"
+# elcm_catalog: "DownloadManager/globalflash/GF_par_tree.exe"
+# elcm_use_proxy: false
+# elcm_proxy_url: "http://proxy.local"
+# elcm_proxy_port: "8080"
+# elcm_proxy_user: "user"
+# elcm_proxy_password: "password"
+# elcm_component: "PrimSupportPack-Win"
+# elcm_subcomponent: "FSC_SCAN"
+# elcm_skip_hcl_verify: true
+
+# adapter: 0
+# array_all: -1
+# array: 0
+# level: 1
+# name: "TestRaid"

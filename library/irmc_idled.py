@@ -22,13 +22,13 @@ short_description: get or set server ID LED
 
 description:
     - Ansible module to get or set server ID LED via iRMC RedFish interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # FUJITSU LIMITED
 # Copyright 2018 FUJITSU LIMITED
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -10,10 +8,15 @@ from builtins import str
 
 import traceback
 from xml.etree import cElementTree as ElementTree
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+
+try:
+    import requests
+    from requests.auth import HTTPBasicAuth
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+    HAS_REQUESTS = True
+except:
+    HAS_REQUESTS = False
 
 
 scci_body_start = """<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ>\n"""
@@ -167,6 +170,9 @@ def get_scciresultlist(resultlist, sccidata, scci_map):
 
 def irmc_scci_post(module, body):
     ''' Post a SCCI command at iRMC config URI. '''
+    if not HAS_REQUESTS:
+        return 90, "Python 'requests' module not found.", "iRMC module requires 'requests' Module"
+
     try:
         ElementTree.fromstring(body)
     except Exception as e:
@@ -204,6 +210,9 @@ def irmc_scci_post(module, body):
 
 
 def irmc_scci_update(module, update_url):
+    if not HAS_REQUESTS:
+        return 90, "Python 'requests' module not found.", "iRMC module requires 'requests' Module"
+
     session = requests.Session()
     retries = Retry(total=5, backoff_factor=0.1)
     session.mount('http://', HTTPAdapter(max_retries=retries))

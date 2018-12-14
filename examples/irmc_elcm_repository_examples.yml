@@ -1,0 +1,51 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook for module 'irmc_elcm_repository'
+# to configure the eLCM repostory in iRMC
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_elcm_repository - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: false
+
+  tasks:
+    # Get eLCM repository data
+    - name: Get eLCM repository data
+      irmc_elcm_repository:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      delegate_to: localhost
+    
+    # Set eLCM repository data
+    - name: Set eLCM repository data
+      irmc_elcm_repository:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        server: "{{ elcm_server }}"
+        catalog: "{{ elcm_catalog }}"
+        use_proxy: "{{ elcm_use_proxy }}"
+        proxy_url: "{{ elcm_proxy_url }}"
+        proxy_port: "{{ elcm_proxy_port }}"
+        proxy_user: "{{ elcm_proxy_user }}"
+        proxy_password: "{{ elcm_proxy_password }}"
+        wait_for_finish: true

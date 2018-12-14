@@ -3,13 +3,13 @@
 # Copyright 2018 FUJITSU LIMITED
 # GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-# example playbook for module 'irmc_fwbios_update'
-# to update iRMC Firmware or server BIOS
+# example playbook for module 'irmc_raid'
+# to handle iRMC RAID
 
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_fwbios_update - usage examples
+- name: irmc_raid - usage examples
   connection: local
   hosts: iRMC_group
 
@@ -23,45 +23,41 @@
   gather_facts: false
 
   tasks:
-    # Get irmc firmware and BIOS update settings
-    - name: Get irmc firmware and BIOS update settings
-      irmc_fwbios_update:
+    # Get RAID configuration
+    - name: Get RAID configuration
+      irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
         command: "get"
-      register: fw_settings
+      register: raid
       delegate_to: localhost
-    - name: Show irmc firmware and BIOS update settings
+    - name: Show RAID configuration
       debug:
-        msg: "{{ fw_settings.fw_update_configuration }}"
+        msg: "{{ raid.configuration }}"
     
-    # Update server BIOS from local file
-    - name: Update server BIOS from local file
-      irmc_fwbios_update:
+    # Create RAID array
+    - name: Create RAID array
+      irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
-        command: "update"
-        update_source: "file"
-        update_type: "bios"
-        file_name: "{{ bios_filename }}"
+        command: "create"
+        adapter: "{{ adapter }}"
+        level: "{{ level }}"
+        name: "{{ name }}"
       delegate_to: localhost
     
-    # Update iRMC FW via TFTP
-    - name: Update iRMC FW via TFTP
-      irmc_fwbios_update:
+    # Delete RAID array
+    - name: Delete RAID array
+      irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
-        command: "update"
-        update_source: "tftp"
-        update_type: "irmc"
-        server_name: "{{ tftp_server }}"
-        file_name: "{{ irmc_filename }}"
-        irmc_flash_selector: "Auto"
-        irmc_boot_selector: "Auto"
+        command: "delete"
+        adapter: "{{ adapter }}"
+        array: "{{ array }}"
       delegate_to: localhost

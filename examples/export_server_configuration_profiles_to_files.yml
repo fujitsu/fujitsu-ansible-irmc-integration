@@ -58,9 +58,9 @@
     # Write iRMC Profiles to file
     - name: Write SystemConfig profile
       copy:
-        content: "{{ system_config.ldap }}"
+        content: "{{ system_config.profile }}"
         dest: "{{ irmc_sysconfig_file }}"
     - name: Write HWConfigurationIrmc profile
       copy:
-        content: "{{ hardware_config.ldap }}"
+        content: "{{ hardware_config.profile }}"
         dest: "{{ irmc_hwconfig_file }}"

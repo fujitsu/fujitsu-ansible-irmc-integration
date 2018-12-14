@@ -22,12 +22,12 @@ short_description: execute iRMC remote SCCI commands
 
 description:
     - Ansible module to execute iRMC Remote Scripting (SCCI) commands.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 

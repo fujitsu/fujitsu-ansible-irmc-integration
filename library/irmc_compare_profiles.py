@@ -22,7 +22,7 @@ short_description: compare two iRMC profiles
 
 description:
     - Ansible module to compare two iRMC profiles.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.

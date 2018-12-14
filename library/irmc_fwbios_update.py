@@ -23,14 +23,13 @@ short_description: update iRMC Firmware or server BIOS
 description:
     - Ansible module to get current iRMC update settings or update iRMC Firmware or BIOS via iRMC RedFish interface.
     - BIOS or firmware flash can be initiated from TFTP server or local file.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
-    - python module 'requests_toolbelt'
+    - Python modules 'future', 'requests', 'urllib3', 'requests_toolbelt'
 
 version_added: "2.4"
 
@@ -68,6 +67,10 @@ options:
         description: Whether to update iRMC FW or server BIOS.
         required:    false
         choices:     ['irmc', 'bios']
+    timeout:
+        description: Timeout for BIOS/iRMC FW flash process in minutes.
+        required:    false
+        default:     30
     server_name:
         description: TFTP server name or IP.
                      ignored if update_source is set to 'file'
@@ -118,7 +121,7 @@ EXAMPLES = '''
     file_name: "{{ bios_filename }}"
   delegate_to: localhost
 
-# Update iRMC FW
+# Update iRMC FW via TFTP
 - name: Update iRMC FW via TFTP
   irmc_fwbios_update:
     irmc_url: "{{ inventory_hostname }}"
@@ -220,7 +223,7 @@ import time
 from datetime import datetime
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, irmc_redfish_patch, get_irmc_json
+from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_patch, irmc_redfish_post, get_irmc_json
 from ansible.module_utils.irmc_upload_file import irmc_redfish_post_file
 
 
@@ -322,9 +325,6 @@ def preliminary_parameter_check(module):
                 module.exit_json(**result)
 
 
-# irmc: A BIOS firmware update has been started. A system reboot is required to continue with the update.
-# Status: FlashImageDownloadedSuccessfully (0% / 33%) [Running]
-# Status:  (0% / 0%) [Pending]
 def wait_for_update_to_finish(module, location, power_state):
     rebootDone = None
     start_time = time.time()
@@ -333,8 +333,8 @@ def wait_for_update_to_finish(module, location, power_state):
         elapsed_time = time.time() - start_time
         # make sure the module does not get stuck if anything goes wrong
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        if elapsed_time > 30 * 60:
-            msg = "Timeout of 30 minutes exceeded. Abort."
+        if elapsed_time > module.params['timeout'] * 60:
+            msg = "Timeout of {0} minutes exceeded. Abort.".format(module.params['timeout'])
             module.fail_json(msg=msg, status=20)
 
         status, sdata, msg = irmc_redfish_get(module, "{0}".format(location[1:]))
@@ -360,8 +360,6 @@ def wait_for_update_to_finish(module, location, power_state):
         if "Key" in get_irmc_json(sdata.json(), "error"):
             rebootDone = False
             oemstate = get_irmc_json(sdata.json(), ["Oem", "ts_fujitsu", "StatusOEM"])
-            state_progress = get_irmc_json(sdata.json(), ["Oem", "ts_fujitsu", "StateProgressPercent"])
-            overall_progress = get_irmc_json(sdata.json(), ["Oem", "ts_fujitsu", "TotalProgressPercent"])
             state = get_irmc_json(sdata.json(), "TaskState")
             # make sure the process ran through
             if power_state == "On" and oemstate == "Pending":
@@ -456,6 +454,7 @@ def main():
         ignore_power_on=dict(required=False, type="bool", default=False),
         update_source=dict(required=False, type="str", choices=['tftp', 'file']),
         update_type=dict(required=False, type="str", choices=['irmc', 'bios']),
+        timeout=dict(required=False, type="int", default=30),
         server_name=dict(required=False, type="str"),
         file_name=dict(required=False, type="str"),
         irmc_flash_selector=dict(required=False, type="str", choices=['Auto', 'LowFWImage', 'HighFWImage']),

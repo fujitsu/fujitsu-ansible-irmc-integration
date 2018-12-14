@@ -22,12 +22,12 @@ short_description: manage iRMC LDAP settings
 
 description:
     - Ansible module to manage iRMC LDAP settings via iRMC remote scripting interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 

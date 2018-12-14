@@ -22,13 +22,13 @@ short_description: set iRMC Virtual Media Data
 
 description:
     - Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -125,7 +125,7 @@ def irmc_setvirtualmedia(module):
         result['msg'] = "module was not run"
         module.exit_json(**result)
 
-    vmparams, count = setup_datadict(module)
+    vmparams, status = setup_datadict(module)
 
     # Get iRMC Virtual Media data
     status, vmdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/VirtualMedia/")

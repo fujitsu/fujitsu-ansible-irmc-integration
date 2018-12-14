@@ -22,13 +22,13 @@ short_description: handle iRMC sessions
 
 description:
     - Ansible module to handle iRMC sessions via Restful API.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -169,15 +169,13 @@ def irmc_session(module):
         module.exit_json(**result)
 
     # preliminary parameter check
-    if (module.params['command'] in ("get", "remove", "terminate")) and module.params['id'] is None:
-        result['msg'] = "Command '{0}' requires 'id' parameter to be set!".format(module.params['command'])
-        result['status'] = 10
-        module.fail_json(**result)
+    preliminary_parameter_check(module)
 
     sessions = get_irmc_sessions(module)
     if module.params['command'] == "list":
         result['sessions'] = {}
     id_found = 0
+
     for key, session in sessions.items():
         for item in session:
             if module.params['command'] == "clearall":
@@ -209,6 +207,13 @@ def irmc_session(module):
             result['skipped'] = True
 
     module.exit_json(**result)
+
+
+def preliminary_parameter_check(module):
+    if (module.params['command'] in ("get", "remove", "terminate")) and module.params['id'] is None:
+        result['msg'] = "Command '{0}' requires 'id' parameter to be set!".format(module.params['command'])
+        result['status'] = 10
+        module.fail_json(**result)
 
 
 def get_irmc_sessions(module):

@@ -22,14 +22,14 @@ Fujitsu PRIMERGY servers via iRMC.
 These modules and examples are intended to provide easy-to-follow and understandable solutions to manage
 Fujitsu PRIMERY server settings via iRMC.
 
-##### Version: V1.1
+##### Version: V1.2
 
 ## Requirements
 
 - Fujitsu PRIMERGY Server with iRMC S4 FW >= 9.04 or iRMC S5 FW >= 1.25
-- Ansible >= 2.1
+- Ansible >= 2.4
 - Python >= 2.6
-- Python module 'future'
+- Python modules 'future', 'requests', 'urllib3', 'requests_toolbelt'
 
 ## Getting started
 
@@ -133,6 +133,7 @@ bare-metal-server provisioning tasks:
 
 * V1.0: Initial version
 * V1.1: New: iRMC FW/BIOS update, BIOS boot order, iRMC profile management
+* V1.2: New: eLCM Offline/Online Update, RAID configuration
 
 ## License
 

@@ -22,12 +22,12 @@ short_description: manage iRMC certificates
 
 description:
     - Ansible module to manage iRMC certificates via iRMC remote scripting interface.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -131,11 +131,14 @@ param_scci_map = [
 ]
 
 
+# Global
+result = dict()
+
+
 def irmc_certificate(module):
-    result = dict(
-        changed=False,
-        status=0
-    )
+    # initialize result
+    result['changed'] = False
+    result['status'] = 0
 
     if module.check_mode:
         result['msg'] = "module was not run"
@@ -145,17 +148,7 @@ def irmc_certificate(module):
 
     # parameter check
     if module.params['command'] == "set":
-        if setparam_count == 0:
-            result['msg'] = "Command 'set' requires at least one parameter to be set!"
-            result['status'] = 10
-            module.fail_json(**result)
-
-        if certdata['private_key_path'] is not None and certdata['ssl_cert_path'] is None or \
-           certdata['ssl_cert_path'] is not None and certdata['private_key_path'] is None:
-            result['msg'] = "Both 'private_key_path' and 'ssl_cert_path' are required to successfully " + \
-                            "import SSL key pair!"
-            result['status'] = 11
-            module.fail_json(**result)
+        check_parameters(module, certdata, setparam_count)
 
         certdata, status, msg = read_keyfile(certdata, 'private_key_path')
         if status != 0:
@@ -192,19 +185,33 @@ def irmc_certificate(module):
     module.exit_json(**result)
 
 
+def check_parameters(module, certdata, setparam_count):
+    if setparam_count == 0:
+        result['msg'] = "Command 'set' requires at least one parameter to be set!"
+        result['status'] = 10
+        module.fail_json(**result)
+
+    if certdata['private_key_path'] is not None and certdata['ssl_cert_path'] is None or \
+       certdata['ssl_cert_path'] is not None and certdata['private_key_path'] is None:
+        result['msg'] = "Both 'private_key_path' and 'ssl_cert_path' are required to successfully " + \
+                        "import SSL key pair!"
+        result['status'] = 11
+        module.fail_json(**result)
+
+
 def read_keyfile(data, param):
     context = cert = ""
-    result = 0
+    retcode = 0
     if data[param] != "":
         try:
             f = open(data[param], 'r')
             cert = f.read()
         except Exception as e:
-            result = 89
+            retcode = 89
             context = "Could not read key/certificate file at '{0}': {1}".format(data[param], str(e))
         data[param] = cert
 
-    return data, result, context
+    return data, retcode, context
 
 
 def setup_resultdata(data):

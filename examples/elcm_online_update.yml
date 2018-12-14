@@ -1,0 +1,98 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook to online update a PRIMERGY server via eLCM
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+# Notes:
+#    - iRMC needs to be supplied with an eLCM License
+#    - iRMC needs to be supplied with an eLCM SD-Card
+
+- name: online update a PRIMERGY server via eLCM
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+    # elcm_server: "https://support.ts.fujitsu.com"
+    # elcm_catalog: "DownloadManager/globalflash/GF_par_tree.exe"
+    # elcm_use_proxy: false
+    # elcm_proxy_url: "http://proxy.local"
+    # elcm_proxy_port: "8080"
+    # elcm_proxy_user: "user"
+    # elcm_proxy_password: "password"
+    # elcm_component: "PrimSupportPack-Win"
+    # elcm_subcomponent: "FSC_SCAN"
+    # elcm_skip_hcl_verify: true
+
+  gather_facts: false
+
+  tasks:
+    - name: Get system power state
+      irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: powerstate
+      delegate_to: localhost
+
+    - name: Check that server is 'On'
+      fail:
+        msg: "Cannot continue, server is 'Off'"
+      when: powerstate.power_state=="Off"
+
+    - name: Configure eLCM Update Repository
+      irmc_elcm_repository:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        server: "{{ elcm_server }}"
+        catalog: "{{ elcm_catalog }}"
+        use_proxy: "{{ elcm_use_proxy }}"
+        proxy_url: "{{ elcm_proxy_url }}"
+        proxy_port: "{{ elcm_proxy_port }}"
+        proxy_user: "{{ elcm_proxy_user }}"
+        proxy_password: "{{ elcm_proxy_password }}"
+      delegate_to: localhost
+
+    - name: Generate eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "check"
+        skip_hcl_verify: "{{ elcm_skip_hcl_verify }}"
+        wait_for_finish: true
+      delegate_to: localhost
+
+    - name: Execute eLCM Online Update
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "execute"
+        wait_for_finish: true
+      delegate_to: localhost
+
+    - name: Delete eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "delete"
+      delegate_to: localhost

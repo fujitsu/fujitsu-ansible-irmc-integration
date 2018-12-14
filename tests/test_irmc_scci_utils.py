@@ -272,7 +272,7 @@ class TestIrmcScciUtils(unittest.TestCase):
         sccidata, scciresult, sccicontext = \
             irmc_scci_utils.get_scciresultlist(sccireturndata, self.userdata, self.param_scci_map)
         self.assertEqual(status * 2, scciresult)
-        self.assertIn("OpCodeExt 0x{0}: {1} ({2})\n".format(format(opcode1, 'X'), datastr, status) +
+        self.assertIn("OpCodeExt 0x{0}: {1} ({2})\n".format(format(opcode1, 'X'), datastr, status) + \
                       "OpCodeExt 0x{0}: {1} ({2})".format(format(opcode2, 'X'), dataint, status), sccicontext)
         self.assertEqual(datastr, sccidata['description'])
         self.assertEqual(dataint, sccidata['enabled'])

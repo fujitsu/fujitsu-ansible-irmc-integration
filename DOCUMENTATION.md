@@ -7,6 +7,9 @@
   * [irmc_certificate - manage iRMC certificates](#irmc_certificate)
   * [irmc_compare_profiles - compare two iRMC profiles](#irmc_compare_profiles)
   * [irmc_connectvm - connect iRMC Virtual Media Data](#irmc_connectvm)
+  * [irmc_elcm_offline_update - offline update a server via iRMC](#irmc_elcm_offline_update)
+  * [irmc_elcm_online_update - online update a server via iRMC](#irmc_elcm_online_update)
+  * [irmc_elcm_repository - configure the eLCM repostory in iRMC](#irmc_elcm_repository)
   * [irmc_eventlog - handle iRMC eventlogs](#irmc_eventlog)
   * [irmc_facts - get or set PRIMERGY server and iRMC facts](#irmc_facts)
   * [irmc_fwbios_update - update iRMC Firmware or server BIOS](#irmc_fwbios_update)
@@ -17,6 +20,7 @@
   * [irmc_ntp - manage iRMC time options](#irmc_ntp)
   * [irmc_powerstate - get or set server power state](#irmc_powerstate)
   * [irmc_profiles - handle iRMC profiles](#irmc_profiles)
+  * [irmc_raid - handle iRMC RAID](#irmc_raid)
   * [irmc_scci - execute iRMC remote SCCI commands](#irmc_scci)
   * [irmc_session - handle iRMC sessions](#irmc_session)
   * [irmc_setnextboot - configure iRMC to force next boot to specified option](#irmc_setnextboot)
@@ -31,14 +35,14 @@
 * Ansible module to configure the BIOS boot oder via iRMC.
 * Using this module will force server into several reboots.
 * The module will abort by default if the PRIMERGY server is powered on.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * The PRIMERGY server needs to be at least a M2 model.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -104,12 +108,12 @@ Default return values
 
 #### Description
 * Ansible module to manage iRMC CAS settings via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -199,12 +203,12 @@ Default return values
 
 #### Description
 * Ansible module to manage iRMC certificates via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -272,7 +276,7 @@ Default return values
 
 #### Description
 * Ansible module to compare two iRMC profiles.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
@@ -312,13 +316,13 @@ Default return values
 
 #### Description
 * Ansible module to connect iRMC Virtual Media Data via the iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -363,17 +367,276 @@ Default return values
 - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
+### irmc_elcm_offline_update
+
+#### Description
+* Ansible module to offline update a server via iRMC.
+* Using this module may force the server into reboot.
+* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
+* Module Version V1.2.
+
+#### Requirements
+  * The module needs to run locally.
+  * eLCM needs to be licensed in iRMC.
+  * eLCM SD card needs to be mounted.
+  * The PRIMERGY server needs to be at least a M2 model.
+  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+  * The module assumes that the Update Repository is set correctly in iRMC.
+  * Python >= 2.6
+  * Python modules 'future', 'requests', 'urllib3'
+
+#### Options
+
+| Parameter | Required | Default | Choices | Description |
+|:----------|:---------|:--------|:--------|:----------- |
+| command  |  No  |  | prepare<br/> execute<br/>  | How to handle iRMC eLCM Offline Update. |
+| ignore_power_on  |  No  |  False  | | Ignore that server is powered on. Server will reboot during update process. Only valid for option 'execute'. |
+| irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
+| irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
+| irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
+| skip_hcl_verify  |  No  |  False  | | For VMware OS the Hardware Compatibility List (HCL) verification will be skipped and updates will be offered regardless of their compatibility with the current VMware OS version. Irrelevant for other OS. |
+| validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
+| wait_for_finish  |  No  |  True  | | Wait for session to finish. |
+
+#### Examples
+```yaml
+# Prepare eLCM Offline Update
+- name: Prepare eLCM Offline Update
+  irmc_elcm_offline_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "prepare"
+    skip_hcl_verify: "{{ elcm_skip_hcl_verify }}"
+    ignore_power_on: false
+  delegate_to: localhost
+
+# Execute eLCM Offline Update
+- name: Execute eLCM Offline Update
+  irmc_elcm_offline_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "execute"
+    ignore_power_on: false
+    wait_for_finish: true
+```
+
+#### Return Values
+
+| Name | Description | Returned | Type | Example |
+|:-----|:------------|:---------|:-----|:--------|
+| For all commands |  |  |  |  |
+
+#### Notes
+
+- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
+- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+
+---
+### irmc_elcm_online_update
+
+#### Description
+* Ansible module to online update a server via iRMC.
+* Using this module may force the server into reboot.
+* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
+* PRIMERGY servers running ESXi are not capable of eLCM Online Update due to missing agent. Please run eLCM Offline Update on ESXi servers.
+* Module Version V1.2.
+
+#### Requirements
+  * The module needs to run locally.
+  * eLCM needs to be licensed in iRMC.
+  * eLCM SD card needs to be mounted.
+  * The PRIMERGY server needs to be at least a M2 model.
+  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+  * The module assumes that the Update Repository is set correctly in iRMC.
+  * Python >= 2.6
+  * Python modules 'future', 'requests', 'urllib3'
+
+#### Options
+
+| Parameter | Required | Default | Choices | Description |
+|:----------|:---------|:--------|:--------|:----------- |
+| command  |  No  |  | get<br/> set<br/> check<br/> execute<br/> delete<br/>  | How to handle iRMC eLCM Online Update. |
+| component  |  No  |  | | Component whose execution selection is to be changed. |
+| irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
+| irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
+| irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
+| select  |  No  |  | | Execution selection for specified component/subcomponent. |
+| skip_hcl_verify  |  No  |  False  | | For VMware OS the Hardware Compatibility List (HCL) verification will be skipped and updates will be offered regardless of their compatibility with the current VMware OS version. Irrelevant for other OS. |
+| subcomponent  |  No  |  | | Subcomponent whose execution selection is to be changed. |
+| validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
+| wait_for_finish  |  No  |  True  | | Wait for session to finish. |
+
+#### Examples
+```yaml
+# Generate eLCM Online Update List
+- name: Generate eLCM Online Update List
+  irmc_elcm_online_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "check"
+    skip_hcl_verify: "{{ elcm_skip_hcl_verify }}"
+    wait_for_finish: true
+  delegate_to: localhost
+
+# Read eLCM Online Update List
+- name: Read eLCM Online Update List
+  irmc_elcm_online_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "get"
+  delegate_to: localhost
+
+# De-select entry in eLCM Online Update List
+- name: De-select entry in eLCM Online Update List
+  irmc_elcm_online_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    component: "{{ elcm_component }}"
+    subcomponent: "{{ elcm_subcomponent }}"
+    select: false
+    wait_for_finish: true
+  delegate_to: localhost
+
+# Execute eLCM Online Update
+- name: Execute eLCM Online Update
+  irmc_elcm_online_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "execute"
+    wait_for_finish: true
+
+# Delete eLCM Online Update List
+- name: Delete eLCM Online Update List
+  irmc_elcm_online_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "delete"
+  delegate_to: localhost
+```
+
+#### Return Values
+
+**online update collection returned for command "get":**
+
+| Name | Description | Returned | Type | Example |
+|:-----|:------------|:---------|:-----|:--------|
+| update_collection | list of components which require update with specific data (component, subcomponent, status, severity, selected, reboot, current, new) | always | dict |  |
+
+**For all other commands:**
+
+Default return values
+
+#### Notes
+
+- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
+- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+
+---
+### irmc_elcm_repository
+
+#### Description
+* Ansible module to configure the eLCM repostory in iRMC.
+* iRMC tests access to specified repository and refuses to accept data in case of failure.
+* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
+* Module Version V1.2.
+
+#### Requirements
+  * The module needs to run locally.
+  * The PRIMERGY server needs to be at least a M2 model.
+  * eLCM needs to be licensed in iRMC.
+  * eLCM SD card needs to be mounted.
+  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+  * Python >= 2.6
+  * Python modules 'future', 'requests', 'urllib3'
+
+#### Options
+
+| Parameter | Required | Default | Choices | Description |
+|:----------|:---------|:--------|:--------|:----------- |
+| catalog  |  No  |  | | Path to eLCM Update Repository on server. Needs to be set together with 'server'. |
+| command  |  No  |  get  | get<br/> set<br/>  | How to handle iRMC eLCM respository data. |
+| irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
+| irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
+| irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
+| proxy_password  |  No  |  | | Proxy password to access eLCM Update Repository. |
+| proxy_port  |  No  |  | | Proxy port to access eLCM Update Repository. |
+| proxy_url  |  No  |  | | Proxy server to access eLCM Update Repository. |
+| proxy_user  |  No  |  | | Proxy user to access eLCM Update Repository. |
+| server  |  No  |  | | Server where eLCM Update Repository is located. Needs to be set together with 'catalog'. |
+| use_proxy  |  No  |  | | Whether to use proxy to access eLCM Update Repository. |
+| validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
+| wait_for_finish  |  No  |  True  | | Wait for session to finish. |
+
+#### Examples
+```yaml
+# Get eLCM repository data
+- name: Get eLCM repository data
+  irmc_elcm_repository:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "get"
+  delegate_to: localhost
+
+# Set eLCM repository data
+- name: Set eLCM repository data
+  irmc_elcm_repository:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    server: "{{ elcm_server }}"
+    catalog: "{{ elcm_catalog }}"
+    use_proxy: "{{ elcm_use_proxy }}"
+    proxy_url: "{{ elcm_proxy_url }}"
+    proxy_port: "{{ elcm_proxy_port }}"
+    proxy_user: "{{ elcm_proxy_user }}"
+    proxy_password: "{{ elcm_proxy_password }}"
+    wait_for_finish: true
+```
+
+#### Return Values
+
+**eLCM data returned for command "get":**
+
+| Name | Description | Returned | Type | Example |
+|:-----|:------------|:---------|:-----|:--------|
+| repository | eLCM repository data | always | dict |  |
+
+#### Notes
+
+- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
+- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+
+---
 ### irmc_eventlog
 
 #### Description
 * Ansible module to handle iRMC eventlogs via Restful API.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -446,20 +709,20 @@ Default return values
 
 #### Description
 * Ansible module to get or set basic iRMC and PRIMERGY server data via iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
 | asset_tag  |  No  |  | | Server asset tag. |
-| command  |  No  |  get  | get<br/> set<br/>  | Get or set server facts. |
+| command  |  No  |  get  | get<br/> set<br/>  | How to access server facts. |
 | contact  |  No  |  | | System contact. |
 | description  |  No  |  | | Server description. |
 | helpdesk_message  |  No  |  | | Help desk message. |
@@ -499,7 +762,7 @@ Default return values
 
 #### Return Values
 
-**facts returned by command "get":**
+**facts returned by "get":**
 
 | Name | Description | Returned | Type | Example |
 |:-----|:------------|:---------|:-----|:--------|
@@ -528,14 +791,13 @@ Default return values
 #### Description
 * Ansible module to get current iRMC update settings or update iRMC Firmware or BIOS via iRMC RedFish interface.
 * BIOS or firmware flash can be initiated from TFTP server or local file.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
-  * python module 'requests_toolbelt'
+  * Python modules 'future', 'requests', 'urllib3', 'requests_toolbelt'
 
 #### Options
 
@@ -550,6 +812,7 @@ Default return values
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | server_name  |  No  |  | | TFTP server name or IP. ignored if update_source is set to 'file' |
+| timeout  |  No  |  30  | | Timeout for BIOS/iRMC FW flash process in minutes. |
 | update_source  |  No  |  | tftp<br/> file<br/>  | Where to get the FW or BIOS update file. |
 | update_type  |  No  |  | irmc<br/> bios<br/>  | Whether to update iRMC FW or server BIOS. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
@@ -583,7 +846,7 @@ Default return values
     file_name: "{{ bios_filename }}"
   delegate_to: localhost
 
-# Update iRMC FW
+# Update iRMC FW via TFTP
 - name: Update iRMC FW via TFTP
   irmc_fwbios_update:
     irmc_url: "{{ inventory_hostname }}"
@@ -635,13 +898,13 @@ Default return values
 
 #### Description
 * Ansible module to get iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -698,13 +961,13 @@ Default return values
 
 #### Description
 * Ansible module to get or set server ID LED via iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -767,12 +1030,12 @@ Default return values
 
 #### Description
 * Ansible module to manage iRMC LDAP settings via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -883,12 +1146,12 @@ Default return values
 
 #### Description
 * Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -952,12 +1215,12 @@ Default return values
 
 #### Description
 * Ansible module to manage iRMC time options via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1028,13 +1291,13 @@ Default return values
 
 #### Description
 * Ansible module to get or set server power state via iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1099,14 +1362,14 @@ Default return values
 * Ansible module to configure the BIOS boot oder via iRMC.
 * Using this module may force server into several reboots.
 * See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * The PRIMERGY server needs to be at least a M2 model.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1172,16 +1435,108 @@ Default return values
 - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
+### irmc_raid
+
+#### Description
+* Ansible module to configure a PRIMERGY server's RAID via iRMC.
+* Using this module may force the server into several reboots.
+* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
+* Module Version V1.2.
+
+#### Requirements
+  * The module needs to run locally.
+  * The PRIMERGY server needs to be at least a M2 model.
+  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+  * Python >= 2.6
+  * Python modules 'future', 'requests', 'urllib3'
+
+#### Options
+
+| Parameter | Required | Default | Choices | Description |
+|:----------|:---------|:--------|:--------|:----------- |
+| adapter  |  No  |  | | The logical number of the adapter to create/delete RAID arrays on/from. |
+| array  |  No  |  | | The logical number of the RAID array to delete. Use -1 for all arrays. Ignored for 'create'. |
+| command  |  No  |  get  | get<br/> create<br/> delete<br/>  | How to handle iRMC RAID. |
+| irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
+| irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
+| irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
+| level  |  No  |  | | Raid level of array to be created. Ignored for 'delete'. |
+| name  |  No  |  | | Name of the array to be created. Ignored for 'delete'. |
+| validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
+| wait_for_finish  |  No  |  True  | | Wait for raid session to finish. |
+
+#### Examples
+```yaml
+# Get RAID configuration
+- name: Get RAID configuration
+  irmc_raid:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "get"
+  register: raid
+  delegate_to: localhost
+- name: Show RAID configuration
+  debug:
+    msg: "{{ raid.configuration }}"
+
+# Create RAID array
+- name: Create RAID array
+  irmc_raid:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "create"
+    adapter: "{{ adapter }}"
+    level: "{{ level }}"
+    name: "{{ name }}"
+  delegate_to: localhost
+
+# Delete RAID array
+- name: Delete RAID array
+  irmc_raid:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "delete"
+    adapter: "{{ adapter }}"
+    array: "{{ array }}"
+  delegate_to: localhost
+```
+
+#### Return Values
+
+**data returned for command "get":**
+
+| Name | Description | Returned | Type | Example |
+|:-----|:------------|:---------|:-----|:--------|
+| configuration | list of available RAID adapters with attached logical and physical disks | always | dict | [{u'raid_level': u'0,1,5,6,10,50,60', u'logical_drives': [{u'id': 0, u'disks': [{u'slot': 0, u'id': u'0', u'name': u'WDC WD5003ABYX-', u'size': u'465 GB'}, {u'slot': 1, u'id': u'1', u'name': u'WDC WD5003ABYX-', u'size': u'465 GB'}], u'raid_level': u'1', u'name': u'LogicalDrive_0'}, {u'id': 1, u'disks': [{u'slot': 2, u'id': u'2', u'name': u'WDC WD5003ABYX-', u'size': u'465 GB'}], u'raid_level': u'0', u'name': u'LogicalDrive_1'}], u'id': u'RAIDAdapter0', u'name': u'RAIDAdapter0', u'unused_disks': [{u'slot': 3, u'id': u'3', u'name': u'WDC WD5003ABYX-', u'size': u'465 GB'}]}] |
+
+**For all commands:**
+
+| Name | Description | Returned | Type | Example |
+|:-----|:------------|:---------|:-----|:--------|
+| log | detailed log data of RAID session | in case of error | dict | {u'SessionLog': {u'Tag': u'', u'WorkSequence': u'obtainProfileParameters', u'Id': 6, u'Entries': {u'Entry': [{u'@date': u'2018/11/09 09:39:19', u'#text': u"CreateSession: Session 'obtainProfile' created with id 6"}, {u'@date': u'2018/11/09 09:39:19', u'#text': u"AttachWorkSequence: Attached work sequence 'obtainProfileParameters' to session 6"}, {u'@date': u'2018/11/09 09:39:45', u'#text': u"ObtainProfileParameters: Finished processing of profile path 'Server/HWConfigurationIrmc/Adapters/RAIDAdapter' with status 'Error'"}, {u'@date': u'2018/11/09 09:39:45', u'#text': u"TerminateSession: 'obtainProfileParameters' is being terminated"}]}}} |
+
+#### Notes
+
+- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
+- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+
+---
 ### irmc_scci
 
 #### Description
 * Ansible module to execute iRMC Remote Scripting (SCCI) commands.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1248,13 +1603,13 @@ Default return values
 
 #### Description
 * Ansible module to handle iRMC sessions via Restful API.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1328,13 +1683,13 @@ Default return values
 
 #### Description
 * Ansible module to configure iRMC to force next boot to specified option.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1378,13 +1733,13 @@ Default return values
 
 #### Description
 * Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1435,13 +1790,13 @@ Default return values
 
 #### Description
 * Ansible module to handle iRMC tasks via Restful API.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1507,12 +1862,12 @@ List of individual task entries (see above)
 
 #### Description
 * Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-* Module Version V1.1.
+* Module Version V1.2.
 
 #### Requirements
   * The module needs to run locally.
   * Python >= 2.6
-  * Python module 'future'
+  * Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 

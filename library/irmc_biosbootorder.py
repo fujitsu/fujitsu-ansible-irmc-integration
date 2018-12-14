@@ -24,14 +24,14 @@ description:
     - Ansible module to configure the BIOS boot oder via iRMC.
     - Using this module will force server into several reboots.
     - The module will abort by default if the PRIMERGY server is powered on.
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - The PRIMERGY server needs to be at least a M2 model.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -161,8 +161,6 @@ def irmc_biosbootorder(module):
     # check that all iRMC Profile processing states are terminated
     waitForIrmcSessionsInactive(module)
 
-    # ToDo: Check that next_boot_device exists
-    # ToDo: Set *only* next_boot_device
     if module.params['command'] == "default":
         set_default_bootorder(module)
         result['changed'] = True
@@ -176,7 +174,7 @@ def irmc_biosbootorder(module):
     devices = get_irmc_json(boot_profile_data, ["Server", "SystemConfig", "BiosConfig", "BiosBootOrder", "Devices"])
 
     if module.params['command'] == "get":
-        for key, devicelist in devices.items():
+        for status, devicelist in devices.items():
             result['boot_order'] = []
             for device in devicelist:
                 bo = {}
@@ -259,7 +257,7 @@ def setup_new_boot_profile(module, profile):
     devices = get_irmc_json(new_profile, ["Server", "SystemConfig", "BiosConfig", "BiosBootOrder", "Devices"])
 
     new_bootorder = []
-    for key, devicelist in devices.items():
+    for msg, devicelist in devices.items():
         for item in devicelist:
             for ikey, value in item.items():
                 if ikey == module.params['boot_key'] and value == module.params['boot_device']:
@@ -360,7 +358,7 @@ def waitForIrmcSessionsInactive(module):
         module.fail_json(msg=msg, status=status)
 
     sessions = get_irmc_json(sessiondata.json(), ["SessionList"])
-    for key, session in sessions.items():
+    for status, session in sessions.items():
         for item in session:
             for ikey, value in item.items():
                 if ikey == "#text" and "Profile" in value:

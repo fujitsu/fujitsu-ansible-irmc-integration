@@ -1,0 +1,80 @@
+---
+# FUJITSU LIMITED
+# Copyright 2018 FUJITSU LIMITED
+# GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# example playbook for module 'irmc_elcm_online_update'
+# to online update a server via iRMC
+
+# variables not defined in this playbook are expected to be provided
+# elsewhere, e.g. in group_vars/all
+
+- name: irmc_elcm_online_update - usage examples
+  connection: local
+  hosts: iRMC_group
+
+  vars:
+    # iRMC login credentials
+    # irmc_user: "admin"
+    # irmc_password: "admin"
+    # Note: set validate_certificate to false for self-signed certificate
+    # validate_certificate: false
+
+  gather_facts: false
+
+  tasks:
+    # Generate eLCM Online Update List
+    - name: Generate eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "check"
+        skip_hcl_verify: "{{ elcm_skip_hcl_verify }}"
+        wait_for_finish: true
+      delegate_to: localhost
+    
+    # Read eLCM Online Update List
+    - name: Read eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      delegate_to: localhost
+    
+    # De-select entry in eLCM Online Update List
+    - name: De-select entry in eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        component: "{{ elcm_component }}"
+        subcomponent: "{{ elcm_subcomponent }}"
+        select: false
+        wait_for_finish: true
+      delegate_to: localhost
+    
+    # Execute eLCM Online Update
+    - name: Execute eLCM Online Update
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "execute"
+        wait_for_finish: true
+    
+    # Delete eLCM Online Update List
+    - name: Delete eLCM Online Update List
+      irmc_elcm_online_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "delete"
+      delegate_to: localhost

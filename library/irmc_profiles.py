@@ -24,14 +24,14 @@ description:
     - Ansible module to configure the BIOS boot oder via iRMC.
     - Using this module may force server into several reboots.
     - See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
-    - Module Version V1.1.
+    - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
     - The PRIMERGY server needs to be at least a M2 model.
     - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
-    - Python module 'future'
+    - Python modules 'future', 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -272,7 +272,7 @@ def list_profiles(module):
 
     result['profiles'] = {}
     for profile in get_irmc_json(sysdata.json(), ["Links", "profileStore"]):
-        for key, value in profile.items():
+        for status, value in profile.items():
             profile = {}
             profile['Name'] = value.replace("rest/v1/Oem/eLCM/ProfileManagement/", "")
             profile['Location'] = value

@@ -70,7 +70,7 @@ class TestIrmc(unittest.TestCase):
         status, data, msg = irmc.irmc_redfish_get(self.mod, "redfish_path")
         self.assertEqual(self.mockdata.status_code, status)
         self.assertEqual(self.mockdata.json.return_value, data.json.return_value)
-        self.assertEqual("GET request was not successful (" + self.url + ").", msg)
+        self.assertEqual("GET request was not successful (" + self.url + "), status " + str(status) + ".", msg)
 
     @patch.object(requests.Session, 'get')
     def test__irmc_redfish_get__bad_status_with_reason(self, get):
@@ -80,7 +80,8 @@ class TestIrmc(unittest.TestCase):
         status, data, msg = irmc.irmc_redfish_get(self.mod, "redfish_path")
         self.assertEqual(self.mockdata.status_code, status)
         self.assertEqual(self.mockdata.json.return_value, data.json.return_value)
-        self.assertEqual("GET request was not successful (" + self.url + "): " + self.mockdata.reason, msg)
+        self.assertEqual("GET request was not successful (" + self.url + "): status " + str(status) + \
+                         ", '" + self.mockdata.reason + "'", msg)
 
     @patch.object(requests.Session, 'get')
     def test__irmc_redfish_get__exception(self, get):
@@ -132,7 +133,7 @@ class TestIrmc(unittest.TestCase):
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), 12345)
         self.assertEqual(self.mockdata.status_code, status)
         self.assertEqual(self.mockdata.json.return_value, data.json.return_value)
-        self.assertEqual("PATCH request was not successful (" + self.url + ").", msg)
+        self.assertEqual("PATCH request was not successful (" + self.url + "), status " + str(status) + ".", msg)
 
     @patch.object(requests.Session, 'patch')
     def test__irmc_redfish_patch__bad_status_with_reason(self, patch):
@@ -142,7 +143,8 @@ class TestIrmc(unittest.TestCase):
         status, data, msg = irmc.irmc_redfish_patch(self.mod, "redfish_path", json.dumps({'Patch': 'mockpatch'}), 12345)
         self.assertEqual(self.mockdata.status_code, status)
         self.assertEqual(self.mockdata.json.return_value, data.json.return_value)
-        self.assertEqual("PATCH request was not successful (" + self.url + "): " + self.mockdata.reason, msg)
+        self.assertEqual("PATCH request was not successful (" + self.url + "): status " + str(status) + \
+                         ", '" + self.mockdata.reason + "'", msg)
 
     @patch.object(requests.Session, 'patch')
     def test__irmc_redfish_patch__bad_body(self, patch):
@@ -242,7 +244,7 @@ class TestIrmc(unittest.TestCase):
         requests.Session.get.return_value = self.mockdata
         self.mockdata.json.return_value = {'Session': {'Status': 'terminated with error'}}
         status, data, msg = irmc.waitForSessionToFinish(self.mod, 1)
-        self.assertEqual(self.mockdata.status_code, status)
+        self.assertEqual(29, status)
         self.assertEqual(self.mockdata.json.return_value, data)
         self.assertEqual("Session result: terminated with error", msg)
 
