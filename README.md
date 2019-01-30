@@ -138,7 +138,7 @@ bare-metal-server provisioning tasks:
 ## License
 
 FUJITSU LIMITED
-Copyright 2018 FUJITSU LIMITED
+Copyright 2018-2019 FUJITSU LIMITED
 
 GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 

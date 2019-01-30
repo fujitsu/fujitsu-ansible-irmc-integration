@@ -1045,7 +1045,7 @@ Default return values
 | alert_table_refresh  |  No  |  | | LDAP alert table refresh in hours (0 = never). |
 | always_use_ssl  |  No  |  | | Always use SSL login. |
 | append_base_to_user_dn  |  No  |  | | Append base DN to principal user DN. |
-| auth_type  |  No  |  | Automatic<br/> Stored on iRMC<br/> Stored on LDAP<br/>  | Authorization type. |
+| auth_type  |  No  |  | ServerView LDAP<br/> Standard LDAP<br/>  | Authorization type. |
 | backup_port  |  No  |  | | Non-SL port of backup LDAP server. |
 | backup_server  |  No  |  | | Backup LDAP server. |
 | backup_ssl_port  |  No  |  | | SSL port of backup LDAP server. |
@@ -1111,7 +1111,7 @@ Default return values
 | alert_table_refresh | LDAP alert table refresh in hours | always | string | 0 |
 | always_use_ssl | always use SSL login | always | bool | False |
 | append_base_to_user_dn | append base DN to principal user DN | always | bool | False |
-| auth_type | authorization type | always | string | Automatic |
+| auth_type | authorization type | always | string | ServerView LDAP |
 | backup_port | non-SL port of backup LDAP server | always | string | 389 |
 | backup_server | backup LDAP server | always | string | ldap_backup.local |
 | backup_ssl_port | SSL port of backup LDAP server | always | string | 636 |
