@@ -72,7 +72,7 @@ options:
     auth_type:
         description: Authorization type.
         required:    false
-        choices:     ['Automatic', 'Stored on iRMC', 'Stored on LDAP']
+        choices:     ['Stored on LDAP', 'Stored on iRMC']
     primary_server:
         description: Primary LDAP server.
         required:    false
@@ -190,7 +190,7 @@ RETURN = '''
         description: authorization type
         returned: always
         type: string
-        sample: Automatic
+        sample: Stored on LDAP
     backup_port:
         description: non-SL port of backup LDAP server
         returned: always
@@ -300,7 +300,7 @@ from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_p
 
 ldap_dir = {"0": "MS Active Directory", "1": "Novell eDirectory", "2": "Sun ePlanet", "3": "OpenLDAP",
             "4": "OpenDS / OpenDJ"}
-ldap_auth = {"0": "Automatic", "1": "Stored on iRMC", "2": "Stored on LDAP"}
+ldap_auth = {"0": "Stored on LDAP", "1": "Stored on iRMC"}
 true_false = {"0": "False", "1": "True"}
 param_scci_map = [
     # Param, SCCI Name, SCCI Code, index, value dict
@@ -309,7 +309,7 @@ param_scci_map = [
     ["local_login_disabled", "ConfBMCLDAPLocalLoginDisabled", 0x197B, 0, true_false],   # iRMC: Disable Local Login
     ["always_use_ssl", "ConfBMCLDAPBrowserLoginDisabled", 0x197C, 0, true_false],       # iRMC: always use SSL Login
     ["directory_type", "ConfBMCLDAPDirectoryType", 0x1974, 0, ldap_dir],                # iRMC: Directory Server Type
-    ["auth_type", "ConfBMCLdapPreferedMailServer", 0x1990, 0, ldap_auth],               # iRMC: Authorization Type
+    ["auth_type", "ConfLDAPAuthorizationType", 0x1AC0, 0, ldap_auth],               # iRMC: Authorization Type
     ["primary_server", "ConfBMCLDAPServerName", 0x1976, 0, None],                       # iRMC: Primary LDAP Server
     ["primary_port", "ConfBmcLDAPNonSecurePort", 0x1996, 0, None],                      # iRMC: Primary LDAP Port
     ["primary_ssl_port", "ConfBmcLDAPSecurePort", 0x1997, 0, None],                     # iRMC: Primary LDAP SSL Port
@@ -421,7 +421,7 @@ def main():
                             choices=["MS Active Directory", "Novell eDirectory", "Sun ePlanet", "OpenLDAP",
                                      "OpenDS / OpenDJ"]),
         auth_type=dict(required=False, type="str",
-                       choices=["Automatic", "Stored on iRMC", "Stored on LDAP"]),
+                       choices=["Stored on LDAP", "Stored on iRMC"]),
         primary_server=dict(required=False, type="str"),
         primary_port=dict(required=False, type="int"),
         primary_ssl_port=dict(required=False, type="int"),
