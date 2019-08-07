@@ -33,7 +33,7 @@ requirements:
 version_added: "2.4"
 
 author:
-    - Fujitsu Server PRIMERGY (@FujitsuPrimergy)
+    - Nakamura Takayuki (@nakamura-taka)
 
 options:
     profile_json1:

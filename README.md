@@ -31,6 +31,8 @@ Fujitsu PRIMERY server settings via iRMC.
 - Python >= 2.6
 - Python modules 'future', 'requests', 'urllib3', 'requests_toolbelt'
 
+The modules were tested on RHEL 6, RHEL 7, SLES 12, SLES 15.
+
 ## Getting started
 
 - Copy or clone the content of this repo to your playbook directory or to your
@@ -144,4 +146,4 @@ GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gn
 
 ## Authors
 
-* [Fujitsu Server PRIMERGY](http://github.com/FujitsuPrimergy)
+* [Nakamura Takayuki] (https://github.com/nakamura-taka)
