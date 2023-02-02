@@ -450,7 +450,7 @@ shell_type = {"0": "SMASH CLP", "1": "CLI", "2": "Remote Manager", "3": "IPMI ba
               "5": "No shell", "6": "No shell"}
 snmpv3_access = {"0": "ReadOnly", "1": "ReadWrite", "2": "Other"}
 snmpv3_auth = {"0": "Undefined", "1": "SHA", "2": "MD5", "3": "None"}
-snmpv3_priv = {"0": "Undefined", "1": "AES", "2": "DES", "3": "None"}
+snmpv3_priv = {"0": "Undefined", "1": "DES", "2": "AES", "3": "None"}
 email_type = {"0": "Standard", "1": "ITS-Format", "2": "REMCS", "3": "Fixed Subject", "4": "SMS"}
 email_server = {"0": "Automatic", "1": "Primary", "2": "Secondary"}
 alerts = {"0": "None", "1": "Critical", "2": "Warning", "3": "All"}
