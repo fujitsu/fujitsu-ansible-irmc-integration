@@ -362,7 +362,7 @@ def apply_raid_configuration(module, body):
 
 def get_raid_data(module):
     # make sure RAIDAdapter profile is up-to-date
-    status, sysdata, msg = irmc_redfish_delete(module, "/rest/v1/Oem/eLCM/ProfileManagement/RAIDAdapter")
+    status, sysdata, msg = irmc_redfish_delete(module, "rest/v1/Oem/eLCM/ProfileManagement/RAIDAdapter")
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status not in (200, 202, 204, 404):
@@ -389,7 +389,7 @@ def get_raid_data(module):
         elif status not in (200, 202, 204):
             module.fail_json(msg=msg, log=data, status=status)
 
-    status, sysdata, msg = irmc_redfish_get(module, "/rest/v1/Oem/eLCM/ProfileManagement/RAIDAdapter")
+    status, sysdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/ProfileManagement/RAIDAdapter")
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status == 404:
