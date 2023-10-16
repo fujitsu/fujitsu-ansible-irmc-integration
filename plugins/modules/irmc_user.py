@@ -438,9 +438,9 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import get_scciresult, get_scciresultlist, irmc_scci_post, \
-                                                 setup_datadict, get_key_for_value, add_scci_command, \
-                                                 scci_body_start, scci_body_end
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresult, get_scciresultlist, irmc_scci_post, \
+                                                                                     setup_datadict, get_key_for_value, add_scci_command, \
+                                                                                     scci_body_start, scci_body_end
 
 
 channel_privilege = {"0": "Reserved", "1": "Callback", "2": "User", "3": "Operator", "4": "Administrator",

@@ -16,12 +16,13 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = '''
 ---
-module: irmc_connectvm
+module: irmc_powerstate
 
-short_description: connect iRMC Virtual Media Data
+short_description: get or set server power state
+
 
 description:
-    - Ansible module to connect iRMC Virtual Media Data via the iRMC RedFish interface.
+    - Ansible module to get or set server power state via iRMC RedFish interface.
     - Module Version V1.2.
 
 requirements:
@@ -50,10 +51,17 @@ options:
         required:    false
         default:     true
     command:
-        description: The virtual media connect command to be executed.
+        description: Get or set server power state.
         required:    false
-        default:     ConnectCD
-        choices:     ['ConnectCD', 'ConnectFD', 'ConnectHD', 'DisconnectCD', 'DisconnectFD', 'DisconnectHD']
+        default:     get
+        choices:     ['get', 'set']
+    state:
+        description: Desired server power state for command 'set', ignored otherwise.
+                     Options 'GracefulPowerOff' and ' GracefulReset' require
+                     ServerView Agents running on server.
+        required:    false
+        choices:     ['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff', 'ImmediateReset', 'GracefulReset',
+                      'PulseNmi', 'PressPowerButton']
 
 notes:
     - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
@@ -61,39 +69,52 @@ notes:
 '''
 
 EXAMPLES = '''
-# Disconnect Virtual CD
-- name: Disconnect Virtual CD
-  irmc_connectvm:
+# Get server power state
+- name: Get server power state
+  irmc_powerstate:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "DisconnectCD"
+    command: "get"
+  register: powerstate
   delegate_to: localhost
+- name: Show server power state
+  debug:
+    msg: "{{ powerstate.power_state }}"
 
-# Connect Virtual CD
-- name: Connect Virtual CD
-  irmc_connectvm:
+# set server power state
+- name: set server power state
+  irmc_powerstate:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "ConnectCD"
+    command: "set"
+    state: "PowerOn"
   delegate_to: localhost
 '''
 
 RETURN = '''
-Default return values:
+# For command "get":
+    power_state:
+        description: server power state
+        returned: always
+        type: string
+        sample: "On"
+
+# For command "set":
+    Default return values:
 '''
 
 
 import json
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, get_irmc_json
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, get_irmc_json
 
 
-def irmc_connectvirtualmedia(module):
+def irmc_powerstate(module):
     result = dict(
         changed=False,
         status=0
@@ -103,6 +124,12 @@ def irmc_connectvirtualmedia(module):
         result['msg'] = "module was not run"
         module.exit_json(**result)
 
+    # preliminary parameter check
+    if module.params['command'] == "set" and module.params['state'] is None:
+        result['msg'] = "Command 'set' requires 'state' parameter to be set!"
+        result['status'] = 10
+        module.fail_json(**result)
+
     # Get iRMC system data
     status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
     if status < 100:
@@ -110,44 +137,31 @@ def irmc_connectvirtualmedia(module):
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
+    power_state = get_irmc_json(sysdata.json(), "PowerState")
+    if module.params['command'] == "get":
+        result['power_state'] = power_state
+        module.exit_json(**result)
+
     # Evaluate function params against iRMC
-    irmctype = get_irmc_json(sysdata.headers, "Server")
-    vmaction_type = "VirtualMediaAction" if "S4" in irmctype else "FTSVirtualMediaAction"
-    vm_type = module.params['command'].replace("Connect", "").replace("Disconnect", "")
-    vm_action = module.params['command'].replace(vm_type, "")
-    vm_other_state = "Connect" + vm_type if vm_action == "Disconnect" else "Disconnect" + vm_type
+    if "Power" + power_state == module.params['state'].replace("Graceful", ""):
+        result['skipped'] = True
+        result['msg'] = "PRIMERGY server is already in state '{0}'".format(power_state)
+        module.exit_json(**result)
+
     allowedparams = \
         get_irmc_json(sysdata.json(),
                       ["Actions", "Oem",
-                       "http://ts.fujitsu.com/redfish-schemas/v1/FTSSchema.v1_0_0#FTSComputerSystem.VirtualMedia",
-                       vmaction_type + "@Redfish.AllowableValues"])
-    if module.params['command'] not in allowedparams:
-        if vm_other_state in allowedparams:
-            result['skipped'] = True
-            result['msg'] = "iRMC vitual " + vm_type + " is already in state '" + module.params['command'] + "'"
-            module.exit_json(**result)
-        else:
-            result['warnings'] = "Parameter '" + module.params['command'] + "' cannot be used at this time. " + \
-                                 "Allowed: " + json.dumps(allowedparams)
-            module.exit_json(**result)
-
-    # Get iRMC Virtual Media data
-    status, vmdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/Oem/ts_fujitsu/VirtualMedia/")
-    if status < 100:
-        module.fail_json(msg=msg, status=status, xception=vmdata)
-    elif status != 200:
-        module.fail_json(msg=msg, status=status)
-
-    # Check Virtual Media Data
-    remotemountenabled = get_irmc_json(vmdata.json(), "RemoteMountEnabled")
-    if not remotemountenabled:
-        result['msg'] = "Remote Mount of Virtual Media is not enabled!"
-        result['status'] = 20
+                       "http://ts.fujitsu.com/redfish-schemas/v1/FTSSchema.v1_0_0#FTSComputerSystem.Reset",
+                       "FTSResetType@Redfish.AllowableValues"])
+    if module.params['state'] not in allowedparams:
+        result['msg'] = "Invalid parameter '{0}'. Allowed: {1}". \
+                        format(module.params['state'], json.dumps(allowedparams))
+        result['status'] = 11
         module.fail_json(**result)
 
     # Set iRMC system data
-    body = {vmaction_type: module.params['command']}
-    status, sysdata, msg = irmc_redfish_post(module, "redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.VirtualMedia",
+    body = {'FTSResetType': module.params['state']}
+    status, sysdata, msg = irmc_redfish_post(module, "redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset",
                                              json.dumps(body))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
@@ -165,15 +179,17 @@ def main():
         irmc_username=dict(required=True, type="str"),
         irmc_password=dict(required=True, type="str", no_log=True),
         validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="ConnectCD",
-                     choices=['ConnectCD', 'ConnectFD', 'ConnectHD', 'DisconnectCD', 'DisconnectFD', 'DisconnectHD']),
+        command=dict(required=False, type="str", default="get", choices=['get', 'set']),
+        state=dict(required=False, type="str", choices=['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff',
+                                                        'ImmediateReset', 'GracefulReset', 'PulseNmi',
+                                                        'PressPowerButton'])
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=False
     )
 
-    irmc_connectvirtualmedia(module)
+    irmc_powerstate(module)
 
 
 if __name__ == '__main__':

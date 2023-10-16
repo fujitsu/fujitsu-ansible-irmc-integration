@@ -25,7 +25,7 @@
   tasks:
     # Get LDAP data
     - name: Get LDAP data
-      irmc_ldap:
+      fujitsu.ansible.irmc_ldap:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: ldap
       delegate_to: localhost
+      
     - name: Show iRMC LDAP data
-      debug:
+      ansible.builtin.debug:
         msg: "{{ ldap.ldap }}"
     
     # Set LDAP data
     - name: Set LDAP data
-      irmc_ldap:
+      fujitsu.ansible.irmc_ldap:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -16,17 +16,16 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = '''
 ---
-module: irmc_idled
+module: irmc_license
 
-short_description: get or set server ID LED
+short_description: manage iRMC user accounts
 
 description:
-    - Ansible module to get or set server ID LED via iRMC RedFish interface.
+    - Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
     - Module Version V1.2.
 
 requirements:
     - The module needs to run locally.
-    - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
     - Python >= 2.6
     - Python modules 'future', 'requests', 'urllib3'
 
@@ -50,67 +49,73 @@ options:
         required:    false
         default:     true
     command:
-        description: Get or set server ID LED state.
+        description: License key management to be executed.
         required:    false
         default:     get
         choices:     ['get', 'set']
-    state:
-        description: Desired server ID LED state for command 'set', ignored otherwise.
+    license_key:
+        description: iRMC license key to be set.
         required:    false
-        choices:     ['Off', 'Lit', 'Blinking']
 
 notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+    - A license key which was read from an iRMC is 'system-locked'. It can imported to the same iRMC,
+      but not to another iRMC.
+    - See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
+    - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 '''
 
 EXAMPLES = '''
-# Get server ID LED state
-- name: Get ID LED state
-  irmc_idled:
+# Get iRMC license key
+- name: Get iRMC license key
+  irmc_license:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "get"
-  register: idled
+  register: license
   delegate_to: localhost
-- name: Show iRMC ID LED state
+- name: show certificates
   debug:
-    msg: "{{ idled.idled_state }}"
+    msg: "{{ license.license_key }}"
 
-# Set server ID LED state
-- name: Set server ID LED state
-  irmc_idled:
+# Set iRMC license key
+- name: Set iRMC license key
+  irmc_license:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "set"
-    state: "Lit"
+    license_key: "{{ license_key }}"
   delegate_to: localhost
 '''
 
 RETURN = '''
 # For command "get":
-    idled_state:
-        description: server ID LED state
+    license_key:
+        description: system-locked iRMC license key
         returned: always
         type: string
-        sample: Blinking
 
 # For command "set":
     Default return values:
 '''
 
 
-import json
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_patch, get_irmc_json
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresult, irmc_scci_post, add_scci_command, \
+                                                                                     scci_body_start, scci_body_end
 
 
-def irmc_idled(module):
+param_scci_map = [
+    # Param, SCCI Name, SCCI Code, value dict
+    ["license_key", "ConfBMCLicenseKey", 0x1980],
+]
+
+
+def irmc_license(module):
     result = dict(
         changed=False,
         status=0
@@ -120,47 +125,33 @@ def irmc_idled(module):
         result['msg'] = "module was not run"
         module.exit_json(**result)
 
-    # preliminary parameter check
-    if module.params['command'] == "set" and module.params['state'] is None:
-        result['msg'] = "Command 'set' requires 'state' parameter to be set!"
+    if module.params['command'] == "set" and module.params['license_key'] is None:
+        result['msg'] = "Command 'set' requires 'license_key' to be set!"
         result['status'] = 10
         module.fail_json(**result)
 
-    # get iRMC system data
-    status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
+    body = scci_body_start
+    if module.params['command'] == "set":
+        body += add_scci_command("SET", param_scci_map, "ConfBMCLicenseKey", 0, module.params['license_key'])
+    else:
+        body += add_scci_command("GET", param_scci_map, "ConfBMCLicenseKey", 0, "")
+    body += scci_body_end
+
+    status, data, msg = irmc_scci_post(module, body)
     if status < 100:
-        module.fail_json(msg=msg, status=status, exception=sysdata)
-    elif status != 200:
+        module.fail_json(msg=msg, status=status, exception=data)
+    elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
-    idledstate = get_irmc_json(sysdata.json(), "IndicatorLED")
+    licensekey, scciresult, sccicontext = get_scciresult(data.content, 0x1980)
+    if scciresult != 0:
+        module.fail_json(msg=sccicontext, status=scciresult)
+
     if module.params['command'] == "get":
-        result['idled_state'] = idledstate
-        module.exit_json(**result)
+        result['license_key'] = licensekey
+    else:
+        result['changed'] = True
 
-    # evaluate function params against iRMC
-    if idledstate == module.params['state']:
-        result['skipped'] = True
-        result['msg'] = "iRMC ID LED is already in state '{0}'".format(module.params['state'])
-        module.exit_json(**result)
-
-    allowedparams = get_irmc_json(sysdata.json(), "IndicatorLED@Redfish.AllowableValues")
-    if module.params['state'] not in allowedparams:
-        result['msg'] = "Invalid parameter '{0}'. Allowed: {1}".format(module.params['state'],
-                                                                       json.dumps(allowedparams))
-        result['status'] = 11
-        module.fail_json(**result)
-
-    # set iRMC system data
-    body = {'IndicatorLED': module.params['state']}
-    etag = get_irmc_json(sysdata.json(), "@odata.etag")
-    status, patch, msg = irmc_redfish_patch(module, "redfish/v1/Systems/0/", json.dumps(body), etag)
-    if status < 100:
-        module.fail_json(msg=msg, status=status, exception=patch)
-    elif status != 200:
-        module.fail_json(msg=msg, status=status)
-
-    result['changed'] = True
     module.exit_json(**result)
 
 
@@ -172,14 +163,14 @@ def main():
         irmc_password=dict(required=True, type="str", no_log=True),
         validate_certs=dict(required=False, type="bool", default=True),
         command=dict(required=False, type="str", default="get", choices=['get', 'set']),
-        state=dict(required=False, type="str", choices=['Off', 'Lit', 'Blinking'])
+        license_key=dict(required=False, type="str"),
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=False
     )
 
-    irmc_idled(module)
+    irmc_license(module)
 
 
 if __name__ == '__main__':

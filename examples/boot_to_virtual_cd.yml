@@ -35,7 +35,7 @@
 
   tasks:
     - name: Get system power state
-      irmc_powerstate:
+      fujitsu.ansible.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -45,12 +45,12 @@
       delegate_to: localhost
 
     - name: Check that server is 'Off'
-      fail:
+      ansible.builtin.fail:
         msg: "Cannot continue, server is 'On'"
       when: powerstate.power_state=="On"
 
     - name: Disconnect Virtual CD
-      irmc_connectvm:
+      fujitsu.ansible.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -59,7 +59,7 @@
       delegate_to: localhost
 
     - name: Set Virtual Media Data
-      irmc_setvm:
+      fujitsu.ansible.irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -76,7 +76,7 @@
       delegate_to: localhost
 
     - name: Connect Virtual CD
-      irmc_connectvm:
+      fujitsu.ansible.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -85,7 +85,7 @@
       delegate_to: localhost
 
     - name: Set Bios to next boot from Virtual CD
-      irmc_setnextboot:
+      fujitsu.ansible.irmc_setnextboot:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -96,7 +96,7 @@
       delegate_to: localhost
 
     - name: Get Virtual Media data
-      irmc_getvm:
+      fujitsu.ansible.irmc_getvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -104,12 +104,13 @@
         vm_type: CDImage
       register: vmdata
       delegate_to: localhost
+
     - name: Show Virtual Media data
-      debug:
+      ansible.builtin.debug:
         msg: "{{ vmdata.virtual_media_data }}"
 
     - name: PowerOn System
-      irmc_powerstate:
+      fujitsu.ansible.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

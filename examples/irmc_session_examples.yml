@@ -25,7 +25,7 @@
   tasks:
     # List iRMC sessions
     - name: List iRMC sessions
-      irmc_session:
+      fujitsu.ansible.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -35,7 +35,7 @@
     
     # Get specific session information
     - name: Get specific session information
-      irmc_session:
+      fujitsu.ansible.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

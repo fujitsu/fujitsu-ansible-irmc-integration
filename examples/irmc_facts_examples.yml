@@ -25,7 +25,7 @@
   tasks:
     # Get basic server and iRMC facts
     - name: Get basic server and iRMC facts
-      irmc_facts:
+      fujitsu.ansible.irmc_facts:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: facts
       delegate_to: localhost
+
     - name: Show server and iRMC facts
-      debug:
+      ansible.builtin.debug:
         msg: "{{ facts.facts }}"
     
     # Set server asset tag
     - name: Set server asset tag
-      irmc_facts:
+      fujitsu.ansible.irmc_facts:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

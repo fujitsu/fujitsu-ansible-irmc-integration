@@ -29,7 +29,7 @@
 
   tasks:
     - name: Import LDAP Settings
-      irmc_ldap:
+      fujitsu.ansible.irmc_ldap:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

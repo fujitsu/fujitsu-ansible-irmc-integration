@@ -133,8 +133,8 @@ RETURN = '''
 import json
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, get_irmc_json, \
-                                      waitForSessionToFinish, elcm_check_status
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, get_irmc_json, \
+                                                                          waitForSessionToFinish, elcm_check_status
 
 
 # Global

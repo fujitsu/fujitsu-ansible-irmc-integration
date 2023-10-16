@@ -25,7 +25,7 @@
   tasks:
     # Generate eLCM Online Update List
     - name: Generate eLCM Online Update List
-      irmc_elcm_online_update:
+      fujitsu.ansible.irmc_elcm_online_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -37,7 +37,7 @@
     
     # Read eLCM Online Update List
     - name: Read eLCM Online Update List
-      irmc_elcm_online_update:
+      fujitsu.ansible.irmc_elcm_online_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -47,7 +47,7 @@
     
     # De-select entry in eLCM Online Update List
     - name: De-select entry in eLCM Online Update List
-      irmc_elcm_online_update:
+      fujitsu.ansible.irmc_elcm_online_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -61,7 +61,7 @@
     
     # Execute eLCM Online Update
     - name: Execute eLCM Online Update
-      irmc_elcm_online_update:
+      fujitsu.ansible.irmc_elcm_online_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -71,7 +71,7 @@
     
     # Delete eLCM Online Update List
     - name: Delete eLCM Online Update List
-      irmc_elcm_online_update:
+      fujitsu.ansible.irmc_elcm_online_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

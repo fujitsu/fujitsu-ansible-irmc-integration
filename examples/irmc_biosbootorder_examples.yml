@@ -25,7 +25,7 @@
   tasks:
     # Get Bios Boot Order
     - name: Get Bios Boot Order
-      irmc_biosbootorder:
+      fujitsu.ansible.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -36,7 +36,7 @@
     
     # Set Bios Boot Order to default
     - name: Get Bios Boot Order to default
-      irmc_biosbootorder:
+      fujitsu.ansible.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

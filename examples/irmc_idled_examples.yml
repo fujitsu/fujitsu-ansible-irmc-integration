@@ -25,7 +25,7 @@
   tasks:
     # Get server ID LED state
     - name: Get ID LED state
-      irmc_idled:
+      fujitsu.ansible.irmc_idled:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: idled
       delegate_to: localhost
+      
     - name: Show iRMC ID LED state
       debug:
         msg: "{{ idled.idled_state }}"
     
     # Set server ID LED state
     - name: Set server ID LED state
-      irmc_idled:
+      fujitsu.ansible.irmc_idled:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

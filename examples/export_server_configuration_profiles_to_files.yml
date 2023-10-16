@@ -29,7 +29,7 @@
   tasks:
     # Get iRMC profiles
     - name: Get SystemConfig profile
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -38,8 +38,9 @@
         profile: "SystemConfig"
       register: system_config
       delegate_to: localhost
+      
     - name: Get HWConfigurationIrmc profile
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -48,19 +49,22 @@
         profile: "HWConfigurationIrmc"
       register: hardware_config
       delegate_to: localhost
+
     - name: Show SystemConfig profile
-      debug:
+      ansible.builtin.debug:
         msg: "{{ system_config.profile }}"
+
     - name: Show HWConfigurationIrmc profile
-      debug:
+      ansible.builtin.debug:
         msg: "{{ hardware_config.profile }}"
 
     # Write iRMC Profiles to file
     - name: Write SystemConfig profile
-      copy:
+      ansible.builtin.copy:
         content: "{{ system_config.profile }}"
         dest: "{{ irmc_sysconfig_file }}"
+
     - name: Write HWConfigurationIrmc profile
-      copy:
+      ansible.builtin.copy:
         content: "{{ hardware_config.profile }}"
         dest: "{{ irmc_hwconfig_file }}"

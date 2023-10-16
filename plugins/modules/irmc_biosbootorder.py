@@ -135,11 +135,11 @@ import json
 import copy
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, irmc_redfish_delete, get_irmc_json, \
-                                      waitForSessionToFinish
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, add_scci_command, \
-                                                 scci_body_start, scci_body_end
-from ansible.module_utils.irmc_utils import compare_irmc_profile
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, irmc_redfish_delete, get_irmc_json, \
+                                                                          waitForSessionToFinish
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, add_scci_command, \
+                                                                                     scci_body_start, scci_body_end
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_utils import compare_irmc_profile
 
 
 # Global

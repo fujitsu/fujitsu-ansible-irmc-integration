@@ -25,7 +25,7 @@
   tasks:
     # Disconnect Virtual CD
     - name: Disconnect Virtual CD
-      irmc_connectvm:
+      fujitsu.ansible.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -35,7 +35,7 @@
     
     # Connect Virtual CD
     - name: Connect Virtual CD
-      irmc_connectvm:
+      fujitsu.ansible.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

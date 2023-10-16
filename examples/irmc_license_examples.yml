@@ -25,7 +25,7 @@
   tasks:
     # Get iRMC license key
     - name: Get iRMC license key
-      irmc_license:
+      fujitsu.ansible.irmc_license:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: license
       delegate_to: localhost
+
     - name: show certificates
-      debug:
+      ansible.builtin.debug:
         msg: "{{ license.license_key }}"
     
     # Set iRMC license key
     - name: Set iRMC license key
-      irmc_license:
+      fujitsu.ansible.irmc_license:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

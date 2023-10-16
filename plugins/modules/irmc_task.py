@@ -136,7 +136,7 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, get_irmc_json
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, get_irmc_json
 
 
 # Global

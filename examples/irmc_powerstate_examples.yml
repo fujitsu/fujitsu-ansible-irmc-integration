@@ -25,7 +25,7 @@
   tasks:
     # Get server power state
     - name: Get server power state
-      irmc_powerstate:
+      fujitsu.ansible.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: powerstate
       delegate_to: localhost
+      
     - name: Show server power state
-      debug:
+      ansible.builtin.debug:
         msg: "{{ powerstate.power_state }}"
     
     # set server power state
     - name: set server power state
-      irmc_powerstate:
+      fujitsu.ansible.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

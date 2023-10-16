@@ -119,8 +119,8 @@ from builtins import str
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
-                                                 setup_commandlist
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
+                                                                                     setup_commandlist
 
 
 param_scci_map = [

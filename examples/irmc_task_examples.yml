@@ -25,7 +25,7 @@
   tasks:
     # List iRMC tasks
     - name: List iRMC tasks
-      irmc_task:
+      fujitsu.ansible.irmc_task:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -35,7 +35,7 @@
     
     # Get specific task information
     - name: Get specific task information
-      irmc_task:
+      fujitsu.ansible.irmc_task:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

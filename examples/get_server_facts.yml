@@ -24,7 +24,7 @@
   tasks:
     # Get basic server and iRMC facts
     - name: Get basic server and iRMC facts
-      irmc_facts:
+      fujitsu.ansible.irmc_facts:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -32,13 +32,14 @@
         command: "get"
       register: facts
       delegate_to: localhost
+
     - name: Show server and iRMC facts
-      debug:
+      ansible.builtin.debug:
         msg: "{{ facts.facts }}"
 
     # Get Virtual Media data
     - name: Get Virtual Media data
-      irmc_getvm:
+      fujitsu.ansible.irmc_getvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -46,6 +47,7 @@
         vm_type: CDImage
       register: vmdata
       delegate_to: localhost
+      
     - name: Show Virtual Media data
-      debug:
+      ansible.builtin.debug:
         msg: "{{ vmdata.virtual_media_data }}"

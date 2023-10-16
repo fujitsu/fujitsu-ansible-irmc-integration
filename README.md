@@ -22,7 +22,7 @@ Fujitsu PRIMERGY servers via iRMC.
 These modules and examples are intended to provide easy-to-follow and understandable solutions to manage
 Fujitsu PRIMERY server settings via iRMC.
 
-##### Version: V1.2
+##### Version: V1.3
 
 ## Requirements
 
@@ -52,8 +52,6 @@ The modules were tested on RHEL 6, RHEL 7, SLES 12, SLES 15.
 ## Usage
 
 Examples should be run from the root folder.  
-Note that the ```library``` and ```module_utiles``` folders are automatically searched by Ansible for modules when running
-from playbooks.
 
 **Example command to run irmc_facts_examples.yml:**
 
@@ -136,6 +134,7 @@ bare-metal-server provisioning tasks:
 * V1.0: Initial version
 * V1.1: New: iRMC FW/BIOS update, BIOS boot order, iRMC profile management
 * V1.2: New: eLCM Offline/Online Update, RAID configuration
+* V1.3: Add new folder structure 
 
 ## License
 

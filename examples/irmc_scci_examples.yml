@@ -25,7 +25,7 @@
   tasks:
     # Write server location
     - name: Write server location
-      irmc_scci:
+      fujitsu.ansible.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -37,7 +37,7 @@
     
     # Read server location
     - name: "Read server location"
-      irmc_scci:
+      fujitsu.ansible.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -45,6 +45,7 @@
         opcodeext: 0x200
       register: scci
       delegate_to: localhost
+      
     - name: Show server location
-      debug:
+      ansible.builtin.debug:
         msg: "{{ scci.data }}"

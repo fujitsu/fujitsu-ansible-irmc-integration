@@ -25,7 +25,7 @@
   tasks:
     # List iRMC InternalEventLog
     - name: List iRMC InternalEventLog
-      irmc_eventlog:
+      fujitsu.ansible.irmc_eventlog:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -36,7 +36,7 @@
     
     # Get specific SystemEventLog entry information
     - name: Get specific SystemEventLog entry information
-      irmc_eventlog:
+      fujitsu.ansible.irmc_eventlog:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -28,7 +28,7 @@
   tasks:
     # Get iRMC profiles
     - name: Get SystemConfig profile
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -37,8 +37,9 @@
         profile: "SystemConfig"
       register: system_config
       delegate_to: localhost
+      
     - name: Get HWConfigurationIrmc profile
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -47,32 +48,39 @@
         profile: "HWConfigurationIrmc"
       register: hardware_config
       delegate_to: localhost
+
     - name: Show SystemConfig profile
-      debug:
+      ansible.builtin.debug:
         msg: "{{ system_config.profile }}"
+
     - name: Show HWConfigurationIrmc profile
-      debug:
+      ansible.builtin.debug:
         msg: "{{ hardware_config.profile }}"
 
     # compare iRMC Profiles to file
     - name: Compare SystemConfig profile
-      irmc_compare_profiles:
+      fujitsu.ansible.irmc_compare_profiles:
         profile_path1: "{{ irmc_sysconfig_file }}"
         profile_json2: "{{ system_config.profile }}"
       register: system_config_result
       delegate_to: localhost
-    - fail:
+
+    - name: Fail message "SystemConfig profile differs"
+      ansible.builtin.fail:
         msg:
           - SystemConfig profile differs from saved profile
           - "{{ system_config_result.comparison_list }}"
       when: system_config_result.comparison_result == false
+
     - name: Compare HWConfigurationIrmc profile
-      irmc_compare_profiles:
+      fujitsu.ansible.irmc_compare_profiles:
         profile_path1: "{{ irmc_hwconfig_file }}"
         profile_json2: "{{ hardware_config.profile }}"
       register: hardware_config_result
       delegate_to: localhost
-    - fail:
+
+    - name: Fail message "HWConfigurationIrmc profile differs"
+      ansible.builtin.fail:
         msg:
           - HWConfigurationIrmc profile differs from saved profile
           - "{{ hardware_config_result.comparison_list }}"

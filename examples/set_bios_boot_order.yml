@@ -32,7 +32,7 @@
   tasks:
     # Set Bios Boot Order
     - name: Set BIOS Boot Order to boot from {{ boot_device }} with next boot from {{ next_boot_device }}
-      irmc_biosbootorder:
+      fujitsu.ansible.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
