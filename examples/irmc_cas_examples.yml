@@ -25,7 +25,7 @@
   tasks:
     # Get CAS data
     - name: Get CAS data
-      irmc_cas:
+      fujitsu.ansible.irmc_cas:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: cas
       delegate_to: localhost
+
     - name: Show iRMC CAS data
-      debug:
+      ansible.builtin.debug:
         msg: "{{ cas.cas }}"
     
     # Set CAS data
     - name: Set CAS data
-      irmc_cas:
+      fujitsu.ansible.irmc_cas:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

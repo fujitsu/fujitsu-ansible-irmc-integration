@@ -25,7 +25,7 @@
   tasks:
     # Compare iRMC profiles against each other
     - name: Compare iRMC profiles
-      irmc_compare_profiles:
+      fujitsu.ansible.irmc_compare_profiles:
         profile_path1: "{{ profile1_path }}"
         profile_path2: "{{ profile2_path }}"
       delegate_to: localhost

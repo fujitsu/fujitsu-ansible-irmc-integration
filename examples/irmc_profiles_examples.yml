@@ -25,7 +25,7 @@
   tasks:
     # List iRMC profiles
     - name: List iRMC profiles
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -35,7 +35,7 @@
     
     # Get iRMC HWConfigurationIrmc profile
     - name: Get iRMC HWConfigurationIrmc profile
-      irmc_profiles:
+      fujitsu.ansible.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

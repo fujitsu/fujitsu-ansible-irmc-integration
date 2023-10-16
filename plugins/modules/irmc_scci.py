@@ -128,7 +128,7 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import setup_sccirequest, get_scciresult, irmc_scci_post
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import setup_sccirequest, get_scciresult, irmc_scci_post
 
 
 scci_code_map = {

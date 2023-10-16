@@ -211,8 +211,8 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
-                                                 setup_commandlist
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
+                                                                                     setup_commandlist
 
 
 cas_priv = {"0": "Reserved", "1": "Callback", "2": "User", "3": "Operator", "4": "Administrator", "5": "OEM", "15": "NoAccess"}

@@ -25,7 +25,7 @@
   tasks:
     # Get RAID configuration
     - name: Get RAID configuration
-      irmc_raid:
+      fujitsu.ansible.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: raid
       delegate_to: localhost
+
     - name: Show RAID configuration
-      debug:
+      ansible.builtin.debug:
         msg: "{{ raid.configuration }}"
     
     # Create RAID array
     - name: Create RAID array
-      irmc_raid:
+      fujitsu.ansible.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -52,7 +53,7 @@
     
     # Delete RAID array
     - name: Delete RAID array
-      irmc_raid:
+      fujitsu.ansible.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

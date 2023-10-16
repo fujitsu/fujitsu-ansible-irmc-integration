@@ -29,7 +29,7 @@
   tasks:
     # Get user account data
     - name: Get user account data
-      irmc_user:
+      fujitsu.ansible.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -38,12 +38,13 @@
         name: "{{ export_user }}"
       register: user
       delegate_to: localhost
+      
     - name: Show iRMC user details
-      debug:
+      ansible.builtin.debug:
         msg: "{{ user.user }}"
 
     # Write User Data to file
     - name: Write user Data to file
-      copy:
+      ansible.builtin.copy:
         content: "{{ user.user }}"
         dest: "{{ user_data_file }}"

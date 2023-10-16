@@ -92,7 +92,7 @@ Default return values:
 import json
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_patch, get_irmc_json
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, irmc_redfish_patch, get_irmc_json
 
 
 def irmc_setnextboot(module):

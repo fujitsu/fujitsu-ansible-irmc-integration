@@ -160,8 +160,8 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, irmc_redfish_patch, irmc_redfish_post, \
-                                      irmc_redfish_delete, get_irmc_json, elcm_check_status, waitForSessionToFinish
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, irmc_redfish_patch, irmc_redfish_post, \
+                                                                          irmc_redfish_delete, get_irmc_json, elcm_check_status, waitForSessionToFinish
 
 
 # Global

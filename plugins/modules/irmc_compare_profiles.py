@@ -81,7 +81,7 @@ from builtins import str
 import json
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_utils import compare_irmc_profile
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_utils import compare_irmc_profile
 
 
 def irmc_compare_profiles(module):

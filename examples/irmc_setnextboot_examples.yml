@@ -26,7 +26,7 @@
     # Set Bios to next boot from Virtual CD
     # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
     - name: Set Bios to next boot from Virtual CD
-      irmc_setnextboot:
+      fujitsu.ansible.irmc_setnextboot:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

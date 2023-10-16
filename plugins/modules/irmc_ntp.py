@@ -138,8 +138,8 @@ RETURN = '''
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, \
-                                                 setup_datadict, setup_commandlist
+from ansible_collections.fujitsu.ansible.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, \
+                                                                                     setup_datadict, setup_commandlist
 
 time_mode = {"0": "System RTC", "1": "NTP", "2": "MMB NTP"}
 rtc_mode = {"0": "local time", "1": "UTC/GMT"}

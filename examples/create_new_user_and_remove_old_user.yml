@@ -30,7 +30,7 @@
   tasks:
     # Get original user account data
     - name: Get original user '{{ original_user }}' account data
-      irmc_user:
+      fujitsu.ansible.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ original_user }}"
         irmc_password: "{{ original_password }}"
@@ -39,13 +39,14 @@
         name: "{{ original_user }}"
       register: original_data
       delegate_to: localhost
+
     - name: Show original iRMC user details
-      debug:
+      ansible.builtin.debug:
         msg: "{{ original_data.user }}"
 
     # Create new user account
     - name: "Create new user account"
-      irmc_user:
+      fujitsu.ansible.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ original_user }}"
         irmc_password: "{{ original_password }}"
@@ -92,7 +93,7 @@
 
     # Get new user account data
     - name: Get new user account data
-      irmc_user:
+      fujitsu.ansible.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ new_user }}"
         irmc_password: "{{ new_password }}"
@@ -101,13 +102,14 @@
         name: "{{ new_user }}"
       register: new_data
       delegate_to: localhost
+
     - name: Show original iRMC user details
-      debug:
+      ansible.builtin.debug:
         msg: "{{ new_data.user }}"
 
     # Delete original user account
     - name: "Delete original user account"
-      irmc_user:
+      fujitsu.ansible.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ new_user }}"
         irmc_password: "{{ new_password }}"

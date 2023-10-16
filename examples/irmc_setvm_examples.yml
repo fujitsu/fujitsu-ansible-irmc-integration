@@ -25,7 +25,7 @@
   tasks:
     # Set Virtual Media Data
     - name: Set Virtual Media Data
-      irmc_setvm:
+      fujitsu.ansible.irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

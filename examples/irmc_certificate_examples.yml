@@ -25,7 +25,7 @@
   tasks:
     # Get SSL certificates
     - name: Get SSL certificates
-      irmc_certificate:
+      fujitsu.ansible.irmc_certificate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -33,13 +33,14 @@
         command: "get"
       register: certificates
       delegate_to: localhost
+      
     - name: show certificates
-      debug:
+      ansible.builtin.debug:
         msg: "{{ certificates.certificates }}"
     
     # Set SSL certificates
     - name: Set SSL certificates
-      irmc_certificate:
+      fujitsu.ansible.irmc_certificate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

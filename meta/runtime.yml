@@ -1,0 +1,29 @@
+---
+requires_ansible: ">=2.4.0"
+action_groups:
+  irmc:
+    - irmc_compare_profiles
+    - irmc_elcm_repository
+    - irmc_getvm
+    - irmc_ntp
+    - irmc_scci
+    - irmc_task
+    - irmc_biosbootorder
+    - irmc_connectvm
+    - irmc_eventlog
+    - irmc_idled
+    - irmc_powerstate
+    - irmc_session
+    - irmc_user
+    - irmc_cas
+    - irmc_elcm_offline_update
+    - irmc_facts
+    - irmc_ldap
+    - irmc_profiles
+    - irmc_setnextboot
+    - irmc_certificate
+    - irmc_elcm_online_update
+    - irmc_fwbios_update
+    - irmc_license
+    - irmc_raid
+    - irmc_setvm
