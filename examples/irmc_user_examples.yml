@@ -32,23 +32,28 @@
         validate_certs: "{{ validate_certificate }}"
         command: "create"
         name: "ansibleuser"
-        password: "password"
+        password: "StrongP@ssw0rd"
       delegate_to: localhost
+      tags:
+        - create
     
     # Get user account data
-    - name: Get user account data
-      irmc_user:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-        name: "ansibleuser"
-      register: user
-      delegate_to: localhost
-    - name: Show iRMC user details
-      debug:
-        msg: "{{ user.user }}"
+    - block:
+      - name: Get user account data
+        irmc_user:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+          name: "ansibleuser"
+        register: user
+        delegate_to: localhost
+      - name: Show iRMC user details
+        debug:
+          var: user.user
+      tags:
+        - get
     
     # Change user account data
     - name: Change user account data
@@ -61,6 +66,8 @@
         name: "ansibleuser"
         description: "ansible user description"
       delegate_to: localhost
+      tags:
+        - change
     
     # Delete user account
     - name: "Delete user account"
@@ -72,3 +79,5 @@
         command: "delete"
         name: "ansibleuser"
       delegate_to: localhost
+      tags:
+        - delete
