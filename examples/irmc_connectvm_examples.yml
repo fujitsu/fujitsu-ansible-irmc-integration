@@ -32,6 +32,8 @@
         validate_certs: "{{ validate_certificate }}"
         command: "DisconnectCD"
       delegate_to: localhost
+      tags: 
+        - disconnectCD
     
     # Connect Virtual CD
     - name: Connect Virtual CD
@@ -42,3 +44,29 @@
         validate_certs: "{{ validate_certificate }}"
         command: "ConnectCD"
       delegate_to: localhost
+      tags: 
+        - connectCD
+
+    # Disconnect Virtual HD
+    - name: Disconnect Virtual HD
+      irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "DisconnectHD"
+      delegate_to: localhost
+      tags: 
+        - disconnectHD
+    
+    # Connect Virtual HD
+    - name: Connect Virtual HD
+      irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "ConnectHD"
+      delegate_to: localhost
+      tags: 
+        - connectHD

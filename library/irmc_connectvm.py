@@ -119,7 +119,7 @@ def irmc_connectvirtualmedia(module):
     allowedparams = \
         get_irmc_json(sysdata.json(),
                       ["Actions", "Oem",
-                       "http://ts.fujitsu.com/redfish-schemas/v1/FTSSchema.v1_0_0#FTSComputerSystem.VirtualMedia",
+                       "#FTSComputerSystem.VirtualMedia",
                        vmaction_type + "@Redfish.AllowableValues"])
     if module.params['command'] not in allowedparams:
         if vm_other_state in allowedparams:
