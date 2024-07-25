@@ -24,37 +24,35 @@
 
   tasks:
     # Get Virtual CD data
-    - name: Get Virtual CD data
-      irmc_getvm:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        vm_type: CDImage
-      register: cddata
-      delegate_to: localhost
-      tags:
-        - getcd
-    - name: Show Virtual CD data
-      debug:
-        msg: "{{ cddata.virtual_media_data }}"
+    - block:
+      - name: Get Virtual CD data
+        irmc_getvm:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          vm_type: CDImage
+        register: cddata
+        delegate_to: localhost
+      - name: Show Virtual CD data
+        debug:
+          var: cddata.virtual_media_data
       tags:
         - getcd
 
     # Get Virtual HD data
-    - name: Get Virtual HD data
-      irmc_getvm:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        vm_type: HDImage
-      register: hddata
-      delegate_to: localhost
-      tags:
-        - gethd
-    - name: Show Virtual HD data
-      debug:
-        msg: "{{ hddata.virtual_media_data }}"
+    - block:
+      - name: Get Virtual HD data
+        irmc_getvm:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          vm_type: HDImage
+        register: hddata
+        delegate_to: localhost
+      - name: Show Virtual HD data
+        debug:
+          var: hddata.virtual_media_data
       tags:
         - gethd
