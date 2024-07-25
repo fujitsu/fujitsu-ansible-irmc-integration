@@ -24,22 +24,89 @@
 
   tasks:
     # List iRMC sessions
-    - name: List iRMC sessions
-      irmc_session:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "list"
-      delegate_to: localhost
+    - block:
+      - name: List iRMC sessions
+        irmc_session:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "list"
+        delegate_to: localhost
+        register: result
+      - name: Show iRMC sessions details
+        debug:
+          var: result.sessions
+      tags:
+        - list
     
     # Get specific session information
-    - name: Get specific session information
-      irmc_session:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-        id: 3
-      delegate_to: localhost
+    - block:
+      - name: Get specific session information
+        irmc_session:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+          id: "{{ (session_id | default(1)) | int }}"
+        delegate_to: localhost
+        register: result
+      - name: Show specific session information
+        debug:
+          var: result.session_log
+      tags:
+        - get
+
+    # Remove specific session information
+    - block:
+      - name: Remove specific session information
+        irmc_session:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "remove"
+          id: "{{ session_id | int }}"
+        delegate_to: localhost
+        register: result
+      - name: Show result of remove session
+        debug:
+          var: result
+      tags: 
+        - remove
+
+    # Clear all sessions information
+    - block:
+      - name: Clear all sessions information
+        irmc_session:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "clearall"
+        delegate_to: localhost
+        register: result
+      - name: Show result of clear all sessions
+        debug:
+          var: result
+      tags:
+        - clearall
+
+    # Terminate specific session
+    - block:
+      - name: Terminate specific session
+        irmc_session:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "terminate"
+          id: "{{ session_id | int }}"
+        delegate_to: localhost
+        register: result
+      - name: Show result of terminate session
+        debug:
+          var: result
+      tags:
+        - terminate
