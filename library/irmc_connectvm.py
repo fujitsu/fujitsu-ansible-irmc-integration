@@ -117,10 +117,7 @@ def irmc_connectvirtualmedia(module):
     vm_action = module.params['command'].replace(vm_type, "")
     vm_other_state = "Connect" + vm_type if vm_action == "Disconnect" else "Disconnect" + vm_type
     allowedparams = \
-        get_irmc_json(sysdata.json(),
-                      ["Actions", "Oem",
-                       "#FTSComputerSystem.VirtualMedia",
-                       vmaction_type + "@Redfish.AllowableValues"])
+        get_irmc_json(sysdata.json(), ["Actions", "Oem", "#FTSComputerSystem.VirtualMedia", vmaction_type + "@Redfish.AllowableValues"])
     if module.params['command'] not in allowedparams:
         if vm_other_state in allowedparams:
             result['skipped'] = True
