@@ -24,18 +24,21 @@
 
   tasks:
     # Get SSL certificates
-    - name: Get SSL certificates
-      irmc_certificate:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: certificates
-      delegate_to: localhost
-    - name: show certificates
-      debug:
-        msg: "{{ certificates.certificates }}"
+    - block:
+      - name: Get SSL certificates
+        irmc_certificate:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+        register: certificates
+        delegate_to: localhost
+      - name: show certificates
+        debug:
+          var: certificates.certificates
+      tags:
+        - get
     
     # Set SSL certificates
     - name: Set SSL certificates
@@ -49,3 +52,5 @@
         ssl_cert_path: "{{ ssl_cert_path }}"
         ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
       delegate_to: localhost
+      tags:
+        - set
