@@ -24,18 +24,23 @@
 
   tasks:
     # Get iRMC license key
-    - name: Get iRMC license key
-      irmc_license:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: license
-      delegate_to: localhost
-    - name: show certificates
-      debug:
-        msg: "{{ license.license_key }}"
+    - block:
+      - name: Get iRMC license key
+        irmc_license:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+        register: license
+        delegate_to: localhost
+        
+      - name: show certificates
+        debug:
+          var: license.license_key
+      tags:
+        - get
+      
     
     # Set iRMC license key
     - name: Set iRMC license key
@@ -47,3 +52,5 @@
         command: "set"
         license_key: "{{ license_key }}"
       delegate_to: localhost
+      tags:
+        - set
