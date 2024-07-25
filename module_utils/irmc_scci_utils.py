@@ -91,7 +91,7 @@ def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
     return body
 
 
-def get_scciresult(data, opcodeextcode):
+def get_scciresult(data, opcodeextcode, oi=None):
     # extract XML data
     # things are complicated, as the return string is not necessarily well-formed.
     # We do some extra work here just in case
@@ -102,6 +102,8 @@ def get_scciresult(data, opcodeextcode):
         for item in root:
             if item.tag.upper() == "CMD" or item.tag.upper() == "ERROR" or item.tag.upper() == "WARNING":
                 if item.attrib['OE'] != str(format(opcodeextcode, 'X')):
+                    continue
+                if oi is not None and item.attrib['OI'] != str(oi):
                     continue
                 if item.tag.upper() == "VALUE":
                     scciresult = int(item.text)
@@ -159,7 +161,10 @@ def get_scciresultlist(resultlist, sccidata, scci_map):
     context = [""] * len(scci_map)
     index = 0
     for elem in scci_map:
-        sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2])
+        if len(elem) == 5:
+            sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2], elem[3])
+        else:
+            sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2])
         if result[index] != 0 and sccidata[elem[0]] != "":
             listresult += result[index]
             listcontext += context[index] + "\n"
@@ -185,7 +190,7 @@ def irmc_scci_post(module, body):
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    url = "http://{0}/config".format(module.params['irmc_url'])
+    url = "https://{0}/config".format(module.params['irmc_url'])
     msg = "OK"
     try:
         data = session.post(url, data=body, verify=module.params['validate_certs'],
@@ -218,7 +223,7 @@ def irmc_scci_update(module, update_url):
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    url = "http://{0}/{1}".format(module.params['irmc_url'], update_url)
+    url = "https://{0}/{1}".format(module.params['irmc_url'], update_url)
     msg = "OK"
     try:
         data = session.post(url, verify=module.params['validate_certs'],

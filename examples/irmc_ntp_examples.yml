@@ -33,9 +33,13 @@
         command: "get"
       register: time
       delegate_to: localhost
+      tags:
+        - get
     - name: Show iRMC time settings
       debug:
         msg: "{{ time.time_settings }}"
+      tags:
+        - get
     
     # Set iRMC time option(s)
     - name: Set iRMC time option(s)
@@ -47,3 +51,5 @@
         command: "set"
         time_mode: "System RTC"
       delegate_to: localhost
+      tags:
+        - set
