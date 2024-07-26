@@ -19,7 +19,6 @@
     # irmc_password: "admin"
     # Note: set validate_certificate to false for self-signed certificate
     # validate_certificate: false
-    # Please set the values of parameters other than the above (ex: share_type) to group_vars/all.
 
   gather_facts: false
 
