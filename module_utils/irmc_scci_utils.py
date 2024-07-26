@@ -91,7 +91,7 @@ def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
     return body
 
 
-def get_scciresult(data, opcodeextcode, oi=None):
+def get_scciresult(data, opcodeextcode):
     # extract XML data
     # things are complicated, as the return string is not necessarily well-formed.
     # We do some extra work here just in case
@@ -102,8 +102,6 @@ def get_scciresult(data, opcodeextcode, oi=None):
         for item in root:
             if item.tag.upper() == "CMD" or item.tag.upper() == "ERROR" or item.tag.upper() == "WARNING":
                 if item.attrib['OE'] != str(format(opcodeextcode, 'X')):
-                    continue
-                if oi is not None and item.attrib['OI'] != str(oi):
                     continue
                 if item.tag.upper() == "VALUE":
                     scciresult = int(item.text)
@@ -161,10 +159,7 @@ def get_scciresultlist(resultlist, sccidata, scci_map):
     context = [""] * len(scci_map)
     index = 0
     for elem in scci_map:
-        if len(elem) == 5:
-            sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2], elem[3])
-        else:
-            sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2])
+        sccidata[elem[0]], result[index], context[index] = get_scciresult(resultlist, elem[2])
         if result[index] != 0 and sccidata[elem[0]] != "":
             listresult += result[index]
             listcontext += context[index] + "\n"
