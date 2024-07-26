@@ -24,20 +24,19 @@
 
   tasks:
     # Get iRMC time settings
-    - name: Get iRMC time settingsa
-      irmc_ntp:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: time
-      delegate_to: localhost
-      tags:
-        - get
-    - name: Show iRMC time settings
-      debug:
-        msg: "{{ time.time_settings }}"
+    - block:
+      - name: Get iRMC time settings
+        irmc_ntp:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+        register: time
+        delegate_to: localhost
+      - name: Show iRMC time settings
+        debug:
+          var: time.time_settings
       tags:
         - get
     
