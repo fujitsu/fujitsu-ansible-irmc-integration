@@ -148,21 +148,25 @@ def irmc_powerstate(module):
         result['msg'] = "PRIMERGY server is already in state '{0}'".format(power_state)
         module.exit_json(**result)
 
-    allowedparams = \
-        get_irmc_json(sysdata.json(),
-                      ["Actions", "Oem",
-                       "http://ts.fujitsu.com/redfish-schemas/v1/FTSSchema.v1_0_0#FTSComputerSystem.Reset",
-                       "FTSResetType@Redfish.AllowableValues"])
+    allowedparams = get_irmc_json(
+        sysdata.json(),
+        ["Actions", "Oem", "#FTSComputerSystem.Reset", "FTSResetType@Redfish.AllowableValues"],
+    )
     if module.params['state'] not in allowedparams:
-        result['msg'] = "Invalid parameter '{0}'. Allowed: {1}". \
-                        format(module.params['state'], json.dumps(allowedparams))
+        result['msg'] = (
+            f"{module.params['state']!r} is not allowed now. "
+            f"Currently allowed: {allowedparams}"
+        )
         result['status'] = 11
         module.fail_json(**result)
 
     # Set iRMC system data
     body = {'FTSResetType': module.params['state']}
-    status, sysdata, msg = irmc_redfish_post(module, "redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset",
-                                             json.dumps(body))
+    status, sysdata, msg = irmc_redfish_post(
+        module,
+        "redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset",
+        json.dumps(body),
+    )
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status not in (200, 202, 204):
