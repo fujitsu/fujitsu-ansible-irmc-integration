@@ -100,29 +100,27 @@
         - get_systemeventlog
 
     # Clear iRMC InternalEventLog
-    - block:
-      - name: Clear iRMC InternalEventLog
-        irmc_eventlog:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "clear"
-          eventlog_type: "InternalEventLog"
-        delegate_to: localhost
-      tags:
-        - clear_internaleventlog
+    - name: Clear iRMC InternalEventLog
+      irmc_eventlog:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "clear"
+        eventlog_type: "InternalEventLog"
+      delegate_to: localhost
+    tags:
+      - clear_internaleventlog
 
     # Clear iRMC SystemEventLog
-    - block:
-      - name: Clear iRMC SystemEventLog
-        irmc_eventlog:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "clear"
-          eventlog_type: "SystemEventLog"
-        delegate_to: localhost
-      tags:
-        - clear_systemeventlog
+    - name: Clear iRMC SystemEventLog
+      irmc_eventlog:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "clear"
+        eventlog_type: "SystemEventLog"
+      delegate_to: localhost
+    tags:
+      - clear_systemeventlog
