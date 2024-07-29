@@ -24,18 +24,25 @@
 
   tasks:
     # Get Bios Boot Order
-    - name: Get Bios Boot Order
-      irmc_biosbootorder:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-        force_new: false
-      delegate_to: localhost
+    - block:
+      - name: Get Bios Boot Order
+        irmc_biosbootorder:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+          force_new: True
+        register: result
+        delegate_to: localhost
+      - name: Show Bios Boot Order
+        debug:
+          var: result.boot_order
+      tags:
+        - get
     
     # Set Bios Boot Order to default
-    - name: Get Bios Boot Order to default
+    - name: Set Bios Boot Order to default
       irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
@@ -44,3 +51,19 @@
         command: "default"
         ignore_power_on: false
       delegate_to: localhost
+      tags:
+        - set_default
+
+    # Set Bios Boot Order
+    - name: Set Bios Boot Order
+      irmc_biosbootorder:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        boot_device: "{{ boot_device }}"
+        ignore_power_on: false
+      delegate_to: localhost
+      tags:
+        - set

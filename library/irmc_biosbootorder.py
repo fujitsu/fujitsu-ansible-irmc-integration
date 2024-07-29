@@ -334,7 +334,7 @@ def force_new_boot_profile(module):
             module.fail_json(msg=msg, status=status)
 
         # Generate new Boot Profile Data
-        url = "/rest/v1/Oem/eLCM/ProfileManagement/get?PARAM_PATH=Server/SystemConfig/BiosConfig/BiosBootOrder"
+        url = "rest/v1/Oem/eLCM/ProfileManagement/get?PARAM_PATH=Server/SystemConfig/BiosConfig/BiosBootOrder"
         status, sysdata, msg = irmc_redfish_post(module, url, "")
         if status < 100:
             module.fail_json(msg=msg, status=status, exception=sysdata)
