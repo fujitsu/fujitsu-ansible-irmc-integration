@@ -49,6 +49,8 @@
         validate_certs: "{{ validate_certificate }}"
         command: "set"
         time_mode: "System RTC"
+        time_zone_location: "Asia/Tokyo"
+        rtc_mode: "local time"
       delegate_to: localhost
       tags:
         - set

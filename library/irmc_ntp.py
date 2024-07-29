@@ -166,7 +166,6 @@ def irmc_ntp(module):
         module.exit_json(**result)
 
     module.params['time_zone'] = None
-    module.params['mmb_time_sync'] = None
     ntpdata, setparam_count = setup_datadict(module)
 
     # preliminary parameter checks
