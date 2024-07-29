@@ -152,7 +152,6 @@ param_scci_map = [
     ["time_zone_location", "ConfBmcTimeZoneLocation", 0x00B5, 0, None],      # iRMC: Time Zone Location
     ["ntp_server_primary", "ConfBmcNtpServer", 0x00B3, 0, None],             # iRMC: Primary NTP Server
     ["ntp_server_secondary", "ConfBmcNtpServer", 0x00B3, 1, None],           # iRMC: Secondary NTP Server
-    ["mmb_time_sync", "", 0x00B7, 0, true_false],                            # iRMC: -
 ]
 
 
@@ -167,7 +166,6 @@ def irmc_ntp(module):
         module.exit_json(**result)
 
     module.params['time_zone'] = None
-    module.params['mmb_time_sync'] = None
     ntpdata, setparam_count = setup_datadict(module)
 
     # preliminary parameter checks
