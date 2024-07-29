@@ -139,8 +139,8 @@ def irmc_compare_profiles(module):
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        profile_json1=dict(required=False, type="str"),
-        profile_json2=dict(required=False, type="str"),
+        profile_json1=dict(required=False, type="json"),
+        profile_json2=dict(required=False, type="json"),
         profile_path1=dict(required=False, type="str"),
         profile_path2=dict(required=False, type="str")
     )

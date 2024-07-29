@@ -24,8 +24,37 @@
 
   tasks:
     # Compare iRMC profiles against each other
-    - name: Compare iRMC profiles
-      irmc_compare_profiles:
-        profile_path1: "{{ profile1_path }}"
-        profile_path2: "{{ profile2_path }}"
-      delegate_to: localhost
+    - block:
+      - name: Compare iRMC profiles by file
+        irmc_compare_profiles:
+          profile_path1: "{{ profile1_path }}"
+          profile_path2: "{{ profile2_path }}"
+        delegate_to: localhost
+        register: result
+      - name: Show comparison result
+        debug:
+          var: result.comparison_result
+      - name: Show comparison list
+        debug:
+          var: result.comparison_list
+        when: result.comparison_list is defined
+      tags:
+        - path
+
+    # Compare iRMC profiles against each other
+    - block:
+      - name: Compare iRMC profiles by json
+        irmc_compare_profiles:
+          profile_json1: "{{ profile_json1 }}"
+          profile_json2: "{{ profile_json2 }}"
+        delegate_to: localhost
+        register: result
+      - name: Show comparison result
+        debug:
+          var: result.comparison_result
+      - name: Show comparison list
+        debug:
+          var: result.comparison_list
+        when: result.comparison_list is defined
+      tags:
+        - json
