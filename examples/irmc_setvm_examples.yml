@@ -23,15 +23,38 @@
   gather_facts: false
 
   tasks:
-    # Set Virtual Media Data
-    - name: Set Virtual Media Data
+    # Set Virtual CD
+    - name: Set Virtual CD
       irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
+        share_type: "{{ share_type }}"
         server: "{{ server }}"
         share: "{{ share }}"
         image: "{{ image }}"
-        share_type: "{{ share_type }}"
+        vm_user: "{{ vm_user }}"
+        vm_password: "{{ vm_password }}"
+        vm_type: "CDImage"
       delegate_to: localhost
+      tags:
+        - setcd
+
+    # Set Virtual HD
+    - name: Set Virtual HD
+      irmc_setvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        share_type: "{{ share_type }}"
+        server: "{{ server }}"
+        share: "{{ share }}"
+        image: "{{ image }}"
+        vm_user: "{{ vm_user }}"
+        vm_password: "{{ vm_password }}"
+        vm_type: "HDImage"
+      delegate_to: localhost
+      tags:
+        - sethd
