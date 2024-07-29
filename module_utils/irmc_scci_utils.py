@@ -185,7 +185,7 @@ def irmc_scci_post(module, body):
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    url = "http://{0}/config".format(module.params['irmc_url'])
+    url = "https://{0}/config".format(module.params['irmc_url'])
     msg = "OK"
     try:
         data = session.post(url, data=body, verify=module.params['validate_certs'],
@@ -218,7 +218,7 @@ def irmc_scci_update(module, update_url):
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    url = "http://{0}/{1}".format(module.params['irmc_url'], update_url)
+    url = "https://{0}/{1}".format(module.params['irmc_url'], update_url)
     msg = "OK"
     try:
         data = session.post(url, verify=module.params['validate_certs'],
