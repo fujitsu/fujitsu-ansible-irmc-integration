@@ -24,19 +24,22 @@
 
   tasks:
     # Get basic server and iRMC facts
-    - name: Get basic server and iRMC facts
-      irmc_facts:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: facts
-      delegate_to: localhost
-    - name: Show server and iRMC facts
-      debug:
-        msg: "{{ facts.facts }}"
-    
+    - block:
+      - name: Get basic server and iRMC facts
+        irmc_facts:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+        register: result
+        delegate_to: localhost
+      - name: Show server and iRMC facts
+        debug:
+          var: result.facts
+      tags:
+        - get
+
     # Set server asset tag
     - name: Set server asset tag
       irmc_facts:
@@ -47,3 +50,5 @@
         command: "set"
         asset_tag: "Ansible test server"
       delegate_to: localhost
+      tags:
+        - set
