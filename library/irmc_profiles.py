@@ -222,7 +222,7 @@ def import_profile(module):
 
 
 def delete_profile(module):
-    status, sysdata, msg = irmc_redfish_delete(module, "/rest/v1/Oem/eLCM/ProfileManagement/{0}".
+    status, sysdata, msg = irmc_redfish_delete(module, "rest/v1/Oem/eLCM/ProfileManagement/{0}".
                                                format(module.params['profile']))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
@@ -264,7 +264,7 @@ def create_profile(module):
 
 
 def list_profiles(module):
-    status, sysdata, msg = irmc_redfish_get(module, "/rest/v1/Oem/eLCM/ProfileManagement")
+    status, sysdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/ProfileManagement")
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
@@ -280,7 +280,7 @@ def list_profiles(module):
 
 
 def get_profile(module):
-    status, sysdata, msg = irmc_redfish_get(module, "/rest/v1/Oem/eLCM/ProfileManagement/{0}".
+    status, sysdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/ProfileManagement/{0}".
                                             format(module.params['profile']))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
