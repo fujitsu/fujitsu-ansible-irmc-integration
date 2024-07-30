@@ -1,6 +1,5 @@
 ---
-# FUJITSU LIMITED
-# Copyright 2018 FUJITSU LIMITED
+# Copyright 2018-2024 Fsas Technologies INC.
 # GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # example playbook to set BIOS boot order to default
