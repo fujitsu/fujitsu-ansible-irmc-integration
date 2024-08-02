@@ -1,0 +1,60 @@
+[project]
+name = "fujitsu-ansible-irmc-integration"
+version = "1.2.1"
+description = "Ansible modules for manage Fujitsu PRIMERGY servers via iRMC"
+authors = []
+dependencies = [
+    "ansible>=8.7.0",
+    "requests>=2.32.3",
+    "urllib3>=2.2.2",
+    "requests-toolbelt>=1.0.0",
+]
+readme = "README.md"
+requires-python = ">= 3.9"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pip>=24.2",
+    "lxml>=5.2.2",
+    "pytest>=8.3.2",
+    "ruff>=0.5.5",
+    "radon>=6.0.1",
+    "ansible-lint>=24.7.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["library", "module_utils"]
+
+[tool.ruff]
+exclude = [".venv"]
+line-length = 119
+select = ["ALL"]
+ignore = [
+  "C408",  # unnecessary-collection-call. (e.g., dict(), dict(a=1, b=2), list(), tuple())
+  "D400",  # ends-in-period
+  "D415",  # ends-in-punctuation
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "single"
+
+[tool.ruff.lint.per-file-ignores]
+"./library/*.py" = [
+  "D100",  # undocumented-public-module
+  "E402",  # module-import-not-at-top-of-file
+  "EXE001",  # shebang-not-executable
+]
+"./tests/*.py" = [
+  "D",
+  "ANN201",  # missing-return-type-undocumented-public-function
+]
