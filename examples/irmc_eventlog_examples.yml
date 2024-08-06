@@ -108,8 +108,8 @@
         command: "clear"
         eventlog_type: "InternalEventLog"
       delegate_to: localhost
-    tags:
-      - clear_internaleventlog
+      tags:
+        - clear_internaleventlog
 
     # Clear iRMC SystemEventLog
     - name: Clear iRMC SystemEventLog
@@ -121,5 +121,5 @@
         command: "clear"
         eventlog_type: "SystemEventLog"
       delegate_to: localhost
-    tags:
-      - clear_systemeventlog
+      tags:
+        - clear_systemeventlog
