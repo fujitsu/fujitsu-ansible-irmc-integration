@@ -23,18 +23,21 @@
 
   tasks:
     # Get server ID LED state
-    - name: Get ID LED state
-      irmc_idled:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: idled
-      delegate_to: localhost
-    - name: Show iRMC ID LED state
-      debug:
-        msg: "{{ idled.idled_state }}"
+    - block:
+      - name: Get ID LED state
+        irmc_idled:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+        register: idled
+        delegate_to: localhost
+      - name: Show iRMC ID LED state
+        debug:
+          var: idled.idled_state
+      tags:
+        - get
     
     # Set server ID LED state
     - name: Set server ID LED state
@@ -46,3 +49,5 @@
         command: "set"
         state: "Lit"
       delegate_to: localhost
+      tags:
+        - set
