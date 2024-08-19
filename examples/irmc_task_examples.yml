@@ -23,22 +23,36 @@
 
   tasks:
     # List iRMC tasks
-    - name: List iRMC tasks
-      irmc_task:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "list"
-      delegate_to: localhost
+    - block:
+      - name: List iRMC tasks
+        irmc_task:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "list"
+        register: list
+        delegate_to: localhost
+      - name: Show list of tasks
+        debug:
+          var: list.tasks
+      tags:
+        - list
     
     # Get specific task information
-    - name: Get specific task information
-      irmc_task:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-        id: 3
-      delegate_to: localhost
+    - block:
+      - name: Get specific task information
+        irmc_task:
+          irmc_url: "{{ inventory_hostname }}"
+          irmc_username: "{{ irmc_user }}"
+          irmc_password: "{{ irmc_password }}"
+          validate_certs: "{{ validate_certificate }}"
+          command: "get"
+          id: 3
+        register: get
+        delegate_to: localhost
+      - name: Show specific task
+        debug:
+          var: get.task
+      tags:
+        - get
