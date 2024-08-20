@@ -898,13 +898,13 @@ Default return values
 
 #### Description
 * Ansible module to get iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -914,23 +914,43 @@ Default return values
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
-| vm_type  |  No  |  CDImage  | CDImage<br/> FDImage<br/> HDImage<br/>  | The virtual media type whose data are to be read. |
+| vm_type  |  No  |  CDImage  | CDImage<br/> HDImage<br/>  | The virtual media type whose data are to be read. |
 
 #### Examples
 ```yaml
-# Get Virtual Media data
-- name: Get Virtual Media data
-  irmc_getvm:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    vm_type: CDImage
-  register: vmdata
-  delegate_to: localhost
-- name: Show Virtual Media data
-  debug:
-    msg: "{{ vmdata.virtual_media_data }}"
+# Get Virtual CD data
+- block:
+  - name: Get Virtual CD data
+    irmc_getvm:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      vm_type: CDImage
+    register: cddata
+    delegate_to: localhost
+  - name: Show Virtual CD data
+    debug:
+      var: cddata.virtual_media_data
+  tags:
+    - getcd
+
+# Get Virtual HD data
+- block:
+  - name: Get Virtual HD data
+    irmc_getvm:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      vm_type: HDImage
+    register: hddata
+    delegate_to: localhost
+  - name: Show Virtual HD data
+    debug:
+      var: hddata.virtual_media_data
+  tags:
+    - gethd
 ```
 
 #### Return Values
@@ -950,11 +970,6 @@ Default return values
 | usb_attach_mode | remote image attach mode | always | string | AutoAttach |
 | user_domain | user domain for SMB share | always | string | local.net |
 | user_name | user name for SM share | always | string | test |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_idled
