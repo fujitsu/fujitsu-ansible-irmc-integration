@@ -209,7 +209,7 @@ def main():
         irmc_username=dict(required=True, type='str'),
         irmc_password=dict(required=True, type='str', no_log=True),
         validate_certs=dict(required=False, type='bool', default=True),
-        vm_type=dict(required=False, type='str', default='CDImage', choices=['CDImage', 'FDImage', 'HDImage']),
+        vm_type=dict(required=False, type='str', default='CDImage', choices=['CDImage', 'HDImage']),
         server=dict(required=True, type='str'),
         share=dict(required=True, type='str'),
         image=dict(required=True, type='str'),
