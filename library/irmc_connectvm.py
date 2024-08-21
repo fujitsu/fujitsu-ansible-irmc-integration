@@ -190,7 +190,7 @@ def main():
             required=False,
             type='str',
             default='ConnectCD',
-            choices=['ConnectCD', 'ConnectFD', 'ConnectHD', 'DisconnectCD', 'DisconnectFD', 'DisconnectHD'],
+            choices=['ConnectCD','ConnectHD', 'DisconnectCD','DisconnectHD'],
         ),
     )
     module = AnsibleModule(
