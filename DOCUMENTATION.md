@@ -1531,19 +1531,20 @@ Default return values
 
 #### Description
 * Ansible module to execute iRMC Remote Scripting (SCCI) commands.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
 | cabid  |  No  |  -1 (main cabinet)  | | SCCI cabinet ID. |
-| command  |  Yes  |  | get_cs            (ConfigSpace Read)<br/> set_cs            (ConfigSpace Write)<br/> power_on          (Power-On the Server)<br/> power_off         (Power-Off the Server)<br/> power_cycle       (Power Cycle the Server)<br/> reset             (Hard Reset the Server)<br/> nmi               (Pulse the NMI (Non Maskable Interrupt))<br/> graceful_shutdown (Graceful Shutdown, requires running Agent)<br/> graceful_reboot   (Graceful Reboot, requires running Agent)<br/> cancel_shutdown   (Cancel a Shutdown Request)<br/> reset_firmware    (Perform a BMC Reset)<br/> connect_fd        (Connect/Disconnect a Floppy image on a Remote Share (iRMC S4 only))<br/> connect_cd        (Connect/Disconnect a CD/DVD image on a Remote Share (iRMC S4 only))<br/> connect_hd        (Connect/Disconnect a HDD image on a Remote Share (iRMC S4 only))<br/>  | SCCI remote scripting command. |
+| command  |  Yes  |  | get_cs            (ConfigSpace Read)<br/> set_cs            (ConfigSpace Write)<br/> power_on          (Power-On the Server)<br/> power_off         (Power-Off the Server)<br/> power_cycle       (Power Cycle the Server)<br/> reset             (Hard Reset the Server)<br/> nmi               (Pulse the NMI (Non Maskable Interrupt))<br/> graceful_shutdown (Graceful Shutdown, requires running Agent)<br/> graceful_reboot   (Graceful Reboot, requires running Agent)<br/> cancel_shutdown   (Cancel a Shutdown Request)<br/> reset_firmware    (Perform a BMC Reset)<br/>   | SCCI remote scripting command. |
 | data  |  No  |  | | Data for commands which require data, ignored otherwise. |
 | index  |  No  |  | | SCCI index. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
@@ -1565,20 +1566,78 @@ Default return values
     opcodeext: 0x200
     data: "In a galaxy far, far away ..."
   delegate_to: localhost
+  tags:
+    - write
 
 # Read server location
-- name: "Read server location"
+- block:
+  - name: "Read server location"
+    irmc_scci:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get_cs"
+      opcodeext: 0x200
+    register: read_result
+    delegate_to: localhost
+  - name: Show server location
+    debug:
+      var: read_result.data
+  tags:
+    - read
+
+# Power on the server
+- name: "Power on the server"
   irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
-    command: "get_cs"
+    validate_certs: "{{ validate_certificate }}"
+    command: "power_on"
     opcodeext: 0x200
-  register: scci
   delegate_to: localhost
-- name: Show server location
-  debug:
-    msg: "{{ scci.data }}"
+  tags:
+    - poweron
+
+# Power off the server
+- name: "Power off the server"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "power_off"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - poweroff
+
+# Cancel shutdown
+- name: "Cancel shutdown"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "cancel_shutdown"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - cancel_shutdown
+
+# Reset firmware
+- name: "Reset firmware"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "reset_firmware"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - reset_firm
 ```
 
 #### Return Values
@@ -1592,11 +1651,6 @@ Default return values
 **For all other commands:**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
 ### irmc_session
