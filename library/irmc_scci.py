@@ -188,6 +188,8 @@ scci_code_map = {
     'cancel_shutdown': '0209',  # Cancel a Shutdown Request
     'reset_firmware': '0203',  # Perform a BMC Reset
     'connect_storage': '0250',  # Connect/Disconnect a standalone Remote Storage Server
+
+    # TODO: The following 3 items will be removed after checking unused.
     'connect_fd': '0251',  # Connect/Disconnect a Floppy image on a Remote Share (NFS/SMB)
     'connect_cd': '0252',  # Connect/Disconnect a CD/DVD image on a Remote Share (NFS/SMB)
     'connect_hd': '0253',  # Connect/Disconnect a HDD image on a Remote Share (NFS/SMB)
@@ -266,9 +268,6 @@ def main():
                 'cancel_shutdown',  # Cancel a Shutdown Request
                 'reset_firmware',  # Perform a BMC Reset
                 'connect_storage',  # Connect/Disconnect a standalone Remote Storage Server
-                'connect_fd',  # Connect/Disconnect a Floppy image on a Remote Share (NFS/SMB)
-                'connect_cd',  # Connect/Disconnect a CD/DVD image on a Remote Share (NFS/SMB)
-                'connect_hd',  # Connect/Disconnect a HDD image on a Remote Share (NFS/SMB)
             ],
         ),
         opcodeext=dict(required=True, type='int'),
