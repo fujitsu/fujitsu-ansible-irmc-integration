@@ -1777,13 +1777,13 @@ Default return values
 
 #### Description
 * Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1801,33 +1801,51 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 | vm_domain  |  No  |  | | User domain in case of SMB share. |
 | vm_password  |  No  |  | | User password in case of SMB share. |
-| vm_type  |  No  |  CDImage  | CDImage<br/> FDImage<br/> HDImage<br/>  | The virtual media type to be set. |
+| vm_type  |  No  |  CDImage  | CDImage<br/> HDImage<br/>  | The virtual media type to be set. |
 | vm_user  |  No  |  | | User account in case of SMB share. |
 
 #### Examples
 ```yaml
-# Set Virtual Media Data
-- name: Set Virtual Media Data
+# Set Virtual CD
+- name: Set Virtual CD
   irmc_setvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
+    share_type: "{{ share_type }}"
     server: "{{ server }}"
     share: "{{ share }}"
     image: "{{ image }}"
-    share_type: "{{ share_type }}"
+    vm_user: "{{ vm_user }}"
+    vm_password: "{{ vm_password }}"
+    vm_type: "CDImage"
   delegate_to: localhost
+  tags:
+    - setcd
+
+# Set Virtual HD
+- name: Set Virtual HD
+  irmc_setvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    share_type: "{{ share_type }}"
+    server: "{{ server }}"
+    share: "{{ share }}"
+    image: "{{ image }}"
+    vm_user: "{{ vm_user }}"
+    vm_password: "{{ vm_password }}"
+    vm_type: "HDImage"
+  delegate_to: localhost
+  tags:
+    - sethd
 ```
 
 #### Return Values
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_task
