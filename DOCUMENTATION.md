@@ -316,19 +316,19 @@ Default return values
 
 #### Description
 * Ansible module to connect iRMC Virtual Media Data via the iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
-| command  |  No  |  ConnectCD  | ConnectCD<br/> ConnectFD<br/> ConnectHD<br/> DisconnectCD<br/> DisconnectFD<br/> DisconnectHD<br/>  | The virtual media connect command to be executed. |
+| command  |  No  |  ConnectCD  | ConnectCD<br/> ConnectHD<br/> DisconnectCD<br/> DisconnectHD<br/>  | The virtual media connect command to be executed. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
@@ -345,6 +345,8 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "DisconnectCD"
   delegate_to: localhost
+  tags: 
+    - disconnectCD
 
 # Connect Virtual CD
 - name: Connect Virtual CD
@@ -355,16 +357,37 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "ConnectCD"
   delegate_to: localhost
+  tags: 
+    - connectCD
+
+# Disconnect Virtual HD
+- name: Disconnect Virtual HD
+  irmc_connectvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "DisconnectHD"
+  delegate_to: localhost
+  tags: 
+    - disconnectHD
+
+# Connect Virtual HD
+- name: Connect Virtual HD
+  irmc_connectvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "ConnectHD"
+  delegate_to: localhost
+  tags: 
+    - connectHD
 ```
 
 #### Return Values
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_elcm_offline_update
@@ -931,13 +954,13 @@ Default return values
 
 #### Description
 * Ansible module to get iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -947,23 +970,43 @@ Default return values
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
-| vm_type  |  No  |  CDImage  | CDImage<br/> FDImage<br/> HDImage<br/>  | The virtual media type whose data are to be read. |
+| vm_type  |  No  |  CDImage  | CDImage<br/> HDImage<br/>  | The virtual media type whose data are to be read. |
 
 #### Examples
 ```yaml
-# Get Virtual Media data
-- name: Get Virtual Media data
-  irmc_getvm:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    vm_type: CDImage
-  register: vmdata
-  delegate_to: localhost
-- name: Show Virtual Media data
-  debug:
-    msg: "{{ vmdata.virtual_media_data }}"
+# Get Virtual CD data
+- block:
+  - name: Get Virtual CD data
+    irmc_getvm:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      vm_type: CDImage
+    register: cddata
+    delegate_to: localhost
+  - name: Show Virtual CD data
+    debug:
+      var: cddata.virtual_media_data
+  tags:
+    - getcd
+
+# Get Virtual HD data
+- block:
+  - name: Get Virtual HD data
+    irmc_getvm:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      vm_type: HDImage
+    register: hddata
+    delegate_to: localhost
+  - name: Show Virtual HD data
+    debug:
+      var: hddata.virtual_media_data
+  tags:
+    - gethd
 ```
 
 #### Return Values
@@ -983,11 +1026,6 @@ Default return values
 | usb_attach_mode | remote image attach mode | always | string | AutoAttach |
 | user_domain | user domain for SMB share | always | string | local.net |
 | user_name | user name for SM share | always | string | test |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_idled
@@ -1244,16 +1282,19 @@ Default return values
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
+
 ### irmc_ntp
 
 #### Description
+
 * Ansible module to manage iRMC time options via iRMC remote scripting interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1271,20 +1312,24 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get iRMC time settings
-- name: Get iRMC time settingsa
-  irmc_ntp:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: time
-  delegate_to: localhost
-- name: Show iRMC time settings
-  debug:
-    msg: "{{ time.time_settings }}"
+- block:
+  - name: Get iRMC time settings
+    irmc_ntp:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: time
+    delegate_to: localhost
+  - name: Show iRMC time settings
+    debug:
+      var: time.time_settings
+  tags:
+    - get
 
 # Set iRMC time option(s)
 - name: Set iRMC time option(s)
@@ -1295,7 +1340,11 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "set"
     time_mode: "System RTC"
+    time_zone_location: "Asia/Tokyo"
+    rtc_mode: "local time"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -1313,11 +1362,6 @@ Default return values
 **For command "set":**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
 ### irmc_powerstate
@@ -1564,19 +1608,20 @@ Default return values
 
 #### Description
 * Ansible module to execute iRMC Remote Scripting (SCCI) commands.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
 | cabid  |  No  |  -1 (main cabinet)  | | SCCI cabinet ID. |
-| command  |  Yes  |  | get_cs            (ConfigSpace Read)<br/> set_cs            (ConfigSpace Write)<br/> power_on          (Power-On the Server)<br/> power_off         (Power-Off the Server)<br/> power_cycle       (Power Cycle the Server)<br/> reset             (Hard Reset the Server)<br/> nmi               (Pulse the NMI (Non Maskable Interrupt))<br/> graceful_shutdown (Graceful Shutdown, requires running Agent)<br/> graceful_reboot   (Graceful Reboot, requires running Agent)<br/> cancel_shutdown   (Cancel a Shutdown Request)<br/> reset_firmware    (Perform a BMC Reset)<br/> connect_fd        (Connect/Disconnect a Floppy image on a Remote Share (iRMC S4 only))<br/> connect_cd        (Connect/Disconnect a CD/DVD image on a Remote Share (iRMC S4 only))<br/> connect_hd        (Connect/Disconnect a HDD image on a Remote Share (iRMC S4 only))<br/>  | SCCI remote scripting command. |
+| command  |  Yes  |  | get_cs            (ConfigSpace Read)<br/> set_cs            (ConfigSpace Write)<br/> power_on          (Power-On the Server)<br/> power_off         (Power-Off the Server)<br/> power_cycle       (Power Cycle the Server)<br/> reset             (Hard Reset the Server)<br/> nmi               (Pulse the NMI (Non Maskable Interrupt))<br/> graceful_shutdown (Graceful Shutdown, requires running Agent)<br/> graceful_reboot   (Graceful Reboot, requires running Agent)<br/> cancel_shutdown   (Cancel a Shutdown Request)<br/> reset_firmware    (Perform a BMC Reset)<br/>   | SCCI remote scripting command. |
 | data  |  No  |  | | Data for commands which require data, ignored otherwise. |
 | index  |  No  |  | | SCCI index. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
@@ -1598,20 +1643,78 @@ Default return values
     opcodeext: 0x200
     data: "In a galaxy far, far away ..."
   delegate_to: localhost
+  tags:
+    - write
 
 # Read server location
-- name: "Read server location"
+- block:
+  - name: "Read server location"
+    irmc_scci:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get_cs"
+      opcodeext: 0x200
+    register: read_result
+    delegate_to: localhost
+  - name: Show server location
+    debug:
+      var: read_result.data
+  tags:
+    - read
+
+# Power on the server
+- name: "Power on the server"
   irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
-    command: "get_cs"
+    validate_certs: "{{ validate_certificate }}"
+    command: "power_on"
     opcodeext: 0x200
-  register: scci
   delegate_to: localhost
-- name: Show server location
-  debug:
-    msg: "{{ scci.data }}"
+  tags:
+    - poweron
+
+# Power off the server
+- name: "Power off the server"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "power_off"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - poweroff
+
+# Cancel shutdown
+- name: "Cancel shutdown"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "cancel_shutdown"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - cancel_shutdown
+
+# Reset firmware
+- name: "Reset firmware"
+  irmc_scci:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "reset_firmware"
+    opcodeext: 0x200
+  delegate_to: localhost
+  tags:
+    - reset_firm
 ```
 
 #### Return Values
@@ -1625,11 +1728,6 @@ Default return values
 **For all other commands:**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
 ### irmc_session
@@ -1766,13 +1864,13 @@ Default return values
 
 #### Description
 * Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1790,33 +1888,51 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 | vm_domain  |  No  |  | | User domain in case of SMB share. |
 | vm_password  |  No  |  | | User password in case of SMB share. |
-| vm_type  |  No  |  CDImage  | CDImage<br/> FDImage<br/> HDImage<br/>  | The virtual media type to be set. |
+| vm_type  |  No  |  CDImage  | CDImage<br/> HDImage<br/>  | The virtual media type to be set. |
 | vm_user  |  No  |  | | User account in case of SMB share. |
 
 #### Examples
 ```yaml
-# Set Virtual Media Data
-- name: Set Virtual Media Data
+# Set Virtual CD
+- name: Set Virtual CD
   irmc_setvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
+    share_type: "{{ share_type }}"
     server: "{{ server }}"
     share: "{{ share }}"
     image: "{{ image }}"
-    share_type: "{{ share_type }}"
+    vm_user: "{{ vm_user }}"
+    vm_password: "{{ vm_password }}"
+    vm_type: "CDImage"
   delegate_to: localhost
+  tags:
+    - setcd
+
+# Set Virtual HD
+- name: Set Virtual HD
+  irmc_setvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    share_type: "{{ share_type }}"
+    server: "{{ server }}"
+    share: "{{ share }}"
+    image: "{{ image }}"
+    vm_user: "{{ vm_user }}"
+    vm_password: "{{ vm_password }}"
+    vm_type: "HDImage"
+  delegate_to: localhost
+  tags:
+    - sethd
 ```
 
 #### Return Values
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_task
@@ -2057,8 +2173,8 @@ Default return values
 
 ---
 ---
-FUJITSU LIMITED  
-Copyright 2018 FUJITSU LIMITED
+Fsas Technologies Inc.  
+Copyright 2018-2024 Fsas Technologies Inc.
 
 GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 

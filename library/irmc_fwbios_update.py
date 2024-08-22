@@ -290,13 +290,16 @@ def irmc_fwbios_update(module):
     if module.params['command'] == 'get':
         result['fw_update_configuration'] = setup_resultdata(fwdata, sysdata)
         module.exit_json(**result)
-    elif module.params['update_type'] == 'irmc':
+    elif module.params['update_source'] == 'tftp':
         patch_update_data(module, update_url, get_irmc_json(fwdata.json(), '@odata.etag'))
 
     if module.params['update_source'] == 'file':
         status, udata, msg = irmc_redfish_post_file(module, get_update_url(module), module.params['file_name'])
+    elif module.params['update_source'] == 'tftp':
+        status, udata, msg = irmc_redfish_post(module, get_update_url(module), body='')
     else:
-        status, udata, msg = irmc_redfish_post(module, get_update_url(module), module.params['file_name'])
+        module.fail_json(msg=f'{module.params["update_source"]}: unknown update_source')
+
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=udata)
     elif status not in (200, 202, 204):
@@ -312,7 +315,6 @@ def irmc_fwbios_update(module):
 
 def get_update_url(module):
     if module.params['update_source'] == 'tftp':
-        module.params['file_name'] = ''
         if module.params['update_type'] == 'irmc':
             url = 'redfish/v1/Managers/iRMC/Actions/FTSManager.FWTFTPUpdate'
         else:
