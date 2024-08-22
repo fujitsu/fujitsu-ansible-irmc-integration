@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_connectvm
 
@@ -46,7 +46,7 @@ options:
         choices:     ['ConnectCD', 'ConnectHD', 'DisconnectCD', 'DisconnectHD']
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Disconnect Virtual CD
 - name: Disconnect Virtual CD
   irmc_connectvm:
@@ -96,8 +96,10 @@ EXAMPLES = '''
     - connectHD
 '''
 
-RETURN = '''
-Default return values:
+RETURN = r'''
+details:
+    description:
+        The default return value of Ansible (changed, failed, etc.) is returned.
 '''
 
 
