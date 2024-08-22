@@ -653,13 +653,13 @@ Default return values
 
 #### Description
 * Ansible module to handle iRMC eventlogs via Restful API.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -676,26 +676,106 @@ Default return values
 #### Examples
 ```yaml
 # List iRMC InternalEventLog
-- name: List iRMC InternalEventLog
-  irmc_eventlog:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "list"
-    eventlog_type: "InternalEventLog"
-  delegate_to: localhost
+- block:
+  - name: List iRMC InternalEventLog
+    irmc_eventlog:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "list"
+      eventlog_type: "InternalEventLog"
+    delegate_to: localhost
+    register: list_internaleventlog
+  - name: Show list InternalEventLog
+    debug:
+      var: list_internaleventlog
+  tags:
+    - list_internaleventlog
+
+# List iRMC SystemEventLog
+- block:
+  - name: List iRMC SystemEventLog
+    irmc_eventlog:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "list"
+      eventlog_type: "SystemEventLog"
+    delegate_to: localhost
+    register: list_systemeventlog
+  - name: Show list SystemEventLog
+    debug:
+      var: list_systemeventlog
+  tags:
+    - list_systemeventlog
+
+# Get specific InternalEventLog entry information
+# Add '-e “id=xx”' to the command line argument of Playbook.
+- block:
+  - name: Get specific InternalEventLog entry information
+    irmc_eventlog:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      eventlog_type: "InternalEventLog"
+      id: "{{ id | int }}"
+    delegate_to: localhost
+    register: get_internaleventlog
+  - name: Show specific InternalEventLog
+    debug:
+      var: get_internaleventlog.eventlog_entry
+  tags:
+    - get_internaleventlog
 
 # Get specific SystemEventLog entry information
-- name: Get specific SystemEventLog entry information
+# Add '-e “id=xx”' to the command line argument of Playbook.
+- block:
+  - name: Get specific SystemEventLog entry information
+    irmc_eventlog:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      eventlog_type: "SystemEventLog"
+      id: "{{ id | int }}"
+    delegate_to: localhost
+    register: get_systemeventlog
+  - name: Show get specific SystemEventLog
+    debug:
+      var: get_systemeventlog.eventlog_entry
+  tags:
+    - get_systemeventlog
+
+# Clear iRMC InternalEventLog
+- name: Clear iRMC InternalEventLog
   irmc_eventlog:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "get"
-    id: 0
+    command: "clear"
+    eventlog_type: "InternalEventLog"
   delegate_to: localhost
+  tags:
+    - clear_internaleventlog
+
+# Clear iRMC SystemEventLog
+- name: Clear iRMC SystemEventLog
+  irmc_eventlog:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "clear"
+    eventlog_type: "SystemEventLog"
+  delegate_to: localhost
+  tags:
+    - clear_systemeventlog
 ```
 
 #### Return Values
@@ -721,11 +801,6 @@ List of individual eventlog_entries (see above)
 **For all other commands:**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_facts
