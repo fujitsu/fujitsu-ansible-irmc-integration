@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_eventlog
 
@@ -54,7 +54,7 @@ options:
         required:    false
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 - block:
   - name: List iRMC InternalEventLog
     irmc_eventlog:
@@ -157,59 +157,61 @@ EXAMPLES = '''
     - clear_systemeventlog
 '''
 
-RETURN = '''
-# eventlog_entry data returned for command "get":
-    AlertGroup:
-        description: group which caused the event
-        returned: always
-        type: string
-        sample: Memory
-    Cause:
-        description: reason for the event if available
-        returned: always
-        type: string
-        sample: The memory module was not approved and released for this system by the system manufacturer
-    Created:
-        description: dated of the event
-        returned: always
-        type: string
-        sample: "2018-07-24T15:57:40+02:00"
-    EventSource:
-        description: where the event originated from
-        returned: always
-        type: string
-        sample: iRMC S5
-    Id:
-        description: event ID
-        returned: always
-        type: int
-        sample: 20
-    Message:
-        description: event entry text
-        returned: always
-        type: string
-        sample: DIMM-1E Non Fujitsu Memory Module detected - Warranty restricted!
-    Resolutions:
-        description: list of possible solitions for the problem, if available
-        returned: always
-        type: list
-        sample:
-    Severity:
-        description: serverity of event
-        returned: always
-        type: string
-        sample: Warning
-    Type:
-        description: event type
-        returned: always
-        type: string
-        sample: SEL
+RETURN = r'''
+details:
+    description:
+        If command is “get”, the following values are returned.
 
-# eventlog data returned for command "list":
-    List of individual eventlog_entries (see above):
+        If command is "list", list of individual eventlog_entries is returned.
 
-# For all other commands:
-    Default return values:
+        For all other commands, the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        AlertGroup:
+            description: group which caused the event
+            returned: always
+            type: string
+            sample: Memory
+        Cause:
+            description: reason for the event if available
+            returned: always
+            type: string
+            sample: The memory module was not approved and released for this system by the system manufacturer
+        Created:
+            description: dated of the event
+            returned: always
+            type: string
+            sample: "2018-07-24T15:57:40+02:00"
+        EventSource:
+            description: where the event originated from
+            returned: always
+            type: string
+            sample: iRMC S5
+        Id:
+            description: event ID
+            returned: always
+            type: int
+            sample: 20
+        Message:
+            description: event entry text
+            returned: always
+            type: string
+            sample: DIMM-1E Non Fujitsu Memory Module detected - Warranty restricted!
+        Resolutions:
+            description: list of possible solitions for the problem, if available
+            returned: always
+            type: list
+            sample:
+        Severity:
+            description: serverity of event
+            returned: always
+            type: string
+            sample: Warning
+        Type:
+            description: event type
+            returned: always
+            type: string
+            sample: SEL
 '''
 
 
