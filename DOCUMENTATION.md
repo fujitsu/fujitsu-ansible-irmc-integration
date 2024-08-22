@@ -812,9 +812,9 @@ Default return values
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | server_name  |  No  |  | | TFTP server name or IP. ignored if update_source is set to 'file' |
-| timeout  |  No  |  30  | | Timeout for BIOS/iRMC FW flash process in minutes. |
+| timeout  |  No  |  30  | | Timeout for BIOS/iRMC FW flash process in minutes.<br/> Ansible task can be stopped by timeout, but it can not stop update already running on the server. |
 | update_source  |  No  |  | tftp<br/> file<br/>  | Where to get the FW or BIOS update file. |
-| update_type  |  No  |  | irmc<br/> bios<br/>  | Whether to update iRMC FW or server BIOS. |
+| update_type  |  No  |  | irmc<br/> bios<br/>  | Whether to update iRMC FW or server BIOS.<br/> In iRMC FW update, ansible task may not finish even after the update is completed on the server. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples

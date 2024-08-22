@@ -55,10 +55,12 @@ options:
         choices:     ['tftp', 'file']
     update_type:
         description: Whether to update iRMC FW or server BIOS.
+                     In iRMC FW update, ansible task may not finish even after the update is completed on the server.
         required:    false
         choices:     ['irmc', 'bios']
     timeout:
         description: Timeout for BIOS/iRMC FW flash process in minutes.
+                     Ansible task can be stopped by timeout, but it can not stop update already running on the server.
         required:    false
         default:     30
     server_name:
