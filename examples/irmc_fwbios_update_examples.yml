@@ -93,8 +93,8 @@
           update_type: "irmc"
           server_name: "{{ tftp_server }}"
           file_name: "{{ irmc_filename }}"
-          irmc_flash_selector: "Auto"
-          irmc_boot_selector: "Auto"
+          irmc_flash_selector: "HighFWImage"
+          irmc_boot_selector: "LowFWImage"
         delegate_to: localhost
         register: irmc_update_tftp
       - name: Show irmc update via TFTP result
@@ -102,3 +102,19 @@
           var: irmc_update_tftp
       tags:
         - update_irmc_tftp
+
+    - name: Update iRMC FW from local file
+      irmc_fwbios_update:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "update"
+        update_source: "file"
+        update_type: "irmc"
+        file_name: "{{ irmc_filename }}"
+        irmc_flash_selector: "HighFWImage"
+        irmc_boot_selector: "LowFWImage"
+      delegate_to: localhost
+      tags:
+        - update_irmc_file
