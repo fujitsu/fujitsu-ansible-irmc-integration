@@ -2030,8 +2030,8 @@ Default return values
 
 ---
 ---
-FUJITSU LIMITED  
-Copyright 2018 FUJITSU LIMITED
+Fsas Technologies Inc.  
+Copyright 2018-2024 Fsas Technologies Inc.
 
 GNU General Public License v3.0+ (see [LICENSE.md](LICENSE.md) or https://www.gnu.org/licenses/gpl-3.0.txt)
 
