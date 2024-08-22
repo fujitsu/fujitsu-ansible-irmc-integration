@@ -1700,14 +1700,16 @@ Default return values
 ### irmc_session
 
 #### Description
+
 * Ansible module to handle iRMC sessions via Restful API.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1721,27 +1723,90 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # List iRMC sessions
-- name: List iRMC sessions
-  irmc_session:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "list"
-  delegate_to: localhost
+- name: Get and show iRMC sessions
+  tags:
+    - list
+  block:
+    - name: List iRMC sessions
+      irmc_session:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "list"
+      delegate_to: localhost
+      register: result
+    - name: Show iRMC sessions details
+      ansible.builtin.debug:
+        var: result.sessions
 
 # Get specific session information
 - name: Get specific session information
+  tags:
+    - get
+  block:
+    - name: Get specific session information
+      irmc_session:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        id: "{{ session_id | int }}"
+      delegate_to: localhost
+      register: result
+    - name: Show specific session information
+      ansible.builtin.debug:
+        var: result
+
+# Remove specific session information
+- name: Remove specific session information
+  tags:
+    - remove
+  block:
+    - name: Remove specific session information
+      irmc_session:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "remove"
+        id: "{{ session_id | int }}"
+      delegate_to: localhost
+      register: result
+    - name: Show result of remove session
+      ansible.builtin.debug:
+        var: result
+
+# Clear all sessions information
+- name: Clear all sessions information
   irmc_session:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "get"
-    id: 3
+    command: "clearall"
   delegate_to: localhost
+  register: result
+  tags:
+    - clearall
+
+# Terminate specific session
+- name: Terminate specific session
+  irmc_session:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "terminate"
+    id: "{{ session_id | int }}"
+  delegate_to: localhost
+  register: result
+  tags:
+    - terminate
 ```
 
 #### Return Values
@@ -1751,7 +1816,7 @@ Default return values
 | Name | Description | Returned | Type | Example |
 |:-----|:------------|:---------|:-----|:--------|
 | Duration | Session duration in seconds | always | int | 226 |
-| Id | session ID | always | string | 4 |
+| Id | session ID | always | int | 4 |
 | Start | work sequence | always | string | 2018/07/31 12:09:25 |
 | Status | session status | always | string | terminated regularly |
 | Tag | session tag | always | string |  |
@@ -1770,11 +1835,6 @@ Default return values
 **For all other commands:**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_setnextboot
