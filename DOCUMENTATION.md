@@ -1405,15 +1405,13 @@ Default return values
 #### Description
 * Ansible module to configure the BIOS boot oder via iRMC.
 * Using this module may force server into several reboots.
-* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * The PRIMERGY server needs to be at least a M2 model.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1432,25 +1430,79 @@ Default return values
 #### Examples
 ```yaml
 # List iRMC profiles
-- name: List iRMC profiles
-  irmc_profiles:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "list"
-  delegate_to: localhost
+- block:
+  - name: List iRMC profiles
+    irmc_profiles:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "list"
+    delegate_to: localhost
+    register: list_profiles
+  - name: Show list of profiles
+    debug:
+      var: list_profiles.profiles
+  tags:
+    - list_profiles
 
-# Get iRMC HWConfigurationIrmc profile
-- name: Get iRMC HWConfigurationIrmc profile
+# Get specific profile
+- block:
+  - name: Get specific profile
+    irmc_profiles:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      profile: "HWConfigurationIrmc"
+    delegate_to: localhost
+    register: get_profile
+  - name: Show specific profile
+    debug:
+      var: get_profile.profile
+  tags:
+    - get_profile
+
+# Create profile
+- name: Create profile
   irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "get"
+    command: "create"
+    profile: "HWConfigurationIrmc"
+    wait_for_finish: "True"
+  delegate_to: localhost
+  tags:
+    - create_profile
+
+# Delete profile
+- name: Delete profile
+  irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "delete"
     profile: "HWConfigurationIrmc"
   delegate_to: localhost
+  tags:
+    - delete_profile
+
+# Import profile
+- name: Import profile
+  irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "import"
+    profile_path: "{{ profile_path }}"
+  delegate_to: localhost
+  tags:
+    - import_profile
 ```
 
 #### Return Values
@@ -1472,11 +1524,6 @@ Default return values
 | Name | Description | Returned | Type | Example |
 |:-----|:------------|:---------|:-----|:--------|
 | profile | data of requested profile | always | dict |  |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_raid

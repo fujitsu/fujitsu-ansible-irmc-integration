@@ -2,18 +2,9 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_profiles
 
@@ -22,15 +13,13 @@ short_description: handle iRMC profiles
 description:
     - Ansible module to configure the BIOS boot oder via iRMC.
     - Using this module may force server into several reboots.
-    - See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
-    - Module Version V1.2.
+    - Module Version V1.3.0.
 
 requirements:
     - The module needs to run locally.
-    - The PRIMERGY server needs to be at least a M2 model.
-    - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - Python >= 2.6
-    - Python modules 'future', 'requests', 'urllib3'
+    - iRMC S6.
+    - Python >= 3.10
+    - Python modules 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -72,36 +61,86 @@ options:
         description: Wait for 'create profile' or 'import profile' session to finish. Ignored otherwise.
         required:    false
         default:     true
-
-notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # List iRMC profiles
-- name: List iRMC profiles
-  irmc_profiles:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "list"
-  delegate_to: localhost
+- block:
+  - name: List iRMC profiles
+    irmc_profiles:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "list"
+    delegate_to: localhost
+    register: list_profiles
+  - name: Show list of profiles
+    debug:
+      var: list_profiles.profiles
+  tags:
+    - list_profiles
 
-# Get iRMC HWConfigurationIrmc profile
-- name: Get iRMC HWConfigurationIrmc profile
+# Get specific profile
+- block:
+  - name: Get specific profile
+    irmc_profiles:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      profile: "HWConfigurationIrmc"
+    delegate_to: localhost
+    register: get_profile
+  - name: Show specific profile
+    debug:
+      var: get_profile.profile
+  tags:
+    - get_profile
+
+# Create profile
+- name: Create profile
   irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    command: "get"
+    command: "create"
+    profile: "HWConfigurationIrmc"
+    wait_for_finish: "True"
+  delegate_to: localhost
+  tags:
+    - create_profile
+
+# Delete profile
+- name: Delete profile
+  irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "delete"
     profile: "HWConfigurationIrmc"
   delegate_to: localhost
+  tags:
+    - delete_profile
+
+# Import profile
+- name: Import profile
+  irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "import"
+    profile_path: "{{ profile_path }}"
+  delegate_to: localhost
+  tags:
+    - import_profile
 '''
 
-RETURN = '''
+RETURN = r'''
 # profiles returned for command "list":
     <profile_name>:
         description: name of specific profile
@@ -132,11 +171,15 @@ RETURN = '''
 
 import json
 import os.path
+
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, irmc_redfish_delete, get_irmc_json, \
-                                      waitForSessionToFinish
-
+from ansible.module_utils.irmc import (
+    get_irmc_json,
+    irmc_redfish_delete,
+    irmc_redfish_get,
+    irmc_redfish_post,
+    waitForSessionToFinish,
+)
 
 # Global
 result = dict()
@@ -148,32 +191,32 @@ def irmc_profiles(module):
     result['status'] = 0
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # preliminary parameter check
-    if module.params['command'] == "import":
+    if module.params['command'] == 'import':
         if module.params['profile_json'] is None and not os.path.isfile(module.params['profile_path']):
-            module.fail_json(msg="Got no profile to import.", status=10)
+            module.fail_json(msg='Got no profile to import.', status=10)
     if module.params['command'] not in ('list', 'import') and module.params['profile'] is None:
         result['msg'] = "Command '{0}' requires parameter 'profile' to be set.".format(module.params['command'])
         result['status'] = 11
         module.fail_json(**result)
 
     # start doing the actual work
-    if module.params['command'] == "list":
+    if module.params['command'] == 'list':
         list_profiles(module)
 
-    if module.params['command'] == "get":
+    if module.params['command'] == 'get':
         get_profile(module)
 
-    if module.params['command'] == "create":
+    if module.params['command'] == 'create':
         create_profile(module)
 
-    if module.params['command'] == "delete":
+    if module.params['command'] == 'delete':
         delete_profile(module)
 
-    if module.params['command'] == "import":
+    if module.params['command'] == 'import':
         import_profile(module)
 
     module.exit_json(**result)
@@ -199,7 +242,7 @@ def import_profile(module):
     irmc_profile = checkandupdate_irmc_profile(module, irmc_profile)
 
     # Set new profile
-    status, sysdata, msg = irmc_redfish_post(module, "rest/v1/Oem/eLCM/ProfileManagement/set",
+    status, sysdata, msg = irmc_redfish_post(module, 'rest/v1/Oem/eLCM/ProfileManagement/set',
                                              json.dumps(irmc_profile))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
@@ -211,7 +254,7 @@ def import_profile(module):
 
     if module.params['wait_for_finish'] is True:
         # check that current session is terminated
-        status, data, msg = waitForSessionToFinish(module, get_irmc_json(sysdata.json(), ["Session", "Id"]))
+        status, data, msg = waitForSessionToFinish(module, get_irmc_json(sysdata.json(), ['Session', 'Id']))
         if status > 30 and status < 100:
             module.fail_json(msg=msg, status=status, exception=data)
         elif status not in (200, 202, 204):
@@ -221,7 +264,7 @@ def import_profile(module):
 
 
 def delete_profile(module):
-    status, sysdata, msg = irmc_redfish_delete(module, "rest/v1/Oem/eLCM/ProfileManagement/{0}".
+    status, sysdata, msg = irmc_redfish_delete(module, 'rest/v1/Oem/eLCM/ProfileManagement/{0}'.
                                                format(module.params['profile']))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
@@ -237,8 +280,8 @@ def delete_profile(module):
 
 
 def create_profile(module):
-    url = "rest/v1/Oem/eLCM/ProfileManagement/get?PARAM_PATH=Server/{0}".format(module.params['profile'])
-    status, sysdata, msg = irmc_redfish_post(module, url, "")
+    url = 'rest/v1/Oem/eLCM/ProfileManagement/get?PARAM_PATH=Server/{0}'.format(module.params['profile'])
+    status, sysdata, msg = irmc_redfish_post(module, url, '')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status == 404:
@@ -253,7 +296,7 @@ def create_profile(module):
 
     if module.params['wait_for_finish'] is True:
         # check that current session is terminated
-        status, data, msg = waitForSessionToFinish(module, get_irmc_json(sysdata.json(), ["Session", "Id"]))
+        status, data, msg = waitForSessionToFinish(module, get_irmc_json(sysdata.json(), ['Session', 'Id']))
         if status > 30 and status < 100:
             module.fail_json(msg=msg, status=status, exception=data)
         elif status not in (200, 202, 204):
@@ -263,23 +306,23 @@ def create_profile(module):
 
 
 def list_profiles(module):
-    status, sysdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/ProfileManagement")
+    status, sysdata, msg = irmc_redfish_get(module, 'rest/v1/Oem/eLCM/ProfileManagement')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
     result['profiles'] = {}
-    for profile in get_irmc_json(sysdata.json(), ["Links", "profileStore"]):
+    for profile in get_irmc_json(sysdata.json(), ['Links', 'profileStore']):
         for status, value in profile.items():
             profile = {}
-            profile['Name'] = value.replace("rest/v1/Oem/eLCM/ProfileManagement/", "")
+            profile['Name'] = value.replace('rest/v1/Oem/eLCM/ProfileManagement/', '')
             profile['Location'] = value
-            result['profiles'][value.replace("rest/v1/Oem/eLCM/ProfileManagement/", "")] = profile
+            result['profiles'][value.replace('rest/v1/Oem/eLCM/ProfileManagement/', '')] = profile
 
 
 def get_profile(module):
-    status, sysdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/ProfileManagement/{0}".
+    status, sysdata, msg = irmc_redfish_get(module, 'rest/v1/Oem/eLCM/ProfileManagement/{0}'.
                                             format(module.params['profile']))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
@@ -294,53 +337,53 @@ def get_profile(module):
 
 def checkandupdate_irmc_profile(module, profile):
     server = get_irmc_json(profile, ['Server'])
-    if "Key does not exist" in server:
-        module.fail_json(msg="Invalid iRMC JSON: '{0}'.".format(profile), status=30)
+    if 'Key does not exist' in server:
+        module.fail_json(msg=f"Invalid iRMC JSON: '{profile}'.", status=30)
     else:
         sysconfig = get_irmc_json(profile, ['Server', 'SystemConfig'])
-        if "Key does not exist" in sysconfig:
+        if 'Key does not exist' in sysconfig:
             adapterconfig = get_irmc_json(profile, ['Server', 'AdapterConfigIrmc'])
-            if "Key does not exist" in adapterconfig:
+            if 'Key does not exist' in adapterconfig:
                 hwconfig = get_irmc_json(profile, ['Server', 'HWConfigurationIrmc'])
-                if "Key does not exist" in hwconfig:
-                    module.fail_json(msg="Invalid iRMC JSON: '{0}'.".format(profile), status=31)
+                if 'Key does not exist' in hwconfig:
+                    module.fail_json(msg=f"Invalid iRMC JSON: '{profile}'.", status=31)
                 else:
-                    profile['Server']['HWConfigurationIrmc']['@Processing'] = "execute"
+                    profile['Server']['HWConfigurationIrmc']['@Processing'] = 'execute'
             else:
-                profile['Server']['AdapterConfigIrmc']['@Processing'] = "execute"
+                profile['Server']['AdapterConfigIrmc']['@Processing'] = 'execute'
         else:
             biosconfig = get_irmc_json(profile, ['Server', 'SystemConfig', 'BiosConfig'])
             irmcconfig = get_irmc_json(profile, ['Server', 'SystemConfig', 'IrmcConfig'])
-            if "Key does not exist" in biosconfig and "Key does not exist" in irmcconfig:
-                msg = "Invalid iRMC JSON: '{0}'.".format(profile)
+            if 'Key does not exist' in biosconfig and 'Key does not exist' in irmcconfig:
+                msg = f"Invalid iRMC JSON: '{profile}'."
                 return 3, msg
-            if "Key does not exist" not in biosconfig:
+            if 'Key does not exist' not in biosconfig:
                 biosbootorder = get_irmc_json(profile, ['Server', 'SystemConfig', 'BiosConfig', 'BiosBootOrder'])
-                if "Key does not exist" not in biosbootorder:
+                if 'Key does not exist' not in biosbootorder:
                     profile['Server']['SystemConfig']['BiosConfig']['BiosBootOrder']['BootOrderApply'] = True
-                profile['Server']['SystemConfig']['BiosConfig']['@Processing'] = "execute"
-            if "Key does not exist" not in irmcconfig:
-                profile['Server']['SystemConfig']['IrmcConfig']['@Processing'] = "execute"
+                profile['Server']['SystemConfig']['BiosConfig']['@Processing'] = 'execute'
+            if 'Key does not exist' not in irmcconfig:
+                profile['Server']['SystemConfig']['IrmcConfig']['@Processing'] = 'execute'
     return profile
 
 
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="list",
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=False, type='str', default='list',
                      choices=['list', 'get', 'create', 'delete', 'import']),
-        profile=dict(required=False, type="str"),
-        profile_json=dict(required=False, type="str"),
-        profile_path=dict(required=False, type="str"),
-        wait_for_finish=dict(required=False, type="bool", default=True),
+        profile=dict(required=False, type='str'),
+        profile_json=dict(required=False, type='str'),
+        profile_path=dict(required=False, type='str'),
+        wait_for_finish=dict(required=False, type='bool', default=True),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_profiles(module)
