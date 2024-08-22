@@ -1211,16 +1211,19 @@ Default return values
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
+
 ### irmc_ntp
 
 #### Description
+
 * Ansible module to manage iRMC time options via iRMC remote scripting interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1238,20 +1241,24 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get iRMC time settings
-- name: Get iRMC time settingsa
-  irmc_ntp:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: time
-  delegate_to: localhost
-- name: Show iRMC time settings
-  debug:
-    msg: "{{ time.time_settings }}"
+- block:
+  - name: Get iRMC time settings
+    irmc_ntp:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: time
+    delegate_to: localhost
+  - name: Show iRMC time settings
+    debug:
+      var: time.time_settings
+  tags:
+    - get
 
 # Set iRMC time option(s)
 - name: Set iRMC time option(s)
@@ -1262,7 +1269,11 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "set"
     time_mode: "System RTC"
+    time_zone_location: "Asia/Tokyo"
+    rtc_mode: "local time"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -1280,11 +1291,6 @@ Default return values
 **For command "set":**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
 ### irmc_powerstate
