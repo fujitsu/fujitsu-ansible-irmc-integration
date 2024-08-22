@@ -316,19 +316,19 @@ Default return values
 
 #### Description
 * Ansible module to connect iRMC Virtual Media Data via the iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
   * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+  * iRMC S6.
+  * Python >= 3.10
+  * Python modules 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
-| command  |  No  |  ConnectCD  | ConnectCD<br/> ConnectFD<br/> ConnectHD<br/> DisconnectCD<br/> DisconnectFD<br/> DisconnectHD<br/>  | The virtual media connect command to be executed. |
+| command  |  No  |  ConnectCD  | ConnectCD<br/> ConnectHD<br/> DisconnectCD<br/> DisconnectHD<br/>  | The virtual media connect command to be executed. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
@@ -345,6 +345,8 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "DisconnectCD"
   delegate_to: localhost
+  tags: 
+    - disconnectCD
 
 # Connect Virtual CD
 - name: Connect Virtual CD
@@ -355,16 +357,37 @@ Default return values
     validate_certs: "{{ validate_certificate }}"
     command: "ConnectCD"
   delegate_to: localhost
+  tags: 
+    - connectCD
+
+# Disconnect Virtual HD
+- name: Disconnect Virtual HD
+  irmc_connectvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "DisconnectHD"
+  delegate_to: localhost
+  tags: 
+    - disconnectHD
+
+# Connect Virtual HD
+- name: Connect Virtual HD
+  irmc_connectvm:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "ConnectHD"
+  delegate_to: localhost
+  tags: 
+    - connectHD
 ```
 
 #### Return Values
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_elcm_offline_update
