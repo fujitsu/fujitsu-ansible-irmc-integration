@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_fwbios_update
 
@@ -80,7 +80,7 @@ options:
         choices:     ['Auto', 'LowFWImage', 'HighFWImage']
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Get irmc firmware and BIOS update settings
 - block: 
   - name: Get irmc firmware and BIOS update settings
@@ -163,81 +163,84 @@ EXAMPLES = '''
     - update_irmc_tftp
 '''
 
-RETURN = '''
-# fw_update_configuration  returned for command "get":
-    bios_file_name:
-        description: BIOS file name
-        returned: always
-        type: string
-        sample: D3279-B1x.R1.20.0.UPC
-    bios_version:
-        description: current BIOS version
-        returned: always
-        type: string
-        sample: V5.0.0.11 R1.20.0 for D3279-B1x
-    irmc_boot_selector:
-        description: selector for iRMC FW to boot
-        returned: always
-        type: string
-        sample: MostRecentProgrammedFW
-    irmc_file_name:
-        description: iRMC Firmware image name
-        returned: always
-        type: string
-        sample: D3279_09.09F_sdr03.12.bin
-    irmc_flash_selector:
-        description: selector for iRMC FW to flash
-        returned: always
-        type: string
-        sample: Auto
-    <fw_image>.BooterVersion:
-        description: booter version
-        returned: always
-        type: string
-        sample: 8.08
-    <fw_image>.FirmwareBuildDate:
-        description: firmware build date
-        returned: always
-        type: string
-        sample: "Dec 1 2017 21:36:17 CEST"
-    <fw_image>.FirmwareRunningState:
-        description: firmware running state
-        returned: always
-        type: string
-        sample: Inactive
-    <fw_image>.FirmwareVersion:
-        description: iRMC firmware version
-        returned: always
-        type: string
-        sample: 9.04F
-    <fw_image>.ImageDescription:
-        description: firmware image description
-        returned: always
-        type: string
-        sample: PRODUCTION RELEASE
-    <fw_image>.SDRRId:
-        description: sensor data record repository id
-        returned: always
-        type: string
-        sample: 0464
-    <fw_image>.SDRRVersion:
-        description: sensor data record repository version
-        returned: always
-        type: string
-        sample: 3.11
-    power_state:
-        description: server power state
-        returned: always
-        type: string
-        sample: Off
-    tftp_server_name:
-        description: TFTP server name
-        returned: always
-        type: string
-        sample: tftpserver.local
+RETURN = r'''
+details:
+    description:
+        If command is “get”, the following values are returned.
 
-# For "update" command:
-    Default return values:
+        For update command, the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        bios_file_name:
+            description: BIOS file name
+            returned: always
+            type: string
+            sample: D3279-B1x.R1.20.0.UPC
+        bios_version:
+            description: current BIOS version
+            returned: always
+            type: string
+            sample: V5.0.0.11 R1.20.0 for D3279-B1x
+        irmc_boot_selector:
+            description: selector for iRMC FW to boot
+            returned: always
+            type: string
+            sample: MostRecentProgrammedFW
+        irmc_file_name:
+            description: iRMC Firmware image name
+            returned: always
+            type: string
+            sample: D3279_09.09F_sdr03.12.bin
+        irmc_flash_selector:
+            description: selector for iRMC FW to flash
+            returned: always
+            type: string
+            sample: Auto
+        <fw_image>.BooterVersion:
+            description: booter version
+            returned: always
+            type: string
+            sample: 8.08
+        <fw_image>.FirmwareBuildDate:
+            description: firmware build date
+            returned: always
+            type: string
+            sample: "Dec 1 2017 21:36:17 CEST"
+        <fw_image>.FirmwareRunningState:
+            description: firmware running state
+            returned: always
+            type: string
+            sample: Inactive
+        <fw_image>.FirmwareVersion:
+            description: iRMC firmware version
+            returned: always
+            type: string
+            sample: 9.04F
+        <fw_image>.ImageDescription:
+            description: firmware image description
+            returned: always
+            type: string
+            sample: PRODUCTION RELEASE
+        <fw_image>.SDRRId:
+            description: sensor data record repository id
+            returned: always
+            type: string
+            sample: 0464
+        <fw_image>.SDRRVersion:
+            description: sensor data record repository version
+            returned: always
+            type: string
+            sample: 3.11
+        power_state:
+            description: server power state
+            returned: always
+            type: string
+            sample: Off
+        tftp_server_name:
+            description: TFTP server name
+            returned: always
+            type: string
+            sample: tftpserver.local
 '''
 
 
