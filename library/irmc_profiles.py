@@ -141,31 +141,38 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-# profiles returned for command "list":
-    <profile_name>:
-        description: name of specific profile
-        returned: always
-        type: dict
-        sample: BiosBootOrder
-    <profile_name>.Location:
-        description: RedFish location of profile
-        returned: always
-        type: string
-        sample: rest/v1/Oem/eLCM/ProfileManagement/BiosBootOrder
-    <profile_name>.Name:
-        description: name of profile
-        returned: always
-        type: string
-        sample: BiosBootOrder
+details_for_list:
+    description: If command is “list”, the following values are returned.
 
-# profile data returned for command "get":
-    profile:
-        description: data of requested profile
-        returned: always
-        type: dict
+    contains:
+        <profile_name>:
+            description: name of specific profile
+            returned: always
+            type: dict
+            sample: BiosBootOrder
+        <profile_name>.Location:
+            description: RedFish location of profile
+            returned: always
+            type: string
+            sample: rest/v1/Oem/eLCM/ProfileManagement/BiosBootOrder
+        <profile_name>.Name:
+            description: name of profile
+            returned: always
+            type: string
+            sample: BiosBootOrder
 
-# For all other commands:
-    Default return values:
+details_for_get:
+    description: If command is “get”, the following value is returned.
+
+    contains:
+        profile:
+            description: data of requested profile
+            returned: always
+            type: dict
+
+
+otherwise:
+    description: For all other commands, the default return value of Ansible (changed, failed, etc.) is returned.
 '''
 
 
