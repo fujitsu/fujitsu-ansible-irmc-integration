@@ -96,35 +96,38 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-# time_settings returned for command "get":
-    ntp_server_primary:
-        description: primary NTP server
-        returned: always
-        type: string
-        sample: pool.ntp.org
-    ntp_server_secondary:
-        description: secondary NTP server
-        returned: always
-        type: string
-        sample: pool.ntp.org
-    rtc_mode:
-        description: Defines how iRMC interprets the system's hardware RTC time
-        returned: always
-        type: string
-        sample: local time
-    time_mode:
-        description: Defines how iRMC synchronizes its real-time clock (RTC)
-        returned: always
-        type: string
-        sample: System RTC
-    time_zone_location:
-        description: iRMC time zone
-        returned: always
-        type: string
-        sample: Europe/Berlin
+details_for_get:
+    description: If command is “get”, the following values are returned.
+    contains:
+        ntp_server_primary:
+            description: primary NTP server
+            returned: always
+            type: string
+            sample: pool.ntp.org
+        ntp_server_secondary:
+            description: secondary NTP server
+            returned: always
+            type: string
+            sample: pool.ntp.org
+        rtc_mode:
+            description: Defines how iRMC interprets the system's hardware RTC time
+            returned: always
+            type: string
+            sample: local time
+        time_mode:
+            description: Defines how iRMC synchronizes its real-time clock (RTC)
+            returned: always
+            type: string
+            sample: System RTC
+        time_zone_location:
+            description: iRMC time zone
+            returned: always
+            type: string
+            sample: Europe/Berlin
 
-# For command "set":
-    Default return values:
+details_for_set:
+    description: If command is “set”, the default return value of Ansible is returned.
+
 '''
 
 
