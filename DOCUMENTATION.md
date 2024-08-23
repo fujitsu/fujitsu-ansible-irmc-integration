@@ -202,13 +202,15 @@ Default return values
 ### irmc_certificate
 
 #### Description
+
 * Ansible module to manage iRMC certificates via iRMC remote scripting interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -223,23 +225,46 @@ Default return values
 | ssl_cert_path  |  No  |  | | Path to file containing SSL certificate. This option also requires the SSL private key. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
-#### Examples
-```yaml
-# Get SSL certificates
-- name: Get SSL certificates
-  irmc_certificate:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: certificates
-  delegate_to: localhost
-- name: show certificates
-  debug:
-    msg: "{{ certificates.certificates }}"
+### Important
 
-# Set SSL certificates
+* If you update the certificate with command="set", you must restart the iRMC.
+* For the parameter `private_key_path`,
+  private keys created with openssl 3.x cannot be registered.
+  To register, the header and footer must be rewritten to openssl 1.x format.
+  * openssl 3.x format
+
+    ```text
+    -----BEGIN PRIVATE KEY-----
+    -----END PRIVATE KEY-----
+    ```
+
+  * openssl 1.x format
+
+    ```text
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+    ```
+
+#### Examples
+
+```yaml
+- name: Get and show SSL certificates
+  tags:
+    - get
+  block:
+    - name: Get SSL certificates
+      irmc_certificate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: certificates
+      delegate_to: localhost
+    - name: Show SSL certificates
+      ansible.legacy.debug:
+        var: certificates.certificates
+
 - name: Set SSL certificates
   irmc_certificate:
     irmc_url: "{{ inventory_hostname }}"
@@ -251,6 +276,8 @@ Default return values
     ssl_cert_path: "{{ ssl_cert_path }}"
     ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -268,8 +295,7 @@ Default return values
 
 #### Notes
 
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
+* See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
 ### irmc_compare_profiles

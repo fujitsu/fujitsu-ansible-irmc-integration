@@ -8,38 +8,37 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_certificate - usage examples
+- name: Usage examples for irmc_certificate
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
   tasks:
-    # Get SSL certificates
-    - block:
-      - name: Get SSL certificates
-        irmc_certificate:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "get"
-        register: certificates
-        delegate_to: localhost
-      - name: show certificates
-        debug:
-          var: certificates.certificates
+    - name: Get and show SSL certificates
       tags:
         - get
-    
-    # Set SSL certificates
+      block:
+        - name: Get SSL certificates
+          irmc_certificate:
+            irmc_url: "{{ inventory_hostname }}"
+            irmc_username: "{{ irmc_user }}"
+            irmc_password: "{{ irmc_password }}"
+            validate_certs: "{{ validate_certificate }}"
+            command: "get"
+          register: certificates
+          delegate_to: localhost
+        - name: Show SSL certificates
+          ansible.legacy.debug:
+            var: certificates.certificates
+
     - name: Set SSL certificates
       irmc_certificate:
         irmc_url: "{{ inventory_hostname }}"
