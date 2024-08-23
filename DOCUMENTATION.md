@@ -834,14 +834,16 @@ Default return values
 ### irmc_facts
 
 #### Description
+
 * Ansible module to get or set basic iRMC and PRIMERGY server data via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -859,20 +861,24 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get basic server and iRMC facts
-- name: Get basic server and iRMC facts
-  irmc_facts:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: facts
-  delegate_to: localhost
-- name: Show server and iRMC facts
-  debug:
-    msg: "{{ facts.facts }}"
+- block:
+  - name: Get basic server and iRMC facts
+    irmc_facts:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: result
+    delegate_to: localhost
+  - name: Show server and iRMC facts
+    debug:
+      var: result.facts
+  tags:
+    - get
 
 # Set server asset tag
 - name: Set server asset tag
@@ -884,6 +890,8 @@ Default return values
     command: "set"
     asset_tag: "Ansible test server"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -905,11 +913,6 @@ Default return values
 **For command "set":**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_fwbios_update
