@@ -812,15 +812,17 @@ Default return values
 ### irmc_fwbios_update
 
 #### Description
+
 * Ansible module to get current iRMC update settings or update iRMC Firmware or BIOS via iRMC RedFish interface.
 * BIOS or firmware flash can be initiated from TFTP server or local file.
 * Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S6.
-  * Python >= 3.10
-  * Python modules 'requests', 'urllib3', 'requests_toolbelt'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3', 'requests_toolbelt'
 
 #### Options
 
@@ -841,6 +843,7 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get irmc firmware and BIOS update settings
 - block: 
