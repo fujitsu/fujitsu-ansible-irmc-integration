@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_scci
 
@@ -69,7 +69,7 @@ options:
         required:    false
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Write server location
 - name: Write server location
   irmc_scci:
@@ -155,16 +155,19 @@ EXAMPLES = '''
     - reset_firm
 '''
 
-RETURN = '''
-# For command "get_cs":
-    data:
-        description: result of requested SCCI command
-        returned: always
-        type: string
-        sample: In a galaxy far, far away ...
+RETURN = r'''
+details:
+    description:
+        If command is “get_cs”, the following value is returned.
 
-# For all other commands:
-    Default return values:
+        For all other commands, the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        data:
+            description: result of requested SCCI command
+            returned: always
+            type: string
+            sample: In a galaxy far, far away ...
 '''
 
 
