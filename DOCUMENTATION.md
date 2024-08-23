@@ -29,20 +29,22 @@
   * [irmc_user - manage iRMC user accounts](#irmc_user)
 
 ---
+
 ### irmc_biosbootorder
 
 #### Description
+
 * Ansible module to configure the BIOS boot oder via iRMC.
 * Using this module will force server into several reboots.
 * The module will abort by default if the PRIMERGY server is powered on.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * The PRIMERGY server needs to be at least a M2 model.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -60,20 +62,28 @@
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get Bios Boot Order
-- name: Get Bios Boot Order
-  irmc_biosbootorder:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-    force_new: false
-  delegate_to: localhost
-
+- block:
+  - name: Get Bios Boot Order
+    irmc_biosbootorder:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      force_new: True
+    register: result
+    delegate_to: localhost
+  - name: Show Bios Boot Order
+    debug:
+      var: result.boot_order
+  tags:
+    - get
+    
 # Set Bios Boot Order to default
-- name: Get Bios Boot Order to default
+- name: Set Bios Boot Order to default
   irmc_biosbootorder:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
@@ -82,6 +92,22 @@
     command: "default"
     ignore_power_on: false
   delegate_to: localhost
+  tags:
+    - set_default
+
+# Set Bios Boot Order
+- name: Set Bios Boot Order
+  irmc_biosbootorder:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    boot_device: "{{ boot_device }}"
+    ignore_power_on: false
+  delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -98,10 +124,9 @@
 
 Default return values
 
-#### Notes
+#### Module Limitations
 
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
+* **No Changes to BIOS Boot Order**: When the command is executed with "**default**", there are no changes made to BIOS Boot Order currently.
 
 ---
 ### irmc_cas
