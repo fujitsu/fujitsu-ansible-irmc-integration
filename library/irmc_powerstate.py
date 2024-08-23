@@ -2,18 +2,9 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_powerstate
 
@@ -26,9 +17,9 @@ description:
 
 requirements:
     - The module needs to run locally.
-    - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - Python >= 2.6
-    - Python modules 'future', 'requests', 'urllib3'
+    - iRMC S6.
+    - Python >= 3.10
+    - Python modules 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -61,95 +52,99 @@ options:
         required:    false
         choices:     ['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff', 'ImmediateReset', 'GracefulReset',
                       'PulseNmi', 'PressPowerButton']
-
-notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 '''
 
-EXAMPLES = '''
-# Get server power state
-- name: Get server power state
-  irmc_powerstate:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: powerstate
-  delegate_to: localhost
-- name: Show server power state
-  debug:
-    msg: "{{ powerstate.power_state }}"
+EXAMPLES = r'''
+- name: Get and show server power state
+  tags:
+    - get
+  block:
+    - name: Get server power state
+      irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: result
+      delegate_to: localhost
+    - name: Show server power state
+      ansible.builtin.debug:
+        var: result.power_state
 
-# set server power state
-- name: set server power state
+- name: Set server power state
   irmc_powerstate:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "set"
-    state: "PowerOn"
+    state: "{{ state }}"
   delegate_to: localhost
+  tags:
+    - set
 '''
 
-RETURN = '''
-# For command "get":
-    power_state:
-        description: server power state
-        returned: always
-        type: string
-        sample: "On"
+RETURN = r'''
+details:
+    description: >
+        If command is “get”, the following values are returned.
 
-# For command "set":
-    Default return values:
+        For other commands ("set"),
+        the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        power_state:
+            description: server power state
+            returned: always
+            type: string
+            sample: "On"
 '''
 
 
 import json
+
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
 
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_post, get_irmc_json
 
-
-def irmc_powerstate(module):
+def irmc_powerstate(module: AnsibleModule) -> None:
     result = dict(
         changed=False,
-        status=0
+        status=0,
     )
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # preliminary parameter check
-    if module.params['command'] == "set" and module.params['state'] is None:
+    if module.params['command'] == 'set' and module.params['state'] is None:
         result['msg'] = "Command 'set' requires 'state' parameter to be set!"
         result['status'] = 10
         module.fail_json(**result)
 
     # Get iRMC system data
-    status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
+    status, sysdata, msg = irmc_redfish_get(module, 'redfish/v1/Systems/0/')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
-    power_state = get_irmc_json(sysdata.json(), "PowerState")
-    if module.params['command'] == "get":
+    power_state = get_irmc_json(sysdata.json(), 'PowerState')
+    if module.params['command'] == 'get':
         result['power_state'] = power_state
         module.exit_json(**result)
 
     # Evaluate function params against iRMC
-    if "Power" + power_state == module.params['state'].replace("Graceful", ""):
+    if 'Power' + power_state == module.params['state'].replace('Graceful', ''):
         result['skipped'] = True
-        result['msg'] = "PRIMERGY server is already in state '{0}'".format(power_state)
+        result['msg'] = f"PRIMERGY server is already in state '{power_state}'"
         module.exit_json(**result)
 
     allowedparams = get_irmc_json(
         sysdata.json(),
-        ["Actions", "Oem", "#FTSComputerSystem.Reset", "FTSResetType@Redfish.AllowableValues"],
+        ['Actions', 'Oem', '#FTSComputerSystem.Reset', 'FTSResetType@Redfish.AllowableValues'],
     )
     if module.params['state'] not in allowedparams:
         result['msg'] = (
@@ -163,7 +158,7 @@ def irmc_powerstate(module):
     body = {'FTSResetType': module.params['state']}
     status, sysdata, msg = irmc_redfish_post(
         module,
-        "redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset",
+        'redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset',
         json.dumps(body),
     )
     if status < 100:
@@ -175,21 +170,21 @@ def irmc_powerstate(module):
     module.exit_json(**result)
 
 
-def main():
-    # import pdb; pdb.set_trace()
+def main() -> None:
+    # breakpoint()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="get", choices=['get', 'set']),
-        state=dict(required=False, type="str", choices=['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff',
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=False, type='str', default='get', choices=['get', 'set']),
+        state=dict(required=False, type='str', choices=['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff',
                                                         'ImmediateReset', 'GracefulReset', 'PulseNmi',
-                                                        'PressPowerButton'])
+                                                        'PressPowerButton']),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_powerstate(module)

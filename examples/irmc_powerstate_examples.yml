@@ -8,38 +8,37 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_powerstate - usage examples
+- name: Usage examples for irmc_powerstate
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
   tasks:
-    # Get server power state
-    - block:
-      - name: Get server power state
-        irmc_powerstate:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "get"
-        register: result
-        delegate_to: localhost
-      - name: Show server power state
-        debug:
-          var: result.power_state
+    - name: Get and show server power state
       tags:
         - get
-    
-    # Set server power state
+      block:
+        - name: Get server power state
+          irmc_powerstate:
+            irmc_url: "{{ inventory_hostname }}"
+            irmc_username: "{{ irmc_user }}"
+            irmc_password: "{{ irmc_password }}"
+            validate_certs: "{{ validate_certificate }}"
+            command: "get"
+          register: result
+          delegate_to: localhost
+        - name: Show server power state
+          ansible.builtin.debug:
+            var: result.power_state
+
     - name: Set server power state
       irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
