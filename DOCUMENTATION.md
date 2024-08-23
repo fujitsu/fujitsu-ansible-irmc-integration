@@ -920,14 +920,16 @@ Default return values
 ### irmc_getvm
 
 #### Description
+
 * Ansible module to get iRMC Virtual Media Data via iRMC RedFish interface.
 * Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S6.
-  * Python >= 3.10
-  * Python modules 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -940,6 +942,7 @@ Default return values
 | vm_type  |  No  |  CDImage  | CDImage<br/> HDImage<br/>  | The virtual media type whose data are to be read. |
 
 #### Examples
+
 ```yaml
 # Get Virtual CD data
 - block:
