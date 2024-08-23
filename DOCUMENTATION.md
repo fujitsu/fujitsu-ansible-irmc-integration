@@ -315,14 +315,16 @@ Default return values
 ### irmc_connectvm
 
 #### Description
+
 * Ansible module to connect iRMC Virtual Media Data via the iRMC RedFish interface.
 * Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S6.
-  * Python >= 3.10
-  * Python modules 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -335,6 +337,7 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Disconnect Virtual CD
 - name: Disconnect Virtual CD
