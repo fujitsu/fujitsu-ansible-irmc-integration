@@ -246,7 +246,6 @@ details:
 
 import json
 import time
-from builtins import str
 from datetime import datetime
 
 from ansible.module_utils.basic import AnsibleModule
