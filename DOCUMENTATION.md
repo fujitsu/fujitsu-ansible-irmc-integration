@@ -297,17 +297,19 @@ Default return values
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
+
 ### irmc_compare_profiles
 
 #### Description
+
 * Ansible module to compare two iRMC profiles.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python module 'future'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
 
 #### Options
 
@@ -319,13 +321,43 @@ Default return values
 | profile_path2  |  No  |  | | Path to file with iRMC profile to be compared against another. Ignored if profile2 is set. |
 
 #### Examples
+
 ```yaml
-# Compare iRMC profiles against each other
-- name: Compare iRMC profiles
-  irmc_compare_profiles:
-    profile_path1: "{{ profile1_path }}"
-    profile_path2: "{{ profile2_path }}"
-  delegate_to: localhost
+# Compare iRMC profiles against each other via json files
+- block:
+  - name: Compare iRMC profiles by file
+    irmc_compare_profiles:
+      profile_path1: "{{ profile1_path }}"
+      profile_path2: "{{ profile2_path }}"
+    delegate_to: localhost
+    register: result
+  - name: Show comparison result
+    debug:
+      var: result.comparison_result
+  - name: Show comparison list
+    debug:
+      var: result.comparison_list
+    when: result.comparison_list is defined
+  tags:
+    - path
+
+# Compare iRMC profiles against each other via json string
+- block:
+  - name: Compare iRMC profiles by json
+    irmc_compare_profiles:
+      profile_json1: "{{ profile_json1 }}"
+      profile_json2: "{{ profile_json2 }}"
+    delegate_to: localhost
+    register: result
+  - name: Show comparison result
+    debug:
+      var: result.comparison_result
+  - name: Show comparison list
+    debug:
+      var: result.comparison_list
+    when: result.comparison_list is defined
+  tags:
+    - json
 ```
 
 #### Return Values
@@ -334,7 +366,6 @@ Default return values
 |:-----|:------------|:---------|:-----|:--------|
 | comparison_list | rudimentary list of probable comparison differences | when comparison_result is False | list |  |
 | comparison_result | profile comparison result | always | bool | False |
-
 
 ---
 ### irmc_connectvm

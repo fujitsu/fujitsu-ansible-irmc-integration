@@ -2,16 +2,6 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
-
-
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
 
 DOCUMENTATION = '''
 ---
@@ -21,13 +11,12 @@ short_description: compare two iRMC profiles
 
 description:
     - Ansible module to compare two iRMC profiles.
-    - Module Version V1.2.
+    - Module Version V1.3.0.
 
 requirements:
     - The module needs to run locally.
-    - iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-    - Python >= 2.6
-    - Python module 'future'
+    - iRMC S6.
+    - Python >= 3.10
 
 version_added: "2.4"
 
@@ -54,12 +43,41 @@ options:
 '''
 
 EXAMPLES = '''
-# Compare iRMC profiles against each other
-- name: Compare iRMC profiles
-  irmc_compare_profiles:
-    profile_path1: "{{ profile1_path }}"
-    profile_path2: "{{ profile2_path }}"
-  delegate_to: localhost
+# Compare iRMC profiles against each other via json files
+- block:
+  - name: Compare iRMC profiles by file
+    irmc_compare_profiles:
+      profile_path1: "{{ profile1_path }}"
+      profile_path2: "{{ profile2_path }}"
+    delegate_to: localhost
+    register: result
+  - name: Show comparison result
+    debug:
+      var: result.comparison_result
+  - name: Show comparison list
+    debug:
+      var: result.comparison_list
+    when: result.comparison_list is defined
+  tags:
+    - path
+
+# Compare iRMC profiles against each other via json string
+- block:
+  - name: Compare iRMC profiles by json
+    irmc_compare_profiles:
+      profile_json1: "{{ profile_json1 }}"
+      profile_json2: "{{ profile_json2 }}"
+    delegate_to: localhost
+    register: result
+  - name: Show comparison result
+    debug:
+      var: result.comparison_result
+  - name: Show comparison list
+    debug:
+      var: result.comparison_list
+    when: result.comparison_list is defined
+  tags:
+    - json
 '''
 
 RETURN = '''
@@ -75,22 +93,21 @@ RETURN = '''
 '''
 
 
+import json
 from builtins import str
 
-import json
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible.module_utils.irmc_utils import compare_irmc_profile
 
 
 def irmc_compare_profiles(module):
     result = dict(
         changed=False,
-        status=0
+        status=0,
     )
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # preliminary parameter check
@@ -102,7 +119,7 @@ def irmc_compare_profiles(module):
     if module.params['profile_json1'] is not None:
         try:
             profile1 = json.loads(module.params['profile_json1'])
-        except ValueError as e:
+        except ValueError:
             module.fail_json(msg="'profile_json1' is invalid JSON: {0}".
                              format(module.params['profile_json1']), status=12)
     else:
@@ -116,7 +133,7 @@ def irmc_compare_profiles(module):
     if module.params['profile_json2'] is not None:
         try:
             profile2 = json.loads(module.params['profile_json2'])
-        except ValueError as e:
+        except ValueError:
             module.fail_json(msg="'profile_json2' is invalid JSON: {0}".
                              format(module.params['profile_json2']), status=14)
     else:
@@ -138,14 +155,14 @@ def irmc_compare_profiles(module):
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        profile_json1=dict(required=False, type="json"),
-        profile_json2=dict(required=False, type="json"),
-        profile_path1=dict(required=False, type="str"),
-        profile_path2=dict(required=False, type="str")
+        profile_json1=dict(required=False, type='json'),
+        profile_json2=dict(required=False, type='json'),
+        profile_path1=dict(required=False, type='str'),
+        profile_path2=dict(required=False, type='str'),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_compare_profiles(module)
