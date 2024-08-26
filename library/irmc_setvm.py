@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_setvm
 
@@ -74,7 +74,7 @@ options:
         required:    false
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Set Virtual CD
 - name: Set Virtual CD
   irmc_setvm:
@@ -112,8 +112,10 @@ EXAMPLES = '''
     - sethd
 '''
 
-RETURN = '''
-Default return values:
+RETURN = r'''
+details:
+    description:
+        The default return value of Ansible (changed, failed, etc.) is returned.
 '''
 
 

@@ -2142,14 +2142,16 @@ Default return values
 ### irmc_setvm
 
 #### Description
+
 * Ansible module to set iRMC Virtual Media Data via iRMC RedFish interface.
 * Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S6.
-  * Python >= 3.10
-  * Python modules 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -2171,6 +2173,7 @@ Default return values
 | vm_user  |  No  |  | | User account in case of SMB share. |
 
 #### Examples
+
 ```yaml
 # Set Virtual CD
 - name: Set Virtual CD
