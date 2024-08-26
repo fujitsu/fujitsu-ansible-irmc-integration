@@ -1200,14 +1200,16 @@ Default return values
 ### irmc_idled
 
 #### Description
+
 * Ansible module to get or set server ID LED via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1221,20 +1223,24 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get server ID LED state
-- name: Get ID LED state
-  irmc_idled:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: idled
-  delegate_to: localhost
-- name: Show iRMC ID LED state
-  debug:
-    msg: "{{ idled.idled_state }}"
+- block:
+  - name: Get ID LED state
+    irmc_idled:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: idled
+    delegate_to: localhost
+  - name: Show iRMC ID LED state
+    debug:
+      var: idled.idled_state
+  tags:
+    - get
 
 # Set server ID LED state
 - name: Set server ID LED state
@@ -1246,6 +1252,8 @@ Default return values
     command: "set"
     state: "Lit"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -1259,11 +1267,6 @@ Default return values
 **For command "set":**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_ldap
