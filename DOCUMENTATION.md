@@ -2229,14 +2229,16 @@ Default return values
 ### irmc_task
 
 #### Description
+
 * Ansible module to handle iRMC tasks via Restful API.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -2250,27 +2252,42 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # List iRMC tasks
-- name: List iRMC tasks
-  irmc_task:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "list"
-  delegate_to: localhost
+- block:
+  - name: List iRMC tasks
+    irmc_task:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "list"
+    register: list
+    delegate_to: localhost
+  - name: Show list of tasks
+    debug:
+      var: list.tasks
+  tags:
+    - list
 
 # Get specific task information
-- name: Get specific task information
-  irmc_task:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-    id: 3
-  delegate_to: localhost
+- block:
+  - name: Get specific task information
+    irmc_task:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+      id: 3
+    register: get
+    delegate_to: localhost
+  - name: Show specific task
+    debug:
+      var: get.task
+  tags:
+    - get
 ```
 
 #### Return Values
@@ -2291,11 +2308,6 @@ Default return values
 **tasks data returned for command "list":**
 
 List of individual task entries (see above)
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_user
