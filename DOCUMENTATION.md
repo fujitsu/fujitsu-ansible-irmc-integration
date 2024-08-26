@@ -2101,17 +2101,20 @@ Default return values
 Default return values
 
 ---
+
 ### irmc_setnextboot
 
 #### Description
+
 * Ansible module to configure iRMC to force next boot to specified option.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -2126,6 +2129,7 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Set Bios to next boot from Virtual CD
 # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
@@ -2135,20 +2139,15 @@ Default return values
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
-    bootsource: "Cd"
-    bootoverride: "Once"
-    bootmode: "Legacy"
+    bootsource: "{{ bootsource }}"
+    bootoverride: "{{ bootoverride | default('Once') }}"
+    bootmode: "UEFI"
   delegate_to: localhost
 ```
 
 #### Return Values
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_setvm

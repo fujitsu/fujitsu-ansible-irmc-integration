@@ -8,29 +8,29 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_setnextboot - usage examples
+- name: Usage examples - irmc_setnextboot
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
   tasks:
-    # Set Bios to next boot from Virtual CD
+    # Set Bios to boot from the specified device.
     # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
-    - name: Set Bios to next boot from Virtual CD
+    - name: Set Bios to boot from the specified device.
       irmc_setnextboot:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
-        bootsource: "Cd"
-        bootoverride: "Once"
-        bootmode: "Legacy"
+        bootsource: "{{ bootsource }}"
+        bootoverride: "{{ bootoverride | default('Once') }}"
+        bootmode: "UEFI"
       delegate_to: localhost
