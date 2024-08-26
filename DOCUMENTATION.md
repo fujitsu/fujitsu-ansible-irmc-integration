@@ -1388,16 +1388,19 @@ Default return values
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
+
 ### irmc_license
 
 #### Description
+
 * Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1411,20 +1414,26 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get iRMC license key
-- name: Get iRMC license key
-  irmc_license:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: license
-  delegate_to: localhost
-- name: show certificates
-  debug:
-    msg: "{{ license.license_key }}"
+- block:
+  - name: Get iRMC license key
+    irmc_license:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: license
+    delegate_to: localhost
+    
+  - name: show certificates
+    debug:
+      var: license.license_key
+  tags:
+    - get
+  
 
 # Set iRMC license key
 - name: Set iRMC license key
@@ -1436,6 +1445,8 @@ Default return values
     command: "set"
     license_key: "{{ license_key }}"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -1452,9 +1463,8 @@ Default return values
 
 #### Notes
 
-- A license key which was read from an iRMC is 'system-locked'. It can imported to the same iRMC, but not to another iRMC.
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
-- See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
+* A license key which was read from an iRMC is 'system-locked'. It can imported to the same iRMC, but not to another iRMC.
+* See <https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf>
 
 ---
 
