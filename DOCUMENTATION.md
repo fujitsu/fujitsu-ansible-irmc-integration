@@ -1491,17 +1491,20 @@ Default return values
 Default return values
 
 ---
+
 ### irmc_powerstate
 
 #### Description
+
 * Ansible module to get or set server power state via iRMC RedFish interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -1515,31 +1518,36 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
-```yaml
-# Get server power state
-- name: Get server power state
-  irmc_powerstate:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: powerstate
-  delegate_to: localhost
-- name: Show server power state
-  debug:
-    msg: "{{ powerstate.power_state }}"
 
-# set server power state
-- name: set server power state
+```yaml
+- name: Get and show server power state
+  tags:
+    - get
+  block:
+    - name: Get server power state
+      irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: result
+      delegate_to: localhost
+    - name: Show server power state
+      ansible.builtin.debug:
+        var: result.power_state
+
+- name: Set server power state
   irmc_powerstate:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "set"
-    state: "PowerOn"
+    state: "{{ state }}"
   delegate_to: localhost
+  tags:
+    - set
 ```
 
 #### Return Values
@@ -1553,11 +1561,6 @@ Default return values
 **For command "set":**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_profiles
