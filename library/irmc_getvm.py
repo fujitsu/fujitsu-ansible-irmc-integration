@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_getvm
 
@@ -46,7 +46,7 @@ options:
         choices:     ['CDImage', 'HDImage']
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Get Virtual CD data
 - block:
   - name: Get Virtual CD data
@@ -82,63 +82,67 @@ EXAMPLES = '''
     - gethd
 '''
 
-RETURN = '''
-# virtual_media_data returned by requesting data for e.g. 'CDImage':
-    CDImage:
-        description: state of image
-        returned: always
-        type: string
-        sample: Connected
-    bootmode:
-        description: boot source override mode for the next boot
-        returned: always
-        type: string
-        sample: UEFI
-    bootoverride:
-        description: boot override type
-        returned: always
-        type: string
-        sample: Once
-    bootsource:
-        description: boot device override for next boot
-        returned: always
-        type: string
-        sample: BiosSetup
-    image_name:
-        description: name of the virtual image
-        returned: always
-        type: string
-        sample: mybootimage.iso
-    server:
-        description: remote server where the image is located
-        returned: always
-        type: string
-        sample: 192.168.2.1
-    share_name:
-        description: path on the remote server where the image is located
-        returned: always
-        type: string
-        sample: isoimages
-    share_type:
-        description: share type (NFS or SMB)
-        returned: always
-        type: string
-        sample: NFS
-    usb_attach_mode:
-        description: remote image attach mode
-        returned: always
-        type: string
-        sample: AutoAttach
-    user_domain:
-        description: user domain for SMB share
-        returned: always
-        type: string
-        sample: local.net
-    user_name:
-        description: user name for SM share
-        returned: always
-        type: string
-        sample: test
+RETURN = r'''
+details:
+    description:
+        The following values are returned by requesting data for e.g. 'CDImage'.
+
+    contains:
+        CDImage:
+            description: state of image
+            returned: always
+            type: string
+            sample: Connected
+        bootmode:
+            description: boot source override mode for the next boot
+            returned: always
+            type: string
+            sample: UEFI
+        bootoverride:
+            description: boot override type
+            returned: always
+            type: string
+            sample: Once
+        bootsource:
+            description: boot device override for next boot
+            returned: always
+            type: string
+            sample: BiosSetup
+        image_name:
+            description: name of the virtual image
+            returned: always
+            type: string
+            sample: mybootimage.iso
+        server:
+            description: remote server where the image is located
+            returned: always
+            type: string
+            sample: 192.168.2.1
+        share_name:
+            description: path on the remote server where the image is located
+            returned: always
+            type: string
+            sample: isoimages
+        share_type:
+            description: share type (NFS or SMB)
+            returned: always
+            type: string
+            sample: NFS
+        usb_attach_mode:
+            description: remote image attach mode
+            returned: always
+            type: string
+            sample: AutoAttach
+        user_domain:
+            description: user domain for SMB share
+            returned: always
+            type: string
+            sample: local.net
+        user_name:
+            description: user name for SM share
+            returned: always
+            type: string
+            sample: test
 '''
 
 
