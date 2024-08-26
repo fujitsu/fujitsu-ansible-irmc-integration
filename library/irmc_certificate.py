@@ -2,18 +2,9 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_certificate
 
@@ -21,12 +12,12 @@ short_description: manage iRMC certificates
 
 description:
     - Ansible module to manage iRMC certificates via iRMC remote scripting interface.
-    - Module Version V1.2.
+    - Module Version V1.3.0.
 
 requirements:
     - The module needs to run locally.
-    - Python >= 2.6
-    - Python modules 'future', 'requests', 'urllib3'
+    - Python >= 3.10
+    - Python modules 'requests', 'urllib3'
 
 version_added: "2.4"
 
@@ -48,13 +39,19 @@ options:
         required:    false
         default:     true
     command:
-        description: Get or set iRMC certificate(s).
+        description: |
+            Get or set iRMC certificate(s).
+            If you update the certificate with "set", you must restart the iRMC.
         required:    false
         default:     get
         choices:     ['get', 'set']
     private_key_path:
-        description: Path to file containing SSL private key.
-                     This option also requires the SSL certificate.
+        description: |
+            Path to file containing SSL private key.
+            This option also requires the SSL certificate.
+            Important: Private keys created with openssl 3.x cannot be registered.
+            To register, the header and footer must be rewritten to openssl 1.x format.
+            (ex. Rewrite header “-----BEGIN PRIVATE KEY-----” to “-----BEGIN RSA PRIVATE KEY-----”)
         required:    false
     ssl_cert_path:
         description: Path to file containing SSL certificate.
@@ -65,26 +62,27 @@ options:
         required:    false
 
 notes:
-    - See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
     - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 '''
 
-EXAMPLES = '''
-# Get SSL certificates
-- name: Get SSL certificates
-  irmc_certificate:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: certificates
-  delegate_to: localhost
-- name: show certificates
-  debug:
-    msg: "{{ certificates.certificates }}"
+EXAMPLES = r'''
+- name: Get and show SSL certificates
+  tags:
+    - get
+  block:
+    - name: Get SSL certificates
+      irmc_certificate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: certificates
+      delegate_to: localhost
+    - name: Show SSL certificates
+      ansible.legacy.debug:
+        var: certificates.certificates
 
-# Set SSL certificates
 - name: Set SSL certificates
   irmc_certificate:
     irmc_url: "{{ inventory_hostname }}"
@@ -96,37 +94,37 @@ EXAMPLES = '''
     ssl_cert_path: "{{ ssl_cert_path }}"
     ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
   delegate_to: localhost
+  tags:
+    - set
 '''
 
-RETURN = '''
-# Certificates returned by command "get":
-    ssl_certificate:
-        description: SSL certificate
-        returned: always
-        type: string
-    ssl_ca_certificate:
-        description: SSL CA certificate
-        returned: always
-        type: string
-
-# For command "set":
-    Default return values:
+RETURN = r'''
+details:
+    description: >
+        If command is “get”, the following values are returned.
+        For other commands,
+        the default return value of Ansible (changed, failed, etc.) is returned.
+    type: dict
+    contains:
+        ssl_certificate:
+            description: SSL certificate
+            returned: always
+            type: string
+        ssl_ca_certificate:
+            description: SSL CA certificate
+            returned: always
+            type: string
 '''
 
-
-from builtins import str
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_datadict, \
-                                                 setup_commandlist
-
+from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
 
 param_scci_map = [
     # Param, SCCI Name, SCCI Code, index, value dict
-    ["private_key_path", "ConfBMCSslPrivateKey", 0x1981, 0, None],
-    ["ssl_cert_path", "ConfBMCSslCertificate", 0x1982, 0, None],
-    ["ssl_ca_cert_path", "ConfBMCSslCaCertificate", 0x1983, 0, None],
+    ['private_key_path', 'ConfBMCSslPrivateKey', 0x1981, 0, None],
+    ['ssl_cert_path', 'ConfBMCSslCertificate', 0x1982, 0, None],
+    ['ssl_ca_cert_path', 'ConfBMCSslCaCertificate', 0x1983, 0, None],
 ]
 
 
@@ -134,19 +132,19 @@ param_scci_map = [
 result = dict()
 
 
-def irmc_certificate(module):
+def irmc_certificate(module: AnsibleModule):
     # initialize result
     result['changed'] = False
     result['status'] = 0
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     certdata, setparam_count = setup_datadict(module, False)
 
     # parameter check
-    if module.params['command'] == "set":
+    if module.params['command'] == 'set':
         check_parameters(module, certdata, setparam_count)
 
         certdata, status, msg = read_keyfile(certdata, 'private_key_path')
@@ -159,10 +157,10 @@ def irmc_certificate(module):
         if status != 0:
             module.fail_json(msg=msg, status=status)
 
-    if module.params['command'] == "set":
-        body = setup_commandlist(certdata, "SET", param_scci_map)
+    if module.params['command'] == 'set':
+        body = setup_commandlist(certdata, 'SET', param_scci_map)
     else:
-        body = setup_commandlist(certdata, "GET", param_scci_map)
+        body = setup_commandlist(certdata, 'GET', param_scci_map)
 
     # send command list to scripting interface
     status, data, msg = irmc_scci_post(module, body)
@@ -176,7 +174,7 @@ def irmc_certificate(module):
     if scciresult != 0:
         module.fail_json(msg=sccicontext, status=scciresult)
 
-    if module.params['command'] == "get":
+    if module.params['command'] == 'get':
         result['certificates'] = setup_resultdata(certdata)
     else:
         result['changed'] = True
@@ -184,7 +182,7 @@ def irmc_certificate(module):
     module.exit_json(**result)
 
 
-def check_parameters(module, certdata, setparam_count):
+def check_parameters(module: AnsibleModule, certdata, setparam_count) -> None:
     if setparam_count == 0:
         result['msg'] = "Command 'set' requires at least one parameter to be set!"
         result['status'] = 10
@@ -193,21 +191,21 @@ def check_parameters(module, certdata, setparam_count):
     if certdata['private_key_path'] is not None and certdata['ssl_cert_path'] is None or \
        certdata['ssl_cert_path'] is not None and certdata['private_key_path'] is None:
         result['msg'] = "Both 'private_key_path' and 'ssl_cert_path' are required to successfully " + \
-                        "import SSL key pair!"
+                        'import SSL key pair!'
         result['status'] = 11
         module.fail_json(**result)
 
 
 def read_keyfile(data, param):
-    context = cert = ""
+    context = cert = ''
     retcode = 0
-    if data[param] != "":
+    if data[param] != '':
         try:
-            f = open(data[param], 'r')
+            f = open(data[param])
             cert = f.read()
         except Exception as e:
             retcode = 89
-            context = "Could not read key/certificate file at '{0}': {1}".format(data[param], str(e))
+            context = f"Could not read key/certificate file at '{data[param]}': {e!s}"
         data[param] = cert
 
     return data, retcode, context
@@ -221,21 +219,21 @@ def setup_resultdata(data):
     return data
 
 
-def main():
-    # import pdb; pdb.set_trace()
+def main() -> None:
+    # breakpoint()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="get", choices=['get', 'set']),
-        private_key_path=dict(required=False, type="str"),
-        ssl_cert_path=dict(required=False, type="str"),
-        ssl_ca_cert_path=dict(required=False, type="str"),
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=False, type='str', default='get', choices=['get', 'set']),
+        private_key_path=dict(required=False, type='str'),
+        ssl_cert_path=dict(required=False, type='str'),
+        ssl_ca_cert_path=dict(required=False, type='str'),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_certificate(module)
