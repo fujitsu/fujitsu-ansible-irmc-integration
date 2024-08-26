@@ -972,15 +972,17 @@ Default return values
 ### irmc_fwbios_update
 
 #### Description
+
 * Ansible module to get current iRMC update settings or update iRMC Firmware or BIOS via iRMC RedFish interface.
 * BIOS or firmware flash can be initiated from TFTP server or local file.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3', 'requests_toolbelt'
+
+* The module needs to run locally.
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3', 'requests_toolbelt'
 
 #### Options
 
@@ -995,55 +997,94 @@ Default return values
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | server_name  |  No  |  | | TFTP server name or IP. ignored if update_source is set to 'file' |
-| timeout  |  No  |  30  | | Timeout for BIOS/iRMC FW flash process in minutes. |
+| timeout  |  No  |  30  | | Timeout for BIOS/iRMC FW flash process in minutes.<br/> Ansible task can be stopped by timeout, but it can not stop update already running on the server. |
 | update_source  |  No  |  | tftp<br/> file<br/>  | Where to get the FW or BIOS update file. |
-| update_type  |  No  |  | irmc<br/> bios<br/>  | Whether to update iRMC FW or server BIOS. |
+| update_type  |  No  |  | irmc<br/> bios<br/>  | Whether to update iRMC FW or server BIOS.<br/> In iRMC FW update, ansible task may not finish even after the update is completed on the server. |
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get irmc firmware and BIOS update settings
-- name: Get irmc firmware and BIOS update settings
-  irmc_fwbios_update:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: fw_settings
-  delegate_to: localhost
-- name: Show irmc firmware and BIOS update settings
-  debug:
-    msg: "{{ fw_settings.fw_update_configuration }}"
-
+- block: 
+  - name: Get irmc firmware and BIOS update settings
+    irmc_fwbios_update:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: fw_settings
+    delegate_to: localhost
+  - name: Show irmc firmware and BIOS update settings
+    debug:
+      var: fw_settings.fw_update_configuration
+  tags:
+    - get_fw
+  
 # Update server BIOS from local file
-- name: Update server BIOS from local file
-  irmc_fwbios_update:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "update"
-    update_source: "file"
-    update_type: "bios"
-    file_name: "{{ bios_filename }}"
-  delegate_to: localhost
+- block:
+  - name: Update server BIOS from local file
+    irmc_fwbios_update:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "update"
+      update_source: "file"
+      update_type: "bios"
+      file_name: "{{ bios_filename }}"
+    delegate_to: localhost
+    register: bios_update_file
+  - name: Show bios update from local file result
+    debug:
+      var: bios_update_file
+  tags:
+    - update_bios_file
+
+# Update server BIOS via TFTP
+- block:
+  - name: Update server BIOS via TFTP
+    irmc_fwbios_update:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "update"
+      update_source: "tftp"
+      update_type: "bios"
+      server_name: "{{ tftp_server }}"
+      file_name: "{{ bios_filename }}"
+    delegate_to: localhost
+    register: bios_update_tftp
+  - name: Show bios update via TFTP result
+    debug:
+      var: bios_update_tftp
+  tags:
+    - update_bios_tftp
 
 # Update iRMC FW via TFTP
-- name: Update iRMC FW via TFTP
-  irmc_fwbios_update:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "update"
-    update_source: "tftp"
-    update_type: "irmc"
-    server_name: "{{ tftp_server }}"
-    file_name: "{{ irmc_filename }}"
-    irmc_flash_selector: "Auto"
-    irmc_boot_selector: "Auto"
-  delegate_to: localhost
+- block:
+  - name: Update iRMC FW via TFTP
+    irmc_fwbios_update:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "update"
+      update_source: "tftp"
+      update_type: "irmc"
+      server_name: "{{ tftp_server }}"
+      file_name: "{{ irmc_filename }}"
+      irmc_flash_selector: "Auto"
+      irmc_boot_selector: "Auto"
+    delegate_to: localhost
+    register: irmc_update_tftp
+  - name: Show irmc update via TFTP result
+    debug:
+      var: irmc_update_tftp
+  tags:
+    - update_irmc_tftp
 ```
 
 #### Return Values
@@ -1070,11 +1111,6 @@ Default return values
 | irmc_flash_selector | selector for iRMC FW to flash | always | string | Auto |
 | power_state | server power state | always | string | False |
 | tftp_server_name | TFTP server name | always | string | tftpserver.local |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_getvm
