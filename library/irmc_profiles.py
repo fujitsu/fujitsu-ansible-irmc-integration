@@ -384,7 +384,7 @@ def main():
         command=dict(required=False, type='str', default='list',
                      choices=['list', 'get', 'create', 'delete', 'import']),
         profile=dict(required=False, type='str'),
-        profile_json=dict(required=False, type='str'),
+        profile_json=dict(required=False, type='json'),
         profile_path=dict(required=False, type='str'),
         wait_for_finish=dict(required=False, type='bool', default=True),
     )
