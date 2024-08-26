@@ -2200,13 +2200,15 @@ List of individual task entries (see above)
 ### irmc_user
 
 #### Description
+
 * Ansible module to manage iRMC user accounts via iRMC remote scripting interface.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
@@ -2241,7 +2243,7 @@ List of individual task entries (see above)
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
 | lan_privilege  |  No  |  | Reserved<br/> Callback<br/> User<br/> Operator<br/> Administrator<br/> OEM<br/> NoAccess<br/>  | IPMI LAN channel privilege. |
 | name  |  Yes  |  | | User account name. |
-| password  |  No  |  | | User account password. |
+| password  |  No  |  | | User account password.<br/> Some PRIMERGY models may have limited password strength. |
 | redfish_enabled  |  No  |  | | User may use iRMC Redfish interface. |
 | redfish_role  |  No  |  | NoAccess<br/> Operator<br/> Administrator<br/> ReadOnly<br/>  | User account Redfish role. |
 | serial_privilege  |  No  |  | Reserved<br/> Callback<br/> User<br/> Operator<br/> Administrator<br/> OEM<br/> NoAccess<br/>  | IPMI serial channel privilege. |
@@ -2256,6 +2258,7 @@ List of individual task entries (see above)
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Create new user account
 - name: "Create new user account"
@@ -2266,23 +2269,29 @@ List of individual task entries (see above)
     validate_certs: "{{ validate_certificate }}"
     command: "create"
     name: "ansibleuser"
-    password: "password"
+    password: "StrongP@ssw0rd"
   delegate_to: localhost
+  tags:
+    - create
 
 # Get user account data
-- name: Get user account data
-  irmc_user:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-    name: "ansibleuser"
-  register: user
-  delegate_to: localhost
-- name: Show iRMC user details
-  debug:
-    msg: "{{ user.user }}"
+- name: Get and show iRMC account data
+  tags:
+    - get
+  block:
+    - name: Get user account data
+      irmc_user:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        name: "ansibleuser"
+      register: user
+      delegate_to: localhost
+    - name: Show iRMC user details
+      ansible.builtin.debug:
+        var: user.user
 
 # Change user account data
 - name: Change user account data
@@ -2295,9 +2304,11 @@ List of individual task entries (see above)
     name: "ansibleuser"
     description: "ansible user description"
   delegate_to: localhost
+  tags:
+    - change
 
 # Delete user account
-- name: "Delete user account"
+- name: Delete user account
   irmc_user:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
@@ -2306,6 +2317,8 @@ List of individual task entries (see above)
     command: "delete"
     name: "ansibleuser"
   delegate_to: localhost
+  tags:
+    - delete
 ```
 
 #### Return Values
@@ -2358,7 +2371,6 @@ Default return values
 
 #### Notes
 
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---

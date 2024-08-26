@@ -8,16 +8,16 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_user - usage examples
+- name: Usage examples for irmc_user
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
@@ -35,25 +35,26 @@
       delegate_to: localhost
       tags:
         - create
-    
+
     # Get user account data
-    - block:
-      - name: Get user account data
-        irmc_user:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "get"
-          name: "ansibleuser"
-        register: user
-        delegate_to: localhost
-      - name: Show iRMC user details
-        debug:
-          var: user.user
+    - name: Get and show iRMC account data
       tags:
         - get
-    
+      block:
+        - name: Get user account data
+          irmc_user:
+            irmc_url: "{{ inventory_hostname }}"
+            irmc_username: "{{ irmc_user }}"
+            irmc_password: "{{ irmc_password }}"
+            validate_certs: "{{ validate_certificate }}"
+            command: "get"
+            name: "ansibleuser"
+          register: user
+          delegate_to: localhost
+        - name: Show iRMC user details
+          ansible.builtin.debug:
+            var: user.user
+
     # Change user account data
     - name: Change user account data
       irmc_user:
@@ -67,9 +68,9 @@
       delegate_to: localhost
       tags:
         - change
-    
+
     # Delete user account
-    - name: "Delete user account"
+    - name: Delete user account
       irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
