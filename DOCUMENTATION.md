@@ -1752,18 +1752,21 @@ Default return values
 ---
 ### irmc_raid
 
+* This module has not been verified on iRMC S6. Verification is planned for a future version.
+
 #### Description
+
 * Ansible module to configure a PRIMERGY server's RAID via iRMC.
 * Using this module may force the server into several reboots.
-* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
 * Module Version V1.2.
 
 #### Requirements
-  * The module needs to run locally.
-  * The PRIMERGY server needs to be at least a M2 model.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* The PRIMERGY server needs to be at least a M2 model.
+* iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+* Python >= 2.6
+* Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1781,6 +1784,7 @@ Default return values
 | wait_for_finish  |  No  |  True  | | Wait for raid session to finish. |
 
 #### Examples
+
 ```yaml
 # Get RAID configuration
 - name: Get RAID configuration
@@ -1835,11 +1839,6 @@ Default return values
 | Name | Description | Returned | Type | Example |
 |:-----|:------------|:---------|:-----|:--------|
 | log | detailed log data of RAID session | in case of error | dict | {u'SessionLog': {u'Tag': u'', u'WorkSequence': u'obtainProfileParameters', u'Id': 6, u'Entries': {u'Entry': [{u'@date': u'2018/11/09 09:39:19', u'#text': u"CreateSession: Session 'obtainProfile' created with id 6"}, {u'@date': u'2018/11/09 09:39:19', u'#text': u"AttachWorkSequence: Attached work sequence 'obtainProfileParameters' to session 6"}, {u'@date': u'2018/11/09 09:39:45', u'#text': u"ObtainProfileParameters: Finished processing of profile path 'Server/HWConfigurationIrmc/Adapters/RAIDAdapter' with status 'Error'"}, {u'@date': u'2018/11/09 09:39:45', u'#text': u"TerminateSession: 'obtainProfileParameters' is being terminated"}]}}} |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_scci
