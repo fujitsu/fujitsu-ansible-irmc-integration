@@ -10,13 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated supported Python, Ansible, and iRMC versions.
+- The note regarding the company name change has been added.
 - The copyright has been changed due to organizational changes.
-- The type of the parameter `profile_json` was changed from `str` to `json` in the `irmc_profiles` module.
+- The type of the parameter `profile_json` was changed from `str` to `json` in the following modules.
+  - `irmc_profiles`, `irmc_compare_profiles`
 
 ### Fixed
 
 - The following modules have been fixed as not working in the latest environment.
-  - `irmc_user`, `irmc_powerstate`, `irmc_biosbootorder`, `irmc_ntp`, `irmc_license`
+  - `irmc_user`, `irmc_powerstate`, `irmc_biosbootorder`, `irmc_ntp`, `irmc_license`, `irmc_connectvm`, `irmc_scci`, `irmc_profiles`
 - The problem BIOS update not working correctly via TFTP has been fixed in the `irmc_fwbios_update` module.
 - The `irmc_fwbios_update` module fixes a problem with the ansible task not completing when updating iRMC with power on.
 
