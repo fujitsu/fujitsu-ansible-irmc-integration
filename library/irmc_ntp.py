@@ -132,7 +132,12 @@ details_for_set:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
+from ansible.module_utils.irmc_scci_utils import (
+    get_scciresultlist_oi,
+    irmc_scci_post,
+    setup_commandlist,
+    setup_datadict,
+)
 
 time_mode = {'0': 'System RTC', '1': 'NTP', '2': 'MMB NTP'}
 rtc_mode = {'0': 'local time', '1': 'UTC/GMT'}
@@ -181,7 +186,7 @@ def irmc_ntp(module):
         module.fail_json(msg=msg, status=status)
 
     # evalaute result list
-    ntpdata, scciresult, sccicontext = get_scciresultlist(data.content, ntpdata, param_scci_map)
+    ntpdata, scciresult, sccicontext = get_scciresultlist_oi(data.content, ntpdata, param_scci_map)
     if scciresult != 0:
         module.fail_json(msg=sccicontext, status=scciresult)
 
