@@ -1274,14 +1274,18 @@ Default return values
 ---
 ### irmc_ldap
 
+* This module has not been verified on iRMC S6. Verification is planned for a future version.
+
 #### Description
+
 * Ansible module to manage iRMC LDAP settings via iRMC remote scripting interface.
 * Module Version V1.2.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 2.6
+* Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -1319,6 +1323,7 @@ Default return values
 | validate_certs  |  No  |  True  | | Evaluate SSL certificate (set to false for self-signed certificate). |
 
 #### Examples
+
 ```yaml
 # Get LDAP data
 - name: Get LDAP data
@@ -1384,7 +1389,6 @@ Default return values
 
 #### Notes
 
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
