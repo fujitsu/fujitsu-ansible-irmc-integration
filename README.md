@@ -1,6 +1,8 @@
 
 # Manage Fujitsu PRIMERGY servers via iRMC 
 
+Fujitsu PRIMERGY have been integrated into Fsas Technologies Inc. from April 1, 2024, and the notation will be changed sequentially. Please note Fujitsu notation may be remained in some cases.
+
 The Fujitsu Software Serverview Ansible iRMC Integration features modules to access and manage
 Fujitsu PRIMERGY servers via iRMC.
 
