@@ -396,6 +396,10 @@ def wait_for_update_to_finish(module, location, power_state):
                 msg = 'A BIOS firmware update has been started. A system reboot is required to continue the update.'
                 result['warnings'] = msg
                 break
+            if power_state == 'On' and oemstate == 'FlashingFinishedSuccessfullyRebootRequired':
+                msg = 'A iRMC firmware update has finished. A system reboot is required to activate the update.'
+                result['warnings'] = msg
+                break
             if state == 'Exception':
                 msg = f'{now}: Update failed.'
                 module.fail_json(msg=msg, status=21)
