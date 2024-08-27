@@ -2,27 +2,18 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_elcm_offline_update
 
 short_description: offline update a server via iRMC
 
 description:
+    - This module has not been verified on iRMC S6. Verification is planned for a future version.
     - Ansible module to offline update a server via iRMC.
     - Using this module may force the server into reboot.
-    - See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
     - Module Version V1.2.
 
 requirements:
@@ -73,13 +64,9 @@ options:
         description: Wait for session to finish.
         required:    false
         default:     true
-
-notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Prepare eLCM Offline Update
 - name: Prepare eLCM Offline Update
   irmc_elcm_offline_update:
@@ -104,17 +91,22 @@ EXAMPLES = '''
     wait_for_finish: true
 '''
 
-RETURN = '''
-# For all commands:
-    Default return values:
+RETURN = r'''
+details:
+    description:
+        The default return value of Ansible (changed, failed, etc.) is returned.
 '''
 
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, irmc_redfish_post, get_irmc_json, \
-                                      waitForSessionToFinish, elcm_check_status
-
+from ansible.module_utils.irmc import (
+    elcm_check_status,
+    get_irmc_json,
+    irmc_redfish_get,
+    irmc_redfish_post,
+    irmc_redfish_put,
+    waitForSessionToFinish,
+)
 
 # Global
 result = dict()
@@ -126,7 +118,7 @@ def irmc_elcm_offline_update(module):
     result['status'] = 0
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # check eLCM status
@@ -136,29 +128,29 @@ def irmc_elcm_offline_update(module):
     elif status < 30 or status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
-    if module.params['command'] == "execute" and module.params['ignore_power_on'] is False:
+    if module.params['command'] == 'execute' and module.params['ignore_power_on'] is False:
         # Get server power state
-        status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
+        status, sysdata, msg = irmc_redfish_get(module, 'redfish/v1/Systems/0/')
         if status < 100:
             module.fail_json(msg=msg, status=status, exception=sysdata)
         elif status != 200:
             module.fail_json(msg=msg, status=status)
-        if get_irmc_json(sysdata.json(), "PowerState") == "On":
-            result['msg'] = "Server is powered on. Cannot continue."
+        if get_irmc_json(sysdata.json(), 'PowerState') == 'On':
+            result['msg'] = 'Server is powered on. Cannot continue.'
             result['status'] = 10
             module.fail_json(**result)
 
-    if module.params['command'] == "prepare":
-        uri = "rest/v1/Oem/eLCM/OfflineUpdate"
+    if module.params['command'] == 'prepare':
+        uri = 'rest/v1/Oem/eLCM/OfflineUpdate'
         if module.params['skip_hcl_verify'] is True:
-            uri = uri + "?skipHCLVerification=yes"
-        status, elcmdata, msg = irmc_redfish_post(module, uri, "")
+            uri = uri + '?skipHCLVerification=yes'
+        status, elcmdata, msg = irmc_redfish_post(module, uri, '')
     else:
-        status, elcmdata, msg = irmc_redfish_put(module, "rest/v1/Oem/eLCM/OfflineUpdate", "")
+        status, elcmdata, msg = irmc_redfish_put(module, 'rest/v1/Oem/eLCM/OfflineUpdate', '')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status == 409:
-        result['msg'] = "Cannot {0} eLCM update, another session is in progress.".format(module.params['command'])
+        result['msg'] = 'Cannot {0} eLCM update, another session is in progress.'.format(module.params['command'])
         result['status'] = status
         module.fail_json(**result)
     elif status not in (200, 202, 204):
@@ -166,7 +158,7 @@ def irmc_elcm_offline_update(module):
 
     if module.params['wait_for_finish'] is True:
         # check that current session is terminated
-        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ["Session", "Id"]))
+        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ['Session', 'Id']))
         if status > 30 and status < 100:
             module.fail_json(msg=msg, status=status, exception=data)
         elif status not in (200, 202, 204):
@@ -180,18 +172,18 @@ def irmc_elcm_offline_update(module):
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=True, type="str", choices=['prepare', 'execute']),
-        ignore_power_on=dict(required=False, type="bool", default=False),
-        skip_hcl_verify=dict(required=False, type="bool", default=False),
-        wait_for_finish=dict(required=False, type="bool", default=True),
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=True, type='str', choices=['prepare', 'execute']),
+        ignore_power_on=dict(required=False, type='bool', default=False),
+        skip_hcl_verify=dict(required=False, type='bool', default=False),
+        wait_for_finish=dict(required=False, type='bool', default=True),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_elcm_offline_update(module)
