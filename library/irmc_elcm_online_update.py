@@ -2,27 +2,18 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_elcm_online_update
 
 short_description: online update a server via iRMC
 
 description:
+    - This module has not been verified on iRMC S6. Verification is planned for a future version.
     - Ansible module to online update a server via iRMC.
     - Using this module may force the server into reboot.
-    - See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
     - PRIMERGY servers running ESXi are not capable of eLCM Online Update due to missing agent.
       Please run eLCM Offline Update on ESXi servers.
     - Module Version V1.2.
@@ -79,14 +70,9 @@ options:
     select:
         description: Execution selection for specified component/subcomponent.
         required:    false
-
-
-notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Generate eLCM Online Update List
 - name: Generate eLCM Online Update List
   irmc_elcm_online_update:
@@ -144,28 +130,37 @@ EXAMPLES = '''
   delegate_to: localhost
 '''
 
-RETURN = '''
-# online update collection returned for command "get":
-    update_collection:
-        description: list of components which require update with specific data
-                     (component, subcomponent, status, severity, selected, reboot, current, new)
-        returned: always
-        type: dict
+RETURN = r'''
+details:
+    description:
+        If command is “get”, the following value is returned.
 
-# For all other commands:
-    Default return values:
+        For all other commands, the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        update_collection:
+            description: list of components which require update with specific data
+                        (component, subcomponent, status, severity, selected, reboot, current, new)
+            returned: always
+            type: dict
 '''
 
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, irmc_redfish_patch, irmc_redfish_post, \
-                                      irmc_redfish_delete, get_irmc_json, elcm_check_status, waitForSessionToFinish
-
+from ansible.module_utils.irmc import (
+    elcm_check_status,
+    get_irmc_json,
+    irmc_redfish_delete,
+    irmc_redfish_get,
+    irmc_redfish_patch,
+    irmc_redfish_post,
+    irmc_redfish_put,
+    waitForSessionToFinish,
+)
 
 # Global
 result = dict()
-true_false = {False: "deselected", True: "selected"}
+true_false = {False: 'deselected', True: 'selected'}
 
 
 def irmc_elcm_online_update(module):
@@ -174,7 +169,7 @@ def irmc_elcm_online_update(module):
     result['status'] = 0
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # check eLCM status
@@ -185,18 +180,18 @@ def irmc_elcm_online_update(module):
         module.fail_json(msg=msg, status=status)
 
     # Get server power state
-    status, sysdata, msg = irmc_redfish_get(module, "redfish/v1/Systems/0/")
+    status, sysdata, msg = irmc_redfish_get(module, 'redfish/v1/Systems/0/')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
-    if get_irmc_json(sysdata.json(), "PowerState") == "Off":
-        result['msg'] = "Server is powered off. Cannot continue."
+    if get_irmc_json(sysdata.json(), 'PowerState') == 'Off':
+        result['msg'] = 'Server is powered off. Cannot continue.'
         result['status'] = 12
         module.fail_json(**result)
 
     # preliminary parameter check
-    if module.params['command'] == "set":
+    if module.params['command'] == 'set':
         if module.params['component'] is None and module.params['subcomponent'] is None:
             result['msg'] = "Command 'set' requires 'component' and 'subcomponent' parameters to be set!"
             result['status'] = 10
@@ -210,20 +205,20 @@ def irmc_elcm_online_update(module):
     if module.params['command'] == 'set':
         elcm_change_component(module)
 
-    if module.params['command'] in ("get", "delete"):
+    if module.params['command'] in ('get', 'delete'):
         elcm_online_collection(module)
 
-    if module.params['command'] in ("check", "execute"):
+    if module.params['command'] in ('check', 'execute'):
         elcm_online_update(module)
 
     module.exit_json(**result)
 
 
 def elcm_change_component(module):
-    uri = "rest/v1/Oem/eLCM/OnlineUpdate/updateCollection/{0}/{1}?Execution={2}". \
+    uri = 'rest/v1/Oem/eLCM/OnlineUpdate/updateCollection/{0}/{1}?Execution={2}'. \
           format(module.params['component'], module.params['subcomponent'],
                  true_false.get(module.params['select']))
-    status, elcmdata, msg = irmc_redfish_patch(module, uri, "", 0)
+    status, elcmdata, msg = irmc_redfish_patch(module, uri, '', 0)
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status == 400:
@@ -238,17 +233,17 @@ def elcm_change_component(module):
 
 
 def elcm_online_update(module):
-    if module.params['command'] == "check":
-        uri = "rest/v1/Oem/eLCM/OnlineUpdate"
+    if module.params['command'] == 'check':
+        uri = 'rest/v1/Oem/eLCM/OnlineUpdate'
         if module.params['skip_hcl_verify'] is True:
-            uri = uri + "?skipHCLVerification=yes"
-        status, elcmdata, msg = irmc_redfish_post(module, uri, "")
+            uri = uri + '?skipHCLVerification=yes'
+        status, elcmdata, msg = irmc_redfish_post(module, uri, '')
     else:
-        status, elcmdata, msg = irmc_redfish_put(module, "rest/v1/Oem/eLCM/OnlineUpdate/updateCollection", "")
+        status, elcmdata, msg = irmc_redfish_put(module, 'rest/v1/Oem/eLCM/OnlineUpdate/updateCollection', '')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status == 409:
-        result['msg'] = "Cannot {0} eLCM update, another session is in progress.".format(module.params['command'])
+        result['msg'] = 'Cannot {0} eLCM update, another session is in progress.'.format(module.params['command'])
         result['status'] = status
         module.fail_json(**result)
     elif status not in (200, 202, 204):
@@ -256,7 +251,7 @@ def elcm_online_update(module):
 
     if module.params['wait_for_finish'] is True:
         # check that current session is terminated
-        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ["Session", "Id"]))
+        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ['Session', 'Id']))
         if status > 30 and status < 100:
             module.fail_json(msg=msg, status=status, exception=data)
         elif status not in (200, 202, 204):
@@ -266,15 +261,15 @@ def elcm_online_update(module):
 
 
 def elcm_online_collection(module):
-    if module.params['command'] == "get":
-        status, elcmdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/OnlineUpdate/updateCollection")
+    if module.params['command'] == 'get':
+        status, elcmdata, msg = irmc_redfish_get(module, 'rest/v1/Oem/eLCM/OnlineUpdate/updateCollection')
     else:
-        status, elcmdata, msg = irmc_redfish_delete(module, "rest/v1/Oem/eLCM/OnlineUpdate/updateCollection")
+        status, elcmdata, msg = irmc_redfish_delete(module, 'rest/v1/Oem/eLCM/OnlineUpdate/updateCollection')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status == 404:
-        result['msg'] = "updateCollection does not exist."
-        if module.params['command'] == "get":
+        result['msg'] = 'updateCollection does not exist.'
+        if module.params['command'] == 'get':
             result['status'] = status
             module.fail_json(**result)
         else:
@@ -283,26 +278,26 @@ def elcm_online_collection(module):
     elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
-    if module.params['command'] == "get":
+    if module.params['command'] == 'get':
         result['update_collection'] = []
-        for item in get_irmc_json(elcmdata.json(), ["Links", "Contains"]):
+        for item in get_irmc_json(elcmdata.json(), ['Links', 'Contains']):
             sw = {}
 #            sw['link'] = get_irmc_json(item, ["@odata.id"])
 #            sw['name'] = sw['link'].replace("rest/v1/Oem/eLCM/OnlineUpdate/updateCollection/PrimSupportPack-Win/", "")
 
-            status, swdata, msg = irmc_redfish_get(module, get_irmc_json(item, ["@odata.id"]))
+            status, swdata, msg = irmc_redfish_get(module, get_irmc_json(item, ['@odata.id']))
             if status < 100:
                 module.fail_json(msg=msg, status=status, exception=swdata)
             elif status not in (200, 202, 204):
                 module.fail_json(msg=msg, status=status)
-            sw['component'] = get_irmc_json(swdata.json(), ["Update", "Component"])
-            sw['subcomponent'] = get_irmc_json(swdata.json(), ["Update", "SubComponent"])
-            sw['current'] = get_irmc_json(swdata.json(), ["Update", "Current"])
-            sw['new'] = get_irmc_json(swdata.json(), ["Update", "New"])
-            sw['severity'] = get_irmc_json(swdata.json(), ["Update", "Severity"])
-            sw['status'] = get_irmc_json(swdata.json(), ["Update", "Status"])
-            sw['reboot'] = get_irmc_json(swdata.json(), ["Update", "Reboot"])
-            sw['selected'] = get_irmc_json(swdata.json(), ["Update", "Execution"])
+            sw['component'] = get_irmc_json(swdata.json(), ['Update', 'Component'])
+            sw['subcomponent'] = get_irmc_json(swdata.json(), ['Update', 'SubComponent'])
+            sw['current'] = get_irmc_json(swdata.json(), ['Update', 'Current'])
+            sw['new'] = get_irmc_json(swdata.json(), ['Update', 'New'])
+            sw['severity'] = get_irmc_json(swdata.json(), ['Update', 'Severity'])
+            sw['status'] = get_irmc_json(swdata.json(), ['Update', 'Status'])
+            sw['reboot'] = get_irmc_json(swdata.json(), ['Update', 'Reboot'])
+            sw['selected'] = get_irmc_json(swdata.json(), ['Update', 'Execution'])
             result['update_collection'].append(sw)
     else:
         result['changed'] = True
@@ -311,21 +306,21 @@ def elcm_online_collection(module):
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="get",
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=False, type='str', default='get',
                      choices=['get', 'set', 'check', 'execute', 'delete']),
-        skip_hcl_verify=dict(required=False, type="bool", default=False),
-        wait_for_finish=dict(required=False, type="bool", default=True),
-        component=dict(required=False, type="str"),
-        subcomponent=dict(required=False, type="str"),
-        select=dict(required=False, type="bool"),
+        skip_hcl_verify=dict(required=False, type='bool', default=False),
+        wait_for_finish=dict(required=False, type='bool', default=True),
+        component=dict(required=False, type='str'),
+        subcomponent=dict(required=False, type='str'),
+        select=dict(required=False, type='bool'),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_elcm_online_update(module)
