@@ -657,20 +657,23 @@ Default return values
 ---
 ### irmc_elcm_repository
 
+* This module has not been verified on iRMC S6. Verification is planned for a future version.
+
 #### Description
+
 * Ansible module to configure the eLCM repostory in iRMC.
 * iRMC tests access to specified repository and refuses to accept data in case of failure.
-* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
 * Module Version V1.2.
 
 #### Requirements
-  * The module needs to run locally.
-  * The PRIMERGY server needs to be at least a M2 model.
-  * eLCM needs to be licensed in iRMC.
-  * eLCM SD card needs to be mounted.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* The PRIMERGY server needs to be at least a M2 model.
+* eLCM needs to be licensed in iRMC.
+* eLCM SD card needs to be mounted.
+* iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+* Python >= 2.6
+* Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -691,6 +694,7 @@ Default return values
 | wait_for_finish  |  No  |  True  | | Wait for session to finish. |
 
 #### Examples
+
 ```yaml
 # Get eLCM repository data
 - name: Get eLCM repository data
@@ -727,11 +731,6 @@ Default return values
 | Name | Description | Returned | Type | Example |
 |:-----|:------------|:---------|:-----|:--------|
 | repository | eLCM repository data | always | dict |  |
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_eventlog
