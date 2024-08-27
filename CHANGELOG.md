@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The following modules have been fixed as not working in the latest environment.
-  - `irmc_user`, `irmc_powerstate`
+  - `irmc_user`, `irmc_powerstate`, `irmc_biosbootorder`, `irmc_ntp`, `irmc_license`
 - The problem BIOS update not working correctly via TFTP has been fixed in the `irmc_fwbios_update` module.
 - The `irmc_fwbios_update` module fixes a problem with the ansible task not completing when updating iRMC with power on.
 
