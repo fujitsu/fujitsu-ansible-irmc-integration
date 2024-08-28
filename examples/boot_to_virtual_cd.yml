@@ -12,23 +12,24 @@
 #    - server must be off for playbook to succeed
 #    - boot from virtual CD might fail, if a 'real' DVD drive exists
 
-- name: boot a PRIMERGY server to an ISO image
+- name: Boot a PRIMERGY server to an ISO image
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
-    # server: "192.168.2.1"
-    # share: "share"
-    # image: "ISO.iso"
-    # share_type: "NFS"
-    # vm_domain: "domain"
-    # vm_user: "domain_user"
-    # vm_password: "domain_password"
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
+  #   # Source of installation image
+  #   share_type: "NFS"
+  #   server: "192.168.2.1"
+  #   share: "share"
+  #   image: "ISO.iso"
+  #   vm_domain: "domain"
+  #   vm_user: "domain_user"
+  #   vm_password: "domain_password"
 
   gather_facts: false
 
@@ -44,9 +45,9 @@
       delegate_to: localhost
 
     - name: Check that server is 'Off'
-      fail:
+      ansible.builtin.fail:
         msg: "Cannot continue, server is 'On'"
-      when: powerstate.power_state=="On"
+      when: powerstate.power_state == "On"
 
     - name: Disconnect Virtual CD
       irmc_connectvm:
@@ -91,7 +92,7 @@
         validate_certs: "{{ validate_certificate }}"
         bootsource: "Cd"
         bootoverride: "Once"
-        bootmode: "Legacy"
+        bootmode: "UEFI"
       delegate_to: localhost
 
     - name: Get Virtual Media data
@@ -104,7 +105,7 @@
       register: vmdata
       delegate_to: localhost
     - name: Show Virtual Media data
-      debug:
+      ansible.builtin.debug:
         msg: "{{ vmdata.virtual_media_data }}"
 
     - name: PowerOn System
