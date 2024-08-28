@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `irmc_user`, `irmc_powerstate`, `irmc_biosbootorder`, `irmc_ntp`, `irmc_license`, `irmc_connectvm`, `irmc_scci`, `irmc_profiles`
 - The problem BIOS update not working correctly via TFTP has been fixed in the `irmc_fwbios_update` module.
 - The `irmc_fwbios_update` module fixes a problem with the ansible task not completing when updating iRMC with power on.
+- Secondary NTP incorrect display is fixed in `irmc_ntp` module.
 
 ### Removed
 
