@@ -9,15 +9,14 @@ Fujitsu PRIMERGY servers via iRMC.
 #### Table of Contents
 
 1. [Overview](#overview)
-2. [Requirements](#requirements)
-3. [Getting Started](#getting-started)
-4. [API Documentation](#documentation)
-5. [Usage](#usage)
-6. [Modules](#modules)
-7. [Playbooks](#playbooks)
-8. [Change log](#change-log)
-9. [License](#license)
-10. [Authors](#authors)
+1. [Requirements](#requirements)
+1. [Getting Started](#getting-started)
+1. [Usage](#usage)
+1. [Modules](#modules)
+1. [Playbooks](#playbooks)
+1. [Change log](#change-log)
+1. [License](#license)
+1. [Authors](#authors)
 
 ## Overview
 
