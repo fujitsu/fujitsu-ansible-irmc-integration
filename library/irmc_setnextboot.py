@@ -45,12 +45,12 @@ options:
         default:     BiosSetup
         choices:     ['None', 'Pxe', 'Floppy', 'Cd', 'Hdd', 'BiosSetup']
     bootoverride:
-        description: Boot override type.
+        description: Boot override type. If bootsource is 'None', it is ignored.
         required:    false
         default:     Once
         choices:     ['Once', 'Continuous']
     bootmode:
-        description: The mode for the next boot.
+        description: The mode for the next boot. If bootsource is 'None', it is ignored.
         required:    false
         choices:     ['Legacy', 'UEFI']
 '''
@@ -77,6 +77,9 @@ details:
 
 
 import json
+from collections.abc import Iterable
+from http import HTTPStatus
+from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
@@ -96,7 +99,7 @@ def irmc_setnextboot(module: AnsibleModule) -> None:
     status, sysdata, msg = irmc_redfish_get(module, 'redfish/v1/Systems/0/')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
-    elif status != 200:
+    elif status != HTTPStatus.OK:
         module.fail_json(msg=msg, status=status)
 
     # Evaluate function params against iRMC
@@ -115,20 +118,27 @@ def irmc_setnextboot(module: AnsibleModule) -> None:
         result['status'] = 11
         module.fail_json(**result)
 
-    # Set iRMC system data
-    body = {
-        'Boot': {
-            'BootSourceOverrideTarget': module.params['bootsource'],
-            'BootSourceOverrideEnabled': module.params['bootoverride'],
-        },
-    }
-    if module.params['bootmode'] is not None:
-        body['Boot']['BootSourceOverrideMode'] = module.params['bootmode']
-    etag = get_irmc_json(sysdata.json(), '@odata.etag')
+    def _create_boot_entries(bootsource: str, bootoverride: str, bootmode: str, **_: dict) -> Iterable[tuple[str, Any]]:
+        """Create 'Boot' elements of request body for change boot source from `AnsibleModule.params`."""
+        yield 'BootSourceOverrideTarget', bootsource
+
+        # NOTE: If BootSourceOverrideTarget='None',
+        #  BootSourceOverrideEnabled and BootSourceOverrideMode cannot be specified. (500 error occurs)
+        if bootsource == 'None':
+            return
+
+        yield 'BootSourceOverrideEnabled', bootoverride
+        if bootmode is not None:
+            yield 'BootSourceOverrideMode', bootmode
+
+    # Request body for change boot source
+    body = {'Boot': dict(_create_boot_entries(**module.params))}
+
+    etag = sysdata.json()['@odata.etag']
     status, patch, msg = irmc_redfish_patch(module, 'redfish/v1/Systems/0/', json.dumps(body), etag)
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=patch)
-    elif status != 200:
+    elif status != HTTPStatus.OK:
         module.fail_json(msg=msg, status=status)
 
     result['changed'] = True

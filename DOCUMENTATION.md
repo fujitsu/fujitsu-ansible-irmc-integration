@@ -2132,8 +2132,8 @@ Default return values
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
-| bootmode  |  No  |  | Legacy<br/> UEFI<br/>  | The mode for the next boot. |
-| bootoverride  |  No  |  Once  | Once<br/> Continuous<br/>  | Boot override type. |
+| bootmode  |  No  |  | Legacy<br/> UEFI<br/>  | The mode for the next boot.<br/> If bootsource is 'None', it is ignored. |
+| bootoverride  |  No  |  Once  | Once<br/> Continuous<br/>  | Boot override type.<br/> If bootsource is 'None', it is ignored. |
 | bootsource  |  No  |  BiosSetup  | None<br/> Pxe<br/> Floppy<br/> Cd<br/> Hdd<br/> BiosSetup<br/>  | The source for the next boot. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
@@ -2143,9 +2143,9 @@ Default return values
 #### Examples
 
 ```yaml
-# Set Bios to next boot from Virtual CD
+# Set Bios to boot from the specified device.
 # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
-- name: Set Bios to next boot from Virtual CD
+- name: Set Bios to boot from the specified device.
   irmc_setnextboot:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
