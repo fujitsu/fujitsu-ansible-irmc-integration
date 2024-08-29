@@ -2139,7 +2139,7 @@ Default return values
 |:----------|:---------|:--------|:--------|:----------- |
 | bootmode  |  No  |  | Legacy<br/> UEFI<br/>  | The mode for the next boot.<br/> If bootsource is 'None', it is ignored. |
 | bootoverride  |  No  |  Once  | Once<br/> Continuous<br/>  | Boot override type.<br/> If bootsource is 'None', it is ignored. |
-| bootsource  |  No  |  BiosSetup  | None<br/> Pxe<br/> Floppy<br/> Cd<br/> Hdd<br/> BiosSetup<br/>  | The source for the next boot. |
+| bootsource  |  No  |  BiosSetup  | None<br/> Pxe<br/> Cd<br/> Hdd<br/> BiosSetup<br/>  | The source for the next boot. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
 | irmc_url  |  Yes  |  | | IP address of the iRMC to be requested for data. |
 | irmc_username  |  Yes  |  | | iRMC user for basic authentication. |
