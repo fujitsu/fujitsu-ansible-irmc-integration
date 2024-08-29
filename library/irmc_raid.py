@@ -66,19 +66,22 @@ options:
 '''
 
 EXAMPLES = r'''
-# Get RAID configuration
-- name: Get RAID configuration
-  irmc_raid:
-    irmc_url: "{{ inventory_hostname }}"
-    irmc_username: "{{ irmc_user }}"
-    irmc_password: "{{ irmc_password }}"
-    validate_certs: "{{ validate_certificate }}"
-    command: "get"
-  register: raid
-  delegate_to: localhost
-- name: Show RAID configuration
-  debug:
-    msg: "{{ raid.configuration }}"
+- name: Get and show RAID configuration
+  tags:
+    - get
+  block:
+    - name: Get RAID configuration
+      irmc_raid:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: raid
+      delegate_to: localhost
+    - name: Show RAID configuration
+      ansible.builtin.debug:
+        var: raid.configuration
 
 # Create RAID array
 - name: Create RAID array
@@ -92,6 +95,8 @@ EXAMPLES = r'''
     level: "{{ level }}"
     name: "{{ name }}"
   delegate_to: localhost
+  tags:
+    - create
 
 # Delete RAID array
 - name: Delete RAID array
@@ -104,6 +109,8 @@ EXAMPLES = r'''
     adapter: "{{ adapter }}"
     array: "{{ array }}"
   delegate_to: localhost
+  tags:
+    - delete
 '''
 
 RETURN = r'''

@@ -1750,6 +1750,7 @@ Default return values
 | profile | data of requested profile | always | dict |  |
 
 ---
+
 ### irmc_raid
 
 * This module has not been verified on iRMC S6. Verification is planned for a future version.
