@@ -11,6 +11,7 @@ module: irmc_raid
 short_description: handle iRMC RAID
 
 description:
+    - This module has not been verified on iRMC S6. Verification is planned for a future version.
     - Ansible module to configure a PRIMERGY server's RAID via iRMC.
     - Using this module may force the server into several reboots.
     - Module Version V1.2.
