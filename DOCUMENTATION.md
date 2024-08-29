@@ -552,22 +552,25 @@ Default return values
 ---
 ### irmc_elcm_online_update
 
+* This module has not been verified on iRMC S6. Verification is planned for a future version.
+
 #### Description
+
 * Ansible module to online update a server via iRMC.
 * Using this module may force the server into reboot.
-* See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
 * PRIMERGY servers running ESXi are not capable of eLCM Online Update due to missing agent. Please run eLCM Offline Update on ESXi servers.
 * Module Version V1.2.
 
 #### Requirements
-  * The module needs to run locally.
-  * eLCM needs to be licensed in iRMC.
-  * eLCM SD card needs to be mounted.
-  * The PRIMERGY server needs to be at least a M2 model.
-  * iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-  * The module assumes that the Update Repository is set correctly in iRMC.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* eLCM needs to be licensed in iRMC.
+* eLCM SD card needs to be mounted.
+* The PRIMERGY server needs to be at least a M2 model.
+* iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
+* The module assumes that the Update Repository is set correctly in iRMC.
+* Python >= 2.6
+* Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -585,6 +588,7 @@ Default return values
 | wait_for_finish  |  No  |  True  | | Wait for session to finish. |
 
 #### Examples
+
 ```yaml
 # Generate eLCM Online Update List
 - name: Generate eLCM Online Update List
@@ -654,11 +658,6 @@ Default return values
 **For all other commands:**
 
 Default return values
-
-#### Notes
-
-- See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-- See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 
 ---
 ### irmc_elcm_repository
