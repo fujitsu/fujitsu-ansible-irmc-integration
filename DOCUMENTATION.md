@@ -1,5 +1,7 @@
 # Fujitsu PRIMERGY iRMC modules
 
+* Fujitsu PRIMERGY have been integrated into Fsas Technologies Inc. from April 1, 2024, and the notation will be changed sequentially. Please note Fujitsu notation may be remained in some cases.
+
 ## Modules
 
 * [irmc_biosbootorder - configure iRMC to force next boot to specified option](#irmc_biosbootorder)
