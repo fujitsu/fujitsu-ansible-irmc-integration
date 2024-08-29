@@ -2,27 +2,18 @@
 
 # Copyright 2018-2024 Fsas Technologies Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division)
-__metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
-
-
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
 ---
 module: irmc_elcm_repository
 
 short_description: configure the eLCM repostory in iRMC
 
 description:
+    - This module has not been verified on iRMC S6. Verification is planned for a future version.
     - Ansible module to configure the eLCM repostory in iRMC.
     - iRMC tests access to specified repository and refuses to accept data in case of failure.
-    - See specification [iRMC RESTful API](http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf).
     - Module Version V1.2.
 
 requirements:
@@ -85,13 +76,9 @@ options:
         description: Wait for session to finish.
         required:    false
         default:     true
-
-notes:
-    - See http://manuals.ts.fujitsu.com/file/13371/irmc-restful-spec-en.pdf
-    - See http://manuals.ts.fujitsu.com/file/13372/irmc-redfish-wp-en.pdf
 '''
 
-EXAMPLES = '''
+EXAMPLES = r'''
 # Get eLCM repository data
 - name: Get eLCM repository data
   irmc_elcm_repository:
@@ -120,25 +107,35 @@ EXAMPLES = '''
     wait_for_finish: true
 '''
 
-RETURN = '''
-# eLCM data returned for command "get":
-    repository:
-        description: eLCM repository data
-        returned: always
-        type: dict
+RETURN = r'''
+details:
+    description:
+        If command is “get”, the following value is returned.
+
+        If command is "set", the default return value of Ansible (changed, failed, etc.) is returned.
+
+    contains:
+        repository:
+            description: eLCM repository data
+            returned: always
+            type: dict
 '''
 
 
 import json
+
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible.module_utils.irmc import irmc_redfish_get, irmc_redfish_put, get_irmc_json, \
-                                      waitForSessionToFinish, elcm_check_status
-
+from ansible.module_utils.irmc import (
+    elcm_check_status,
+    get_irmc_json,
+    irmc_redfish_get,
+    irmc_redfish_put,
+    waitForSessionToFinish,
+)
 
 # Global
 result = dict()
-true_false = {False: "no", True: "yes"}
+true_false = {False: 'no', True: 'yes'}
 
 
 def irmc_elcm_repository(module):
@@ -147,7 +144,7 @@ def irmc_elcm_repository(module):
     result['status'] = 0
 
     if module.check_mode:
-        result['msg'] = "module was not run"
+        result['msg'] = 'module was not run'
         module.exit_json(**result)
 
     # check eLCM status
@@ -158,9 +155,9 @@ def irmc_elcm_repository(module):
         module.fail_json(msg=msg, status=status)
 
     # preliminary parameter check
-    if module.params['command'] == "set":
+    if module.params['command'] == 'set':
         none_count = 0
-        plist = ("server", "catalog", "use_proxy", "proxy_url", "proxy_port", "proxy_user", "proxy_password")
+        plist = ('server', 'catalog', 'use_proxy', 'proxy_url', 'proxy_port', 'proxy_user', 'proxy_password')
         for param in plist:
             if module.params[param] is None:
                 none_count += 1
@@ -175,10 +172,10 @@ def irmc_elcm_repository(module):
             module.fail_json(**result)
 
     # start doing the actual work
-    if module.params['command'] == "get":
+    if module.params['command'] == 'get':
         get_elcm_data(module)
 
-    if module.params['command'] == "set":
+    if module.params['command'] == 'set':
         set_elcm_data(module)
         result['changed'] = True
 
@@ -186,20 +183,20 @@ def irmc_elcm_repository(module):
 
 
 def get_elcm_data(module):
-    status, elcmdata, msg = irmc_redfish_get(module, "rest/v1/Oem/eLCM/Repository/Update")
+    status, elcmdata, msg = irmc_redfish_get(module, 'rest/v1/Oem/eLCM/Repository/Update')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status not in (200, 202, 204):
         module.fail_json(msg=msg, status=status)
 
     result['repository'] = {}
-    result['repository']['server'] = get_irmc_json(elcmdata.json(), ["Repository", "Server", "URL"])
-    result['repository']['catalog'] = get_irmc_json(elcmdata.json(), ["Repository", "Server", "Catalog"])
-    result['repository']['use_proxy'] = get_irmc_json(elcmdata.json(), ["Repository", "Server", "UseProxy"])
-    result['repository']['proxy_url'] = get_irmc_json(elcmdata.json(), ["Repository", "Proxy", "URL"])
-    result['repository']['proxy_port'] = get_irmc_json(elcmdata.json(), ["Repository", "Proxy", "Port"])
-    result['repository']['proxy_user'] = get_irmc_json(elcmdata.json(), ["Repository", "Proxy", "User"])
-    result['repository']['proxy_password'] = get_irmc_json(elcmdata.json(), ["Repository", "Proxy", "Password"])
+    result['repository']['server'] = get_irmc_json(elcmdata.json(), ['Repository', 'Server', 'URL'])
+    result['repository']['catalog'] = get_irmc_json(elcmdata.json(), ['Repository', 'Server', 'Catalog'])
+    result['repository']['use_proxy'] = get_irmc_json(elcmdata.json(), ['Repository', 'Server', 'UseProxy'])
+    result['repository']['proxy_url'] = get_irmc_json(elcmdata.json(), ['Repository', 'Proxy', 'URL'])
+    result['repository']['proxy_port'] = get_irmc_json(elcmdata.json(), ['Repository', 'Proxy', 'Port'])
+    result['repository']['proxy_user'] = get_irmc_json(elcmdata.json(), ['Repository', 'Proxy', 'User'])
+    result['repository']['proxy_password'] = get_irmc_json(elcmdata.json(), ['Repository', 'Proxy', 'Password'])
 
 
 def set_elcm_data(module):
@@ -222,10 +219,10 @@ def set_elcm_data(module):
             body['Repository']['Proxy']['Port'] = module.params['proxy_port']
         if module.params['proxy_user'] is not None:
             body['Repository']['Proxy']['User'] = module.params['proxy_user']
-        if module.params['proxy_password'] is not None and module.params['proxy_password'] != "":
+        if module.params['proxy_password'] is not None and module.params['proxy_password'] != '':
             body['Repository']['Proxy']['Password'] = module.params['proxy_password']
 
-    status, elcmdata, msg = irmc_redfish_put(module, "rest/v1/Oem/eLCM/Repository/Update", json.dumps(body))
+    status, elcmdata, msg = irmc_redfish_put(module, 'rest/v1/Oem/eLCM/Repository/Update', json.dumps(body))
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=elcmdata)
     elif status not in (200, 202, 204):
@@ -233,7 +230,7 @@ def set_elcm_data(module):
 
     if module.params['wait_for_finish'] is True:
         # check that current session is terminated
-        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ["Session", "Id"]))
+        status, data, msg = waitForSessionToFinish(module, get_irmc_json(elcmdata.json(), ['Session', 'Id']))
         if status > 30 and status < 100:
             module.fail_json(msg=msg, status=status, exception=data)
         elif status not in (200, 202, 204):
@@ -243,23 +240,23 @@ def set_elcm_data(module):
 def main():
     # import pdb; pdb.set_trace()
     module_args = dict(
-        irmc_url=dict(required=True, type="str"),
-        irmc_username=dict(required=True, type="str"),
-        irmc_password=dict(required=True, type="str", no_log=True),
-        validate_certs=dict(required=False, type="bool", default=True),
-        command=dict(required=False, type="str", default="get", choices=['get', 'set']),
-        server=dict(required=False, type="str"),
-        catalog=dict(required=False, type="str"),
-        use_proxy=dict(required=False, type="bool"),
-        proxy_url=dict(required=False, type="str"),
-        proxy_port=dict(required=False, type="str"),
-        proxy_user=dict(required=False, type="str"),
-        proxy_password=dict(required=False, type="str", no_log=True),
-        wait_for_finish=dict(required=False, type="bool", default=True),
+        irmc_url=dict(required=True, type='str'),
+        irmc_username=dict(required=True, type='str'),
+        irmc_password=dict(required=True, type='str', no_log=True),
+        validate_certs=dict(required=False, type='bool', default=True),
+        command=dict(required=False, type='str', default='get', choices=['get', 'set']),
+        server=dict(required=False, type='str'),
+        catalog=dict(required=False, type='str'),
+        use_proxy=dict(required=False, type='bool'),
+        proxy_url=dict(required=False, type='str'),
+        proxy_port=dict(required=False, type='str'),
+        proxy_user=dict(required=False, type='str'),
+        proxy_password=dict(required=False, type='str', no_log=True),
+        wait_for_finish=dict(required=False, type='bool', default=True),
     )
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=False
+        supports_check_mode=False,
     )
 
     irmc_elcm_repository(module)
