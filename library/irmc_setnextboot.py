@@ -43,7 +43,7 @@ options:
         description: The source for the next boot.
         required:    false
         default:     BiosSetup
-        choices:     ['None', 'Pxe', 'Floppy', 'Cd', 'Hdd', 'BiosSetup']
+        choices:     ['None', 'Pxe', 'Cd', 'Hdd', 'BiosSetup']
     bootoverride:
         description: Boot override type. If bootsource is 'None', it is ignored.
         required:    false
@@ -153,7 +153,7 @@ def main() -> None:
         irmc_password=dict(required=True, type='str', no_log=True),
         validate_certs=dict(required=False, type='bool', default=True),
         bootsource=dict(required=False, type='str', default='BiosSetup',
-                        choices=['None', 'Pxe', 'Floppy', 'Cd', 'Hdd', 'BiosSetup']),
+                        choices=['None', 'Pxe', 'Cd', 'Hdd', 'BiosSetup']),
         bootoverride=dict(required=False, type='str', default='Once', choices=['Once', 'Continuous']),
         bootmode=dict(required=False, type='str', choices=['UEFI', 'Legacy']),
     )

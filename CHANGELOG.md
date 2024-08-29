@@ -29,3 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   It can no longer be specified for the following modules.
   - `irmc_connectvm`, `irmc_getvm`, `irmc_setvm`
 - The `connect_fd`, `connect_cd` and `connect_hd` commands are no longer supported in the `irmc_scci` module.
+- `"Floppy"` can no longer be specified for parameter `bootsource` in the `irmc_setnextboot` module.
