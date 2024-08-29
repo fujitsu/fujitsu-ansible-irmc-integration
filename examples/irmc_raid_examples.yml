@@ -8,34 +8,37 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_raid - usage examples
+- name: Usage examples for irmc_raid
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
   tasks:
-    # Get RAID configuration
-    - name: Get RAID configuration
-      irmc_raid:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: raid
-      delegate_to: localhost
-    - name: Show RAID configuration
-      debug:
-        msg: "{{ raid.configuration }}"
-    
+    - name: Get and show RAID configuration
+      tags:
+        - get
+      block:
+        - name: Get RAID configuration
+          irmc_raid:
+            irmc_url: "{{ inventory_hostname }}"
+            irmc_username: "{{ irmc_user }}"
+            irmc_password: "{{ irmc_password }}"
+            validate_certs: "{{ validate_certificate }}"
+            command: "get"
+          register: raid
+          delegate_to: localhost
+        - name: Show RAID configuration
+          ansible.builtin.debug:
+            var: raid.configuration
+
     # Create RAID array
     - name: Create RAID array
       irmc_raid:
@@ -48,7 +51,9 @@
         level: "{{ level }}"
         name: "{{ name }}"
       delegate_to: localhost
-    
+      tags:
+        - create
+
     # Delete RAID array
     - name: Delete RAID array
       irmc_raid:
@@ -60,3 +65,5 @@
         adapter: "{{ adapter }}"
         array: "{{ array }}"
       delegate_to: localhost
+      tags:
+        - delete
