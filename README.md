@@ -15,7 +15,7 @@ Fujitsu PRIMERGY servers via iRMC.
 5. [Usage](#usage)
 6. [Modules](#modules)
 7. [Playbooks](#playbooks)
-8. [History](#history)
+8. [Change log](#change-log)
 9. [License](#license)
 10. [Authors](#authors)
 
@@ -135,9 +135,10 @@ bare-metal-server provisioning tasks:
 
 ## Change log
 
-* V1.0: Initial version
-* V1.1: New: iRMC FW/BIOS update, BIOS boot order, iRMC profile management
-* V1.2: New: eLCM Offline/Online Update, RAID configuration
+- V1.0: Initial version
+- V1.1: New: iRMC FW/BIOS update, BIOS boot order, iRMC profile management
+- V1.2: New: eLCM Offline/Online Update, RAID configuration
+- For later versions, see [CHANGELOG.md](./CHANGELOG.md).
 
 ## License
 
