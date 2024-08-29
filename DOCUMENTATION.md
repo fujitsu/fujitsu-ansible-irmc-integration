@@ -133,14 +133,18 @@ Default return values
 ---
 ### irmc_cas
 
+* This module has not been verified on iRMC S6. Verification is planned for a future version.
+
 #### Description
+
 * Ansible module to manage iRMC CAS settings via iRMC remote scripting interface.
 * Module Version V1.2.
 
 #### Requirements
-  * The module needs to run locally.
-  * Python >= 2.6
-  * Python modules 'future', 'requests', 'urllib3'
+
+* The module needs to run locally.
+* Python >= 2.6
+* Python modules 'future', 'requests', 'urllib3'
 
 #### Options
 
@@ -167,6 +171,7 @@ Default return values
 | validate_uri  |  No  |  | | CAS Validate URL. |
 
 #### Examples
+
 ```yaml
 # Get CAS data
 - name: Get CAS data
@@ -222,7 +227,6 @@ Default return values
 
 #### Notes
 
-- See http://manuals.ts.fujitsu.com/file/12563/wp-svs-irmc-remote-scripting-en.pdf
 - See https://sp.ts.fujitsu.com/dmsp/Publications/public/dp-svs-configuration-space-values-en.pdf
 
 ---
