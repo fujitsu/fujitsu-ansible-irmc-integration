@@ -8,52 +8,51 @@
 # variables not defined in this playbook are expected to be provided
 # elsewhere, e.g. in group_vars/all
 
-- name: irmc_biosbootorder - usage examples
+- name: Usage examples for irmc_biosbootorder
   connection: local
   hosts: iRMC_group
 
-  vars:
-    # iRMC login credentials
-    # irmc_user: "admin"
-    # irmc_password: "admin"
-    # Note: set validate_certificate to false for self-signed certificate
-    # validate_certificate: false
+  # vars:
+  #   # iRMC login credentials
+  #   irmc_user: "admin"
+  #   irmc_password: "admin"
+  #   # Note: set validate_certificate to false for self-signed certificate
+  #   validate_certificate: false
 
   gather_facts: false
 
   tasks:
-    # Get Bios Boot Order
-    - block:
-      - name: Get Bios Boot Order
-        irmc_biosbootorder:
-          irmc_url: "{{ inventory_hostname }}"
-          irmc_username: "{{ irmc_user }}"
-          irmc_password: "{{ irmc_password }}"
-          validate_certs: "{{ validate_certificate }}"
-          command: "get"
-          force_new: True
-        register: result
-        delegate_to: localhost
-      - name: Show Bios Boot Order
-        debug:
-          var: result.boot_order
+    - name: Get and show Bios Boot Order
       tags:
         - get
-    
-    # Set Bios Boot Order to default
-    - name: Set Bios Boot Order to default
+      block:
+        - name: Get Bios Boot Order
+          irmc_biosbootorder:
+            irmc_url: "{{ inventory_hostname }}"
+            irmc_username: "{{ irmc_user }}"
+            irmc_password: "{{ irmc_password }}"
+            validate_certs: "{{ validate_certificate }}"
+            command: "get"
+            force_new: "{{ force_new | default(true) }}"
+          register: result
+          delegate_to: localhost
+        - name: Show Bios Boot Order
+          ansible.builtin.debug:
+            var: result.boot_order
+
+    - name: Reset Bios Boot Order to default
       irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
         command: "default"
-        ignore_power_on: false
+        ignore_power_on: "{{ ignore_power_on | default(false) }}"
       delegate_to: localhost
       tags:
-        - set_default
+        - reset
+        - default
 
-    # Set Bios Boot Order
     - name: Set Bios Boot Order
       irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
@@ -62,7 +61,8 @@
         validate_certs: "{{ validate_certificate }}"
         command: "set"
         boot_device: "{{ boot_device }}"
-        ignore_power_on: false
+        boot_key: "{{ boot_key | default('StructuredBootString') }}"
+        ignore_power_on: "{{ ignore_power_on | default(false) }}"
       delegate_to: localhost
       tags:
         - set

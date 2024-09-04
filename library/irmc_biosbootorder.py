@@ -41,7 +41,7 @@ options:
         required:    false
         default:     true
     command:
-        description: Get or set BIOS Boot Order(When the command is executed with "default", there are no changes made to BIOS Boot Order currently).
+        description: Get, set, or reset BIOS Boot Order.
         required:    false
         default:     get
         choices:     ['get', 'set', 'default']
@@ -68,38 +68,37 @@ options:
 '''
 
 EXAMPLES = '''
-# Get Bios Boot Order
-- block:
-  - name: Get Bios Boot Order
-    irmc_biosbootorder:
-      irmc_url: "{{ inventory_hostname }}"
-      irmc_username: "{{ irmc_user }}"
-      irmc_password: "{{ irmc_password }}"
-      validate_certs: "{{ validate_certificate }}"
-      command: "get"
-      force_new: True
-    register: result
-    delegate_to: localhost
-  - name: Show Bios Boot Order
-    debug:
-      var: result.boot_order
+- name: Get and show Bios Boot Order
   tags:
     - get
+  block:
+    - name: Get Bios Boot Order
+      irmc_biosbootorder:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+        force_new: "{{ force_new | default(true) }}"
+      register: result
+      delegate_to: localhost
+    - name: Show Bios Boot Order
+      ansible.builtin.debug:
+        var: result.boot_order
 
-# Set Bios Boot Order to default
-- name: Set Bios Boot Order to default
+- name: Reset Bios Boot Order to default
   irmc_biosbootorder:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "default"
-    ignore_power_on: false
+    ignore_power_on: "{{ ignore_power_on | default(false) }}"
   delegate_to: localhost
   tags:
-    - set_default
+    - reset
+    - default
 
-# Set Bios Boot Order
 - name: Set Bios Boot Order
   irmc_biosbootorder:
     irmc_url: "{{ inventory_hostname }}"
@@ -108,7 +107,8 @@ EXAMPLES = '''
     validate_certs: "{{ validate_certificate }}"
     command: "set"
     boot_device: "{{ boot_device }}"
-    ignore_power_on: false
+    boot_key: "{{ boot_key | default('StructuredBootString') }}"
+    ignore_power_on: "{{ ignore_power_on | default(false) }}"
   delegate_to: localhost
   tags:
     - set
@@ -391,7 +391,6 @@ def set_default_bootorder(module):
                 'BiosConfig': {
                     '@Processing': 'execute',
                     'BiosBootOrder': {
-                        'BootOrderApply': True,
                         'BootOrderReset': True,
                     },
                     '@Version': '1.03',
