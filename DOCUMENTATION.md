@@ -1756,6 +1756,10 @@ Default return values
 |:-----|:------------|:---------|:-----|:--------|
 | profile | data of requested profile | always | dict |  |
 
+#### Notes
+
+- See [iRMC RESTful API BIOS1.09 - Spezification](https://support.ts.fujitsu.com/IndexDownload.asp?SoftwareGuid=C821591C-C441-43A8-8A39-CC36D37AB2A1)
+
 ---
 
 ### irmc_raid
