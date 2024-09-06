@@ -212,19 +212,22 @@ def setup_resultdata(data):
 
 
 def setup_commandlist_for_set(cmdlist, ctype, scci_map):
-    body = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ>\n'''
-    data = ''
-    for elem in scci_map:
-        if elem[0] not in cmdlist:
+    body = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ>\n'
+
+    for param, scci_name, _scci_code, index, value_dict in scci_map:
+        if param not in cmdlist:
             continue
-        if elem[4] is not None and cmdlist[elem[0]] is not None:
-            data = get_key_for_value(cmdlist[elem[0]], elem[4])
+
+        if value_dict is not None and cmdlist[param] is not None:
+            data = get_key_for_value(cmdlist[param], value_dict)
         else:
-            data = cmdlist[elem[0]]
-        if elem[1] == 'ConfBmcNtpServer':
-            body += add_scci_command(ctype, scci_map, elem[1], elem[3], data, convert_dtype=False)
+            data = cmdlist[param]
+
+        if scci_name == 'ConfBmcNtpServer':
+            body += add_scci_command(ctype, scci_map, scci_name, index, data, convert_dtype=False)
         else:
-            body += add_scci_command(ctype, scci_map, elem[1], elem[3], data)
+            body += add_scci_command(ctype, scci_map, scci_name, index, data)
+
     body += '</CMDSEQ>'
     return body
 

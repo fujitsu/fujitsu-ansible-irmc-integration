@@ -71,10 +71,9 @@ def add_scci_command(ctype, scci_map, opcodeextcode, index, data, convert_dtype=
             data = '0' if data is False else '1'
         if isinstance(data, int):
             data = str(data)
+        dtype = 'string'
         if convert_dtype:
             dtype = 'integer' if data.isdigit() else 'string'
-        else:
-            dtype = 'string'
         sensitives = ('&', '<', '>', '"', "'")
         for char in sensitives:
             if char in data:
