@@ -133,6 +133,8 @@ details_for_set:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.irmc_scci_utils import (
+    add_scci_command,
+    get_key_for_value,
     get_scciresultlist_oi,
     irmc_scci_post,
     setup_commandlist,
@@ -176,7 +178,7 @@ def irmc_ntp(module):
     if module.params['command'] == 'get':
         body = setup_commandlist(ntpdata, 'GET', param_scci_map)
     else:
-        body = setup_commandlist(ntpdata, 'SET', param_scci_map)
+        body = setup_commandlist_for_set(ntpdata, 'SET', param_scci_map)
 
     # send command list to scripting interface
     status, data, msg = irmc_scci_post(module, body)
@@ -207,6 +209,27 @@ def setup_resultdata(data):
         'ntp_server_secondary': data['ntp_server_secondary'],
     }
     return result
+
+
+def setup_commandlist_for_set(cmdlist, ctype, scci_map):
+    body = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CMDSEQ>\n'
+
+    for param, scci_name, _scci_code, index, value_dict in scci_map:
+        if param not in cmdlist:
+            continue
+
+        if value_dict is not None and cmdlist[param] is not None:
+            data = get_key_for_value(cmdlist[param], value_dict)
+        else:
+            data = cmdlist[param]
+
+        if scci_name == 'ConfBmcNtpServer':
+            body += add_scci_command(ctype, scci_map, scci_name, index, data, convert_dtype=False)
+        else:
+            body += add_scci_command(ctype, scci_map, scci_name, index, data)
+
+    body += '</CMDSEQ>'
+    return body
 
 
 def main():

@@ -53,7 +53,7 @@ def setup_commandlist(cmdlist, ctype, scci_map):
     return body
 
 
-def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
+def add_scci_command(ctype, scci_map, opcodeextcode, index, data, convert_dtype=True):
     if ctype not in ('SET', 'GET', 'CREATE', 'DELETE'):
         return ''
     if ctype in ('CREATE', 'DELETE'):
@@ -71,7 +71,9 @@ def add_scci_command(ctype, scci_map, opcodeextcode, index, data):
             data = '0' if data is False else '1'
         if isinstance(data, int):
             data = str(data)
-        dtype = 'integer' if data.isdigit() else 'string'
+        dtype = 'string'
+        if convert_dtype:
+            dtype = 'integer' if data.isdigit() else 'string'
         sensitives = ('&', '<', '>', '"', "'")
         for char in sensitives:
             if char in data:
