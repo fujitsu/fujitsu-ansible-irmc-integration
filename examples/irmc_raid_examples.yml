@@ -39,7 +39,6 @@
           ansible.builtin.debug:
             var: raid.configuration
 
-    # Create RAID array
     - name: Create RAID array
       irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
@@ -54,7 +53,6 @@
       tags:
         - create
 
-    # Delete RAID array
     - name: Delete RAID array
       irmc_raid:
         irmc_url: "{{ inventory_hostname }}"

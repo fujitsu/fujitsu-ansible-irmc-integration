@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The problem that prevented setting only numeric strings for `ntp_server_primary` and `ntp_server_secondary` has been fixed in the `irmc_ntp` module.
 - The `irmc_biosbootorder` module has been fixed to able the boot order to be reset with the command "default".
 
+### Changed
+
+- The `irmc_raid` module has been verified with iRMC S6, and updated documentation.
+
 ## [1.3.0] - 2024-08-30
 
 ### Changed

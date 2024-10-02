@@ -1764,27 +1764,24 @@ Default return values
 
 ### irmc_raid
 
-* This module has not been verified on iRMC S6. Verification is planned for a future version.
-
 #### Description
 
 * Ansible module to configure a PRIMERGY server's RAID via iRMC.
 * Using this module may force the server into several reboots.
-* Module Version V1.2.
+* Module Version V1.3.0.
 
 #### Requirements
 
 * The module needs to run locally.
-* The PRIMERGY server needs to be at least a M2 model.
-* iRMC S4 needs FW >= 9.04, iRMC S5 needs FW >= 1.25.
-* Python >= 2.6
-* Python modules 'future', 'requests', 'urllib3'
+* iRMC S6.
+* Python >= 3.10
+* Python modules 'requests', 'urllib3'
 
 #### Options
 
 | Parameter | Required | Default | Choices | Description |
 |:----------|:---------|:--------|:--------|:----------- |
-| adapter  |  No  |  | | The logical number of the adapter to create/delete RAID arrays on/from. |
+| adapter  |  No  |  | | The logical number of the adapter to create/delete RAID arrays on/from. The logical number is the value at the end of the id (ex. `“RAIDAdapter0”`) obtained by `command=“get”`.|
 | array  |  No  |  | | The logical number of the RAID array to delete. Use -1 for all arrays. Ignored for 'create'. |
 | command  |  No  |  get  | get<br/> create<br/> delete<br/>  | How to handle iRMC RAID. |
 | irmc_password  |  Yes  |  | | Password for iRMC user for basic authentication. |
@@ -1798,7 +1795,6 @@ Default return values
 #### Examples
 
 ```yaml
-# Get RAID configuration
 - name: Get RAID configuration
   irmc_raid:
     irmc_url: "{{ inventory_hostname }}"
@@ -1812,7 +1808,6 @@ Default return values
   debug:
     msg: "{{ raid.configuration }}"
 
-# Create RAID array
 - name: Create RAID array
   irmc_raid:
     irmc_url: "{{ inventory_hostname }}"
@@ -1825,7 +1820,6 @@ Default return values
     name: "{{ name }}"
   delegate_to: localhost
 
-# Delete RAID array
 - name: Delete RAID array
   irmc_raid:
     irmc_url: "{{ inventory_hostname }}"
