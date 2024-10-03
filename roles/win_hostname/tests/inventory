@@ -1,0 +1,9 @@
+[windows]
+<windows-hostname-or-ipaddress> ansible_user=Administrator ansible_password=<password>
+
+[windows:vars]
+ansible_port=5985
+ansible_connection=winrm
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
+

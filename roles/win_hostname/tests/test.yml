@@ -1,0 +1,7 @@
+---
+- name: Change the hostname
+  hosts: windows
+  roles:
+    - role: win_hostname
+  vars:
+    hostname: Hostname
