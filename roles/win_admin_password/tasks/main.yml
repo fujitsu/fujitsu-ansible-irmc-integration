@@ -1,0 +1,6 @@
+---
+# tasks file for ./roles/win_admin_password
+- name: Change Administrator password
+  ansible.windows.win_user:
+    name: Administrator
+    password: "{{ password }}"
