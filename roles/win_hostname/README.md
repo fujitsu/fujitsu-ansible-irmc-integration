@@ -1,5 +1,5 @@
 win_hostname
-=========
+============
 
 Change the hostname of Windows Server.
 
@@ -8,7 +8,7 @@ Requirements
 
 This role depends on the following Ansible collections:
 
-- `ansible.windows` >= 1.0.0
+- `ansible.windows` >= 2.5.0
 
 Role Variables
 --------------

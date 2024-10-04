@@ -1,10 +1,10 @@
 ---
 # tasks file for ./roles/win_hostname
 - name: Change the hostname
-  win_hostname:
+  ansible.windows.win_hostname:
     name: "{{ hostname }}"
-  register: res
+  register: change_hostname
 
 - name: Reboot
-  win_reboot:
-  when: res.reboot_required
+  ansible.windows.win_reboot:
+  when: change_hostname.reboot_required
