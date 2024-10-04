@@ -1,0 +1,100 @@
+---
+# tasks file for ./roles/win_serverview_agents/
+
+- name: Define a new parameter from vars and defaults.
+  ansible.builtin.set_fact:
+    serverview_agents_installer_src: "{{ installer }}"
+    serverview_agents_installer_dest: "{{ win_serverview_agents_installer_dest_dir }}\\ServerViewAgents_installer.exe"
+    serverview_agents_allow_administrator_login: "{{ allow_administrator_login | default(false) }}"
+    serverview_agents_username: "{{ username | default(win_serverview_agents_username) }}"
+  tags: always
+
+- name: Define a new *SECRET* parameter from vars and defaults.
+  ansible.builtin.set_fact:
+    serverview_agents_password: "{{ password }}"
+  no_log: true  # Always true because it contains Secret.
+  tags: always
+
+- name: Get system locale
+  ansible.windows.win_shell: (Get-WinSystemLocale).Name
+  register: locale_result
+
+- name: Set "FUJITSU SVUSER" group description based on system locale
+  ansible.builtin.set_fact:
+    group_description: >
+      {%- if 'ja-JP' in locale_result.stdout -%}
+        {{ win_serverview_agents_group_description_jp | trim }}
+      {%- else -%}
+        {{ win_serverview_agents_group_description_en | trim }}
+      {%- endif -%}
+
+- name: Install SNMP Service
+  ansible.windows.win_feature:
+    name: snmp-service
+    include_management_tools: true
+  register: snmp_result
+
+- name: Reboot the server if SNMP Service installation requires it
+  ansible.windows.win_reboot:
+    msg: "Reboot initiated by Ansible after SNMP Service installation."
+  when: snmp_result.reboot_required
+
+- name: Create local group "FUJITSU SVUSER"
+  ansible.windows.win_group:
+    name: "FUJITSU SVUSER"
+    description: "{{ group_description }}"
+    scope: Local
+    state: present
+
+- name: Add or Remove user "Administrator" to "FUJITSU SVUSER" group
+  ansible.windows.win_group_membership:
+    name: "FUJITSU SVUSER"
+    members: Administrator
+    state: "{{ 'present' if serverview_agents_allow_administrator_login else 'absent' }}"
+
+- name: Create account for ServerView Agents
+  ansible.windows.win_user:
+    name: "{{ serverview_agents_username }}"
+    password: "{{ serverview_agents_password }}"
+    description: Managing ServerView Agents
+    groups:
+      - Administrators
+      - "FUJITSU SVUSER"
+    password_never_expires: true
+    state: present
+
+- name: Ensure destination directory exists and copy installer
+  tags: copy_installer
+  block:
+    - name: Create directory for installer if it does not exist
+      ansible.windows.win_file:
+        path: "{{ win_serverview_agents_installer_dest_dir }}"
+        state: directory
+    - name: Copy ServerView Agents installer to Windows Server
+      ansible.windows.win_copy:
+        src: "{{ serverview_agents_installer_src }}"
+        dest: "{{ serverview_agents_installer_dest }}"
+
+- name: Install ServerView Agents
+  ansible.windows.win_package:
+    path: "{{ serverview_agents_installer_dest }}"
+    arguments:
+      - -SETUP
+      - -SILENT
+      - -MSILOG
+      - "{{ win_serverview_agents_installer_dest_dir }}\\ServerViewAgents_install.log"
+    creates_path: C:\Program Files\Fujitsu\ServerView Suite\Agents\ReadMe.txt
+  register: install_result
+  vars:
+    ansible_winrm_read_timeout_sec: 120
+
+- name: Remove installer after installation
+  ansible.windows.win_file:
+    path: "{{ serverview_agents_installer_dest }}"
+    state: absent
+  when: install_result is succeeded
+
+- name: Reboot the server if ServerView Agents installation requires it
+  ansible.windows.win_reboot:
+    msg: "Reboot initiated by Ansible after ServerView Agents installation."
+  when: install_result.reboot_required

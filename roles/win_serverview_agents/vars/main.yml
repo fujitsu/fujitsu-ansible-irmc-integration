@@ -1,0 +1,6 @@
+---
+# vars file for ./roles/win_serverview_agents/
+win_serverview_agents_installer_dest_dir: C:\Temp
+win_serverview_agents_username: svroot
+win_serverview_agents_group_description_jp: "ServerView Agents の System Monitor へのログインが許可されています。"
+win_serverview_agents_group_description_en: "Login to ServerView Agents System Monitor is permitted."
