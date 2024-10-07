@@ -1,0 +1,14 @@
+---
+- name: Change the locale
+  hosts: windows
+  roles:
+    - role: win_locale
+  vars:
+    download_path: "C:\\lang.iso"
+    download_url: "https://go.microsoft.com/fwlink/p/?linkid=2195333"
+    format: "ja-JP"
+    language: "ja-JP"
+    language_pack: "ja-jp"
+    location: "122"
+    timezone: "Tokyo Standard Time"
+    unicode_language: "ja-JP"

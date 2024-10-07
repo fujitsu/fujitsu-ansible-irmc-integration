@@ -1,0 +1,59 @@
+---
+# tasks file for ./roles/win_locale
+- name: Download the ISO file of language pack
+  ansible.windows.win_command:
+    powershell.exe -Command "Invoke-WebRequest -Uri '{{ download_url }}' -OutFile '{{ download_path }}'"
+  args:
+    creates: '{{ download_path }}'
+
+- name: Mount the ISO file
+  ansible.windows.win_command:
+    powershell.exe -Command "$mountResult = Mount-DiskImage '{{ download_path }}' -PassThru;
+              $driveLetter = ($mountResult | Get-Volume).DriveLetter;
+              $lppath = $driveLetter + ':\LanguagesAndOptionalFeatures\Microsoft-Windows-Server-Language-Pack_x64_{{ language_pack }}.cab';
+              Write-Output $lppath"
+  register: mount_result
+
+- name: Show the mount result
+  ansible.builtin.debug:
+    var: mount_result.stdout_lines
+
+- name: Install the language pack
+  ansible.windows.win_command:
+    dism /online /add-package /packagepath:{{ mount_result.stdout_lines[0] }}
+  register: install_result
+
+- name: Show the install result
+  ansible.builtin.debug:
+    var: install_result
+
+- name: Reboot
+  ansible.windows.win_reboot:
+    test_command: whoami
+
+- name: Change the display language
+  ansible.windows.win_command:
+    powershell.exe -Command "Add-WindowsCapability -Online -Name 'Language.Basic~~~{{ language }}~0.0.1.0';
+                            Set-WinUILanguageOverride -Language {{ language }};
+                            Set-WinUserLanguageList -LanguageList {{ language }} -Force;
+                            echo reboot_required"
+  register: set_language_result
+
+- name: Show the set language result
+  ansible.builtin.debug:
+    var: set_language_result
+
+- name: Change the region
+  community.windows.win_region:
+    location: "{{ location }}"
+    format: "{{ format }}"
+    unicode_language: "{{ unicode_language }}"
+  register: region_result
+
+- name: Change the timezone
+  community.windows.win_timezone:
+    timezone: "{{ timezone }}"
+
+- name: Reboot
+  ansible.windows.win_reboot:
+  when: region_result.restart_required or set_language_result.stdout_lines[6] == "reboot_required"
