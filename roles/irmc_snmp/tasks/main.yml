@@ -1,0 +1,16 @@
+---
+# tasks file for ./roles/irmc_snmp
+
+- name: Load SNMP profile JSON from template
+  ansible.builtin.set_fact:
+    snmp_profile_json: "{{ lookup('template', 'templates/snmp_profile.json.j2') }}"
+  tags: json
+
+- name: Apply SNMP settings as IRMC profile
+  irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "import"
+    profile_json: "{{ snmp_profile_json }}"

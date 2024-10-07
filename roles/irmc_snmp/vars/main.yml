@@ -1,0 +1,6 @@
+---
+# vars file for ./roles/irmc_snmp
+
+# These version numbers are taken from "FUJITSU ServerView iRMC S6 Web Server 2.53S".
+irmc_snmp_server_version: "1.01"
+irmc_snmp_irmc_config_version: "1.09"

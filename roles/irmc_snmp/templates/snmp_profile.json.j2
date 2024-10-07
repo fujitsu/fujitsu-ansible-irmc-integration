@@ -1,0 +1,49 @@
+{
+  "Server": {
+    "SystemConfig": {
+      "IrmcConfig": {
+        "NetworkServices": {
+          "Snmp": {
+            "Enabled": {{ snmp.enabled | default(true) }},
+            {% if snmp.service_port is defined %}
+            "ServicePort": {{ snmp.service_port }},
+            {% endif %}
+            {% if snmp.protocol is defined %}
+            "ServiceVersion": "{{ snmp.protocol }}",
+            {% endif %}
+            {% if snmp.community_name is defined %}
+            "CommunityName": "{{ snmp.community_name }}",
+            {% endif %}
+            {% if snmp_trap_destination is defined %}
+            {% if snmp_trap_destination.community_name is defined %}
+            "TrapCommunityName": "{{ snmp_trap_destination.community_name }}",
+            {% endif %}
+            "SnmpV3": {
+              {% if snmp_trap_destination.engine_id is defined %}
+              "EngineID": "{{ snmp_trap_destination.engine_id }}"
+              {% endif %}
+            },
+            "TrapDestinations": {
+              "TrapDestination": [
+                {% for dest in snmp_trap_destination.servers | default([]) %}
+                {
+                  {% if dest.name is defined %}
+                  "Name": "{{ dest.name }}",
+                  {% endif %}
+                  {% if dest.protocol is defined %}
+                  "Protocol": "{{ dest.protocol }}",
+                  {% endif %}
+                  "@TrapDestinationIdx": {{ dest.index }}
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+              ]
+            }
+            {% endif %}
+          }
+        },
+        "@Version": "{{ irmc_snmp_irmc_config_version }}"
+      }
+    },
+    "@Version": "{{ irmc_snmp_server_version }}"
+  }
+}

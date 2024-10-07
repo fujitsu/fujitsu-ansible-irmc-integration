@@ -1,0 +1,21 @@
+galaxy_info:
+  author: Yutaka Kamioka
+  description: Apply SNMP settings to IRMC devices.
+  company: Fsas Technologies Inc.
+  license: GPL-3.0-or-later
+
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: iRMC
+      versions:
+        - S6
+
+  galaxy_tags:
+    - fujitsu
+    - fti
+    - primergy
+    - irmc
+    - snmp
+
+dependencies: []
