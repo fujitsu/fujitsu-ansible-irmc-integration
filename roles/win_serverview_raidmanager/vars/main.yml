@@ -1,0 +1,4 @@
+---
+# vars file for ./roles/win_serverview_raidmanager
+win_serverview_raidmanager_installer_dest_dir: C:\Temp
+win_serverview_raidmanager_username: raidroot
