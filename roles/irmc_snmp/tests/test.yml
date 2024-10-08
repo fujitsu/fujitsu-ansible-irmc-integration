@@ -1,5 +1,6 @@
 ---
-- hosts: iRMC_group
+- name: Configure SNMP for iRMC devices
+  hosts: iRMC_group
   connection: local
   gather_facts: false
   vars_files:

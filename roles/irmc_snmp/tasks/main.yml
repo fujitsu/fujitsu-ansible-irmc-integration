@@ -1,16 +1,16 @@
 ---
 # tasks file for ./roles/irmc_snmp
 
-- name: Load SNMP profile JSON from template
+- name: Generate SNMP settings as IRMC profile
   ansible.builtin.set_fact:
-    snmp_profile_json: "{{ lookup('template', 'templates/snmp_profile.json.j2') }}"
+    snmp_profile: "{{ vars | fujitsu.primergy.snmp_profile_filter }}"
   tags: json
 
 - name: Apply SNMP settings as IRMC profile
-  irmc_profiles:
+  fujitsu.primergy.irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "import"
-    profile_json: "{{ snmp_profile_json }}"
+    profile_json: "{{ snmp_profile | to_json }}"

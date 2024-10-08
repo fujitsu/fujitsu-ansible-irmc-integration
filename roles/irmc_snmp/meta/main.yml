@@ -1,6 +1,6 @@
 galaxy_info:
   author: Yutaka Kamioka
-  description: Apply SNMP settings to IRMC devices.
+  description: Apply SNMP settings to iRMC devices.
   company: Fsas Technologies Inc.
   license: GPL-3.0-or-later
 

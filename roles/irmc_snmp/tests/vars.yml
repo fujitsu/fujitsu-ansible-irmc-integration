@@ -13,5 +13,4 @@ snmp_trap_destination:
       name: "Destination2"
       protocol: "SnmpV2c"
     - index: 2
-      name: ""
-      protocol: "SnmpV2c"
+      name: ""  # Empty string setting means disabling
