@@ -73,7 +73,7 @@ EXAMPLES = '''
     - get
   block:
     - name: Get Bios Boot Order
-      irmc_biosbootorder:
+      fujitsu.primergy.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -87,7 +87,7 @@ EXAMPLES = '''
         var: result.boot_order
 
 - name: Reset Bios Boot Order to default
-  irmc_biosbootorder:
+  fujitsu.primergy.irmc_biosbootorder:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -100,7 +100,7 @@ EXAMPLES = '''
     - default
 
 - name: Set Bios Boot Order
-  irmc_biosbootorder:
+  fujitsu.primergy.irmc_biosbootorder:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -143,21 +143,21 @@ import copy
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     get_irmc_json,
     irmc_redfish_delete,
     irmc_redfish_get,
     irmc_redfish_post,
     waitForSessionToFinish,
 )
-from ansible.module_utils.irmc_scci_utils import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_scci_utils import (
     add_scci_command,
     get_scciresultlist,
     irmc_scci_post,
     scci_body_end,
     scci_body_start,
 )
-from ansible.module_utils.irmc_utils import compare_irmc_profile
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_utils import compare_irmc_profile
 
 # Global
 result = dict()

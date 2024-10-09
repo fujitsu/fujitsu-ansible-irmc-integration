@@ -25,7 +25,7 @@
     # Get iRMC time settings
     - block:
       - name: Get iRMC time settings
-        irmc_ntp:
+        fujitsu.primergy.irmc_ntp:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -38,10 +38,10 @@
           var: time.time_settings
       tags:
         - get
-    
+
     # Set iRMC time option(s)
     - name: Set iRMC time option(s)
-      irmc_ntp:
+      fujitsu.primergy.irmc_ntp:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -27,7 +27,7 @@
 
   tasks:
     - name: Get current RAID configuration
-      irmc_raid:
+      fujitsu.primergy.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -40,7 +40,7 @@
         msg: "{{ raid.configuration }}"
 
     - name: Delete all RAID arrays on adapter
-      irmc_raid:
+      fujitsu.primergy.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -51,7 +51,7 @@
       delegate_to: localhost
 
     - name: Create RAID array
-      irmc_raid:
+      fujitsu.primergy.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -63,7 +63,7 @@
       delegate_to: localhost
 
     - name: Get new RAID configuration
-      irmc_raid:
+      fujitsu.primergy.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

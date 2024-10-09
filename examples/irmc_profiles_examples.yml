@@ -25,7 +25,7 @@
     # List iRMC profiles
     - block:
       - name: List iRMC profiles
-        irmc_profiles:
+        fujitsu.primergy.irmc_profiles:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -38,11 +38,11 @@
           var: list_profiles.profiles
       tags:
         - list_profiles
-    
+
     # Get specific profile
     - block:
       - name: Get specific profile
-        irmc_profiles:
+        fujitsu.primergy.irmc_profiles:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -56,10 +56,10 @@
           var: get_profile.profile
       tags:
         - get_profile
-    
+
     # Create profile
     - name: Create profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -73,7 +73,7 @@
 
     # Delete profile
     - name: Delete profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -86,7 +86,7 @@
 
     # Import profile
     - name: Import profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -27,7 +27,7 @@
         - get
       block:
         - name: Get Bios Boot Order
-          irmc_biosbootorder:
+          fujitsu.primergy.irmc_biosbootorder:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -41,7 +41,7 @@
             var: result.boot_order
 
     - name: Reset Bios Boot Order to default
-      irmc_biosbootorder:
+      fujitsu.primergy.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -54,7 +54,7 @@
         - default
 
     - name: Set Bios Boot Order
-      irmc_biosbootorder:
+      fujitsu.primergy.irmc_biosbootorder:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

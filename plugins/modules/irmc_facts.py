@@ -66,7 +66,7 @@ EXAMPLES = r'''
 # Get basic server and iRMC facts
 - block:
   - name: Get basic server and iRMC facts
-    irmc_facts:
+    fujitsu.primergy.irmc_facts:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -82,7 +82,7 @@ EXAMPLES = r'''
 
 # Set server asset tag
 - name: Set server asset tag
-  irmc_facts:
+  fujitsu.primergy.irmc_facts:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -267,7 +267,7 @@ details:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
 
 
 def irmc_facts(module):

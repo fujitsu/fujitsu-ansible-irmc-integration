@@ -49,50 +49,50 @@ options:
 EXAMPLES = r'''
 # Disconnect Virtual CD
 - name: Disconnect Virtual CD
-  irmc_connectvm:
+  fujitsu.primergy.irmc_connectvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "DisconnectCD"
   delegate_to: localhost
-  tags: 
+  tags:
     - disconnectCD
 
 # Connect Virtual CD
 - name: Connect Virtual CD
-  irmc_connectvm:
+  fujitsu.primergy.irmc_connectvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "ConnectCD"
   delegate_to: localhost
-  tags: 
+  tags:
     - connectCD
 
 # Disconnect Virtual HD
 - name: Disconnect Virtual HD
-  irmc_connectvm:
+  fujitsu.primergy.irmc_connectvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "DisconnectHD"
   delegate_to: localhost
-  tags: 
+  tags:
     - disconnectHD
 
 # Connect Virtual HD
 - name: Connect Virtual HD
-  irmc_connectvm:
+  fujitsu.primergy.irmc_connectvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "ConnectHD"
   delegate_to: localhost
-  tags: 
+  tags:
     - connectHD
 '''
 
@@ -106,7 +106,7 @@ details:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
 
 
 def irmc_connectvirtualmedia(module):

@@ -24,7 +24,7 @@
   tasks:
     # Get CAS data
     - name: Get CAS data
-      irmc_cas:
+      fujitsu.primergy.irmc_cas:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -35,10 +35,10 @@
     - name: Show iRMC CAS data
       debug:
         msg: "{{ cas.cas }}"
-    
+
     # Set CAS data
     - name: Set CAS data
-      irmc_cas:
+      fujitsu.primergy.irmc_cas:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

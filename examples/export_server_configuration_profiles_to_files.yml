@@ -28,7 +28,7 @@
   tasks:
     # Get iRMC profiles
     - name: Get SystemConfig profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -38,7 +38,7 @@
       register: system_config
       delegate_to: localhost
     - name: Get HWConfigurationIrmc profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

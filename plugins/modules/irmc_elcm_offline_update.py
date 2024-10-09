@@ -69,7 +69,7 @@ options:
 EXAMPLES = r'''
 # Prepare eLCM Offline Update
 - name: Prepare eLCM Offline Update
-  irmc_elcm_offline_update:
+  fujitsu.primergy.irmc_elcm_offline_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -81,7 +81,7 @@ EXAMPLES = r'''
 
 # Execute eLCM Offline Update
 - name: Execute eLCM Offline Update
-  irmc_elcm_offline_update:
+  fujitsu.primergy.irmc_elcm_offline_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -99,7 +99,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     elcm_check_status,
     get_irmc_json,
     irmc_redfish_get,

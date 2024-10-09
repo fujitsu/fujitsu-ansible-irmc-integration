@@ -28,7 +28,7 @@
   tasks:
     # Get user account data
     - name: Get user account data
-      irmc_user:
+      fujitsu.primergy.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

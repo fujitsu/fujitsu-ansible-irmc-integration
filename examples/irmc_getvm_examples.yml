@@ -25,7 +25,7 @@
     # Get Virtual CD data
     - block:
       - name: Get Virtual CD data
-        irmc_getvm:
+        fujitsu.primergy.irmc_getvm:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -42,7 +42,7 @@
     # Get Virtual HD data
     - block:
       - name: Get Virtual HD data
-        irmc_getvm:
+        fujitsu.primergy.irmc_getvm:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"

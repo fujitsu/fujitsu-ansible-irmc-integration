@@ -57,7 +57,7 @@ options:
 EXAMPLES = r'''
 - block:
   - name: List iRMC InternalEventLog
-    irmc_eventlog:
+    fujitsu.primergy.irmc_eventlog:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -75,7 +75,7 @@ EXAMPLES = r'''
 # List iRMC SystemEventLog
 - block:
   - name: List iRMC SystemEventLog
-    irmc_eventlog:
+    fujitsu.primergy.irmc_eventlog:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -94,7 +94,7 @@ EXAMPLES = r'''
 # Add '-e “id=xx”' to the command line argument of Playbook.
 - block:
   - name: Get specific InternalEventLog entry information
-    irmc_eventlog:
+    fujitsu.primergy.irmc_eventlog:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -114,7 +114,7 @@ EXAMPLES = r'''
 # Add '-e “id=xx”' to the command line argument of Playbook.
 - block:
   - name: Get specific SystemEventLog entry information
-    irmc_eventlog:
+    fujitsu.primergy.irmc_eventlog:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -132,7 +132,7 @@ EXAMPLES = r'''
 
 # Clear iRMC InternalEventLog
 - name: Clear iRMC InternalEventLog
-  irmc_eventlog:
+  fujitsu.primergy.irmc_eventlog:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -145,7 +145,7 @@ EXAMPLES = r'''
 
 # Clear iRMC SystemEventLog
 - name: Clear iRMC SystemEventLog
-  irmc_eventlog:
+  fujitsu.primergy.irmc_eventlog:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -216,7 +216,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
 
 # Global
 result = dict()

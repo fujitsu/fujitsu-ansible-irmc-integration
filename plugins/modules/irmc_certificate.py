@@ -71,7 +71,7 @@ EXAMPLES = r'''
     - get
   block:
     - name: Get SSL certificates
-      irmc_certificate:
+      fujitsu.primergy.irmc_certificate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -84,7 +84,7 @@ EXAMPLES = r'''
         var: certificates.certificates
 
 - name: Set SSL certificates
-  irmc_certificate:
+  fujitsu.primergy.irmc_certificate:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -118,7 +118,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
 
 param_scci_map = [
     # Param, SCCI Name, SCCI Code, index, value dict

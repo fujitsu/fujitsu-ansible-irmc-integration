@@ -71,7 +71,7 @@ EXAMPLES = r'''
     - get
   block:
     - name: Get RAID configuration
-      irmc_raid:
+      fujitsu.primergy.irmc_raid:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -84,7 +84,7 @@ EXAMPLES = r'''
         var: raid.configuration
 
 - name: Create RAID array
-  irmc_raid:
+  fujitsu.primergy.irmc_raid:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -98,7 +98,7 @@ EXAMPLES = r'''
     - create
 
 - name: Delete RAID array
-  irmc_raid:
+  fujitsu.primergy.irmc_raid:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -168,7 +168,7 @@ details_for_all:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     get_irmc_json,
     irmc_redfish_delete,
     irmc_redfish_get,

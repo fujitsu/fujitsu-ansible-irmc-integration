@@ -28,7 +28,7 @@
 
   tasks:
     - name: Create new user account
-      irmc_user:
+      fujitsu.primergy.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -67,7 +67,7 @@ EXAMPLES = r'''
 # List iRMC profiles
 - block:
   - name: List iRMC profiles
-    irmc_profiles:
+    fujitsu.primergy.irmc_profiles:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -84,7 +84,7 @@ EXAMPLES = r'''
 # Get specific profile
 - block:
   - name: Get specific profile
-    irmc_profiles:
+    fujitsu.primergy.irmc_profiles:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -101,7 +101,7 @@ EXAMPLES = r'''
 
 # Create profile
 - name: Create profile
-  irmc_profiles:
+  fujitsu.primergy.irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -115,7 +115,7 @@ EXAMPLES = r'''
 
 # Delete profile
 - name: Delete profile
-  irmc_profiles:
+  fujitsu.primergy.irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -128,7 +128,7 @@ EXAMPLES = r'''
 
 # Import profile
 - name: Import profile
-  irmc_profiles:
+  fujitsu.primergy.irmc_profiles:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -183,7 +183,7 @@ import json
 import os.path
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     get_irmc_json,
     irmc_redfish_delete,
     irmc_redfish_get,

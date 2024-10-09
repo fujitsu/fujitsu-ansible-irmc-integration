@@ -6,14 +6,13 @@
 
 DOCUMENTATION = r'''
 ---
-module: irmc_powerstate
+module: irmc_idled
 
-short_description: get or set server power state
-
+short_description: get or set server ID LED
 
 description:
-    - Ansible module to get or set server power state via iRMC RedFish interface.
-    - Module Version V1.2.
+    - Ansible module to get or set server ID LED via iRMC RedFish interface.
+    - Module Version V1.3.0.
 
 requirements:
     - The module needs to run locally.
@@ -41,45 +40,43 @@ options:
         required:    false
         default:     true
     command:
-        description: Get or set server power state.
+        description: Get or set server ID LED state.
         required:    false
         default:     get
         choices:     ['get', 'set']
     state:
-        description: Desired server power state for command 'set', ignored otherwise.
-                     Options 'GracefulPowerOff' and ' GracefulReset' require
-                     ServerView Agents running on server.
+        description: Desired server ID LED state for command 'set', ignored otherwise.
         required:    false
-        choices:     ['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff', 'ImmediateReset', 'GracefulReset',
-                      'PulseNmi', 'PressPowerButton']
+        choices:     ['Off', 'Lit', 'Blinking']
 '''
 
 EXAMPLES = r'''
-- name: Get and show server power state
+# Get server ID LED state
+- block:
+  - name: Get ID LED state
+    fujitsu.primergy.irmc_idled:
+      irmc_url: "{{ inventory_hostname }}"
+      irmc_username: "{{ irmc_user }}"
+      irmc_password: "{{ irmc_password }}"
+      validate_certs: "{{ validate_certificate }}"
+      command: "get"
+    register: idled
+    delegate_to: localhost
+  - name: Show iRMC ID LED state
+    debug:
+      var: idled.idled_state
   tags:
     - get
-  block:
-    - name: Get server power state
-      irmc_powerstate:
-        irmc_url: "{{ inventory_hostname }}"
-        irmc_username: "{{ irmc_user }}"
-        irmc_password: "{{ irmc_password }}"
-        validate_certs: "{{ validate_certificate }}"
-        command: "get"
-      register: result
-      delegate_to: localhost
-    - name: Show server power state
-      ansible.builtin.debug:
-        var: result.power_state
 
-- name: Set server power state
-  irmc_powerstate:
+# Set server ID LED state
+- name: Set server ID LED state
+  fujitsu.primergy.irmc_idled:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
     validate_certs: "{{ validate_certificate }}"
     command: "set"
-    state: "{{ state }}"
+    state: "Lit"
   delegate_to: localhost
   tags:
     - set
@@ -87,28 +84,27 @@ EXAMPLES = r'''
 
 RETURN = r'''
 details:
-    description: >
+    description:
         If command is “get”, the following values are returned.
 
-        For other commands ("set"),
-        the default return value of Ansible (changed, failed, etc.) is returned.
+        If command is "set", the default return value of Ansible (changed, failed, etc.) is returned.
 
     contains:
-        power_state:
-            description: server power state
+        idled_state:
+            description: server ID LED state
             returned: always
             type: string
-            sample: "On"
+            sample: Blinking
 '''
 
 
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_post
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
 
 
-def irmc_powerstate(module: AnsibleModule) -> None:
+def irmc_idled(module):
     result = dict(
         changed=False,
         status=0,
@@ -124,70 +120,60 @@ def irmc_powerstate(module: AnsibleModule) -> None:
         result['status'] = 10
         module.fail_json(**result)
 
-    # Get iRMC system data
+    # get iRMC system data
     status, sysdata, msg = irmc_redfish_get(module, 'redfish/v1/Systems/0/')
     if status < 100:
         module.fail_json(msg=msg, status=status, exception=sysdata)
     elif status != 200:
         module.fail_json(msg=msg, status=status)
 
-    power_state = get_irmc_json(sysdata.json(), 'PowerState')
+    idledstate = get_irmc_json(sysdata.json(), 'IndicatorLED')
     if module.params['command'] == 'get':
-        result['power_state'] = power_state
+        result['idled_state'] = idledstate
         module.exit_json(**result)
 
-    # Evaluate function params against iRMC
-    if 'Power' + power_state == module.params['state'].replace('Graceful', ''):
+    # evaluate function params against iRMC
+    if idledstate == module.params['state']:
         result['skipped'] = True
-        result['msg'] = f"PRIMERGY server is already in state '{power_state}'"
+        result['msg'] = "iRMC ID LED is already in state '{0}'".format(module.params['state'])
         module.exit_json(**result)
 
-    allowedparams = get_irmc_json(
-        sysdata.json(),
-        ['Actions', 'Oem', '#FTSComputerSystem.Reset', 'FTSResetType@Redfish.AllowableValues'],
-    )
+    allowedparams = get_irmc_json(sysdata.json(), 'IndicatorLED@Redfish.AllowableValues')
     if module.params['state'] not in allowedparams:
-        result['msg'] = (
-            f"{module.params['state']!r} is not allowed now. "
-            f"Currently allowed: {allowedparams}"
-        )
+        result['msg'] = "Invalid parameter '{0}'. Allowed: {1}".format(module.params['state'],
+                                                                       json.dumps(allowedparams))
         result['status'] = 11
         module.fail_json(**result)
 
-    # Set iRMC system data
-    body = {'FTSResetType': module.params['state']}
-    status, sysdata, msg = irmc_redfish_post(
-        module,
-        'redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset',
-        json.dumps(body),
-    )
+    # set iRMC system data
+    body = {'IndicatorLED': module.params['state']}
+    etag = get_irmc_json(sysdata.json(), '@odata.etag')
+    status, patch, msg = irmc_redfish_patch(module, 'redfish/v1/Systems/0/', json.dumps(body), etag)
     if status < 100:
-        module.fail_json(msg=msg, status=status, exception=sysdata)
-    elif status not in (200, 202, 204):
+        module.fail_json(msg=msg, status=status, exception=patch)
+    elif status != 200:
         module.fail_json(msg=msg, status=status)
 
     result['changed'] = True
     module.exit_json(**result)
 
 
-def main() -> None:
-    # breakpoint()
+def main():
+    # import pdb; pdb.set_trace()
     module_args = dict(
         irmc_url=dict(required=True, type='str'),
         irmc_username=dict(required=True, type='str'),
         irmc_password=dict(required=True, type='str', no_log=True),
         validate_certs=dict(required=False, type='bool', default=True),
         command=dict(required=False, type='str', default='get', choices=['get', 'set']),
-        state=dict(required=False, type='str', choices=['PowerOn', 'PowerOff', 'PowerCycle', 'GracefulPowerOff',
-                                                        'ImmediateReset', 'GracefulReset', 'PulseNmi',
-                                                        'PressPowerButton']),
+        state=dict(required=False, type='str', choices=['Off', 'Lit', 'Blinking']),
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=False,
     )
 
-    irmc_powerstate(module)
+    irmc_idled(module)
 
 
 if __name__ == '__main__':

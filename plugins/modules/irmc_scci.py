@@ -72,7 +72,7 @@ options:
 EXAMPLES = r'''
 # Write server location
 - name: Write server location
-  irmc_scci:
+  fujitsu.primergy.irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -87,7 +87,7 @@ EXAMPLES = r'''
 # Read server location
 - block:
   - name: "Read server location"
-    irmc_scci:
+    fujitsu.primergy.irmc_scci:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -104,7 +104,7 @@ EXAMPLES = r'''
 
 # Power on the server
 - name: "Power on the server"
-  irmc_scci:
+  fujitsu.primergy.irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -117,7 +117,7 @@ EXAMPLES = r'''
 
 # Power off the server
 - name: "Power off the server"
-  irmc_scci:
+  fujitsu.primergy.irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -130,7 +130,7 @@ EXAMPLES = r'''
 
 # Cancel shutdown
 - name: "Cancel shutdown"
-  irmc_scci:
+  fujitsu.primergy.irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -143,7 +143,7 @@ EXAMPLES = r'''
 
 # Reset firmware
 - name: "Reset firmware"
-  irmc_scci:
+  fujitsu.primergy.irmc_scci:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -172,7 +172,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc_scci_utils import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_scci_utils import (
     get_scciresult,
     irmc_scci_post,
     setup_sccirequest,

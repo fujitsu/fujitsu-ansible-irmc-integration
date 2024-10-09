@@ -25,7 +25,7 @@
     # Get basic server and iRMC facts
     - block:
       - name: Get basic server and iRMC facts
-        irmc_facts:
+        fujitsu.primergy.irmc_facts:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -41,7 +41,7 @@
 
     # Set server asset tag
     - name: Set server asset tag
-      irmc_facts:
+      fujitsu.primergy.irmc_facts:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

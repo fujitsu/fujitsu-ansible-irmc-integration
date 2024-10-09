@@ -53,7 +53,7 @@ EXAMPLES = r'''
 # List iRMC tasks
 - block:
   - name: List iRMC tasks
-    irmc_task:
+    fujitsu.primergy.irmc_task:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -70,7 +70,7 @@ EXAMPLES = r'''
 # Get specific task information
 - block:
   - name: Get specific task information
-    irmc_task:
+    fujitsu.primergy.irmc_task:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -138,7 +138,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get
 
 # Global
 result = dict()

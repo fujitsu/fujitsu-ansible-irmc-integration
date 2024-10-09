@@ -27,7 +27,7 @@
   tasks:
     # Get iRMC profiles
     - name: Get SystemConfig profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -37,7 +37,7 @@
       register: system_config
       delegate_to: localhost
     - name: Get HWConfigurationIrmc profile
-      irmc_profiles:
+      fujitsu.primergy.irmc_profiles:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -55,7 +55,7 @@
 
     # compare iRMC Profiles to file
     - name: Compare SystemConfig profile
-      irmc_compare_profiles:
+      fujitsu.primergy.irmc_compare_profiles:
         profile_path1: "{{ irmc_sysconfig_file }}"
         profile_json2: "{{ system_config.profile }}"
       register: system_config_result
@@ -66,7 +66,7 @@
           - "{{ system_config_result.comparison_list }}"
       when: system_config_result.comparison_result == false
     - name: Compare HWConfigurationIrmc profile
-      irmc_compare_profiles:
+      fujitsu.primergy.irmc_compare_profiles:
         profile_path1: "{{ irmc_hwconfig_file }}"
         profile_json2: "{{ hardware_config.profile }}"
       register: hardware_config_result

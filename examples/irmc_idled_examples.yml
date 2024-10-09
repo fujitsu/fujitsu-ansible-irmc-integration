@@ -25,7 +25,7 @@
     # Get server ID LED state
     - block:
       - name: Get ID LED state
-        irmc_idled:
+        fujitsu.primergy.irmc_idled:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -38,10 +38,10 @@
           var: idled.idled_state
       tags:
         - get
-    
+
     # Set server ID LED state
     - name: Set server ID LED state
-      irmc_idled:
+      fujitsu.primergy.irmc_idled:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

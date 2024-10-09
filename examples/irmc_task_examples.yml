@@ -25,7 +25,7 @@
     # List iRMC tasks
     - block:
       - name: List iRMC tasks
-        irmc_task:
+        fujitsu.primergy.irmc_task:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -38,11 +38,11 @@
           var: list.tasks
       tags:
         - list
-    
+
     # Get specific task information
     - block:
       - name: Get specific task information
-        irmc_task:
+        fujitsu.primergy.irmc_task:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"

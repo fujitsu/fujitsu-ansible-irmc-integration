@@ -23,7 +23,7 @@
   tasks:
     # Get basic server and iRMC facts
     - name: Get basic server and iRMC facts
-      irmc_facts:
+      fujitsu.primergy.irmc_facts:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -37,7 +37,7 @@
 
     # Get Virtual Media data
     - name: Get Virtual Media data
-      irmc_getvm:
+      fujitsu.primergy.irmc_getvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

@@ -97,7 +97,7 @@ notes:
 EXAMPLES = r'''
 # Get CAS data
 - name: Get CAS data
-  irmc_cas:
+  fujitsu.primergy.irmc_cas:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -111,7 +111,7 @@ EXAMPLES = r'''
 
 # Set CAS data
 - name: Set CAS data
-  irmc_cas:
+  fujitsu.primergy.irmc_cas:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -204,7 +204,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_scci_utils import get_scciresultlist, irmc_scci_post, setup_commandlist, setup_datadict
 
 cas_priv = {'0': 'Reserved', '1': 'Callback', '2': 'User', '3': 'Operator', '4': 'Administrator', '5': 'OEM', '15': 'NoAccess'}
 cas_priv_src = {'0': 'Local', '1': 'LDAP'}

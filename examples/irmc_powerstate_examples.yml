@@ -27,7 +27,7 @@
         - get
       block:
         - name: Get server power state
-          irmc_powerstate:
+          fujitsu.primergy.irmc_powerstate:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -40,7 +40,7 @@
             var: result.power_state
 
     - name: Set server power state
-      irmc_powerstate:
+      fujitsu.primergy.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

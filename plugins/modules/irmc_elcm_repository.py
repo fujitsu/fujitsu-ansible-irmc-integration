@@ -81,7 +81,7 @@ options:
 EXAMPLES = r'''
 # Get eLCM repository data
 - name: Get eLCM repository data
-  irmc_elcm_repository:
+  fujitsu.primergy.irmc_elcm_repository:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -91,7 +91,7 @@ EXAMPLES = r'''
 
 # Set eLCM repository data
 - name: Set eLCM repository data
-  irmc_elcm_repository:
+  fujitsu.primergy.irmc_elcm_repository:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -125,7 +125,7 @@ details:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     elcm_check_status,
     get_irmc_json,
     irmc_redfish_get,

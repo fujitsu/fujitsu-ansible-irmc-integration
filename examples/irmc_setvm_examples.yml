@@ -24,7 +24,7 @@
   tasks:
     # Set Virtual CD
     - name: Set Virtual CD
-      irmc_setvm:
+      fujitsu.primergy.irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -42,7 +42,7 @@
 
     # Set Virtual HD
     - name: Set Virtual HD
-      irmc_setvm:
+      fujitsu.primergy.irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

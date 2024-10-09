@@ -25,7 +25,7 @@
     # List iRMC InternalEventLog
     - block:
       - name: List iRMC InternalEventLog
-        irmc_eventlog:
+        fujitsu.primergy.irmc_eventlog:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -43,7 +43,7 @@
     # List iRMC SystemEventLog
     - block:
       - name: List iRMC SystemEventLog
-        irmc_eventlog:
+        fujitsu.primergy.irmc_eventlog:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -57,12 +57,12 @@
           var: list_systemeventlog
       tags:
         - list_systemeventlog
-    
+
     # Get specific InternalEventLog entry information
     # Add '-e “id=xx”' to the command line argument of Playbook.
     - block:
       - name: Get specific InternalEventLog entry information
-        irmc_eventlog:
+        fujitsu.primergy.irmc_eventlog:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -82,7 +82,7 @@
     # Add '-e “id=xx”' to the command line argument of Playbook.
     - block:
       - name: Get specific SystemEventLog entry information
-        irmc_eventlog:
+        fujitsu.primergy.irmc_eventlog:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -100,7 +100,7 @@
 
     # Clear iRMC InternalEventLog
     - name: Clear iRMC InternalEventLog
-      irmc_eventlog:
+      fujitsu.primergy.irmc_eventlog:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -113,7 +113,7 @@
 
     # Clear iRMC SystemEventLog
     - name: Clear iRMC SystemEventLog
-      irmc_eventlog:
+      fujitsu.primergy.irmc_eventlog:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

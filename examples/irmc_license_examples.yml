@@ -25,7 +25,7 @@
     # Get iRMC license key
     - block:
       - name: Get iRMC license key
-        irmc_license:
+        fujitsu.primergy.irmc_license:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -33,17 +33,17 @@
           command: "get"
         register: license
         delegate_to: localhost
-        
+
       - name: show certificates
         debug:
           var: license.license_key
       tags:
         - get
-      
-    
+
+
     # Set iRMC license key
     - name: Set iRMC license key
-      irmc_license:
+      fujitsu.primergy.irmc_license:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

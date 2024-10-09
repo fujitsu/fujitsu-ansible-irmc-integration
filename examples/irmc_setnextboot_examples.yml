@@ -25,7 +25,7 @@
     # Set Bios to boot from the specified device.
     # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
     - name: Set Bios to boot from the specified device.
-      irmc_setnextboot:
+      fujitsu.primergy.irmc_setnextboot:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

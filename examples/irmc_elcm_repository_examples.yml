@@ -24,17 +24,17 @@
   tasks:
     # Get eLCM repository data
     - name: Get eLCM repository data
-      irmc_elcm_repository:
+      fujitsu.primergy.irmc_elcm_repository:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
         validate_certs: "{{ validate_certificate }}"
         command: "get"
       delegate_to: localhost
-    
+
     # Set eLCM repository data
     - name: Set eLCM repository data
-      irmc_elcm_repository:
+      fujitsu.primergy.irmc_elcm_repository:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

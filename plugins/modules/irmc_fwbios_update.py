@@ -82,9 +82,9 @@ options:
 
 EXAMPLES = r'''
 # Get irmc firmware and BIOS update settings
-- block: 
+- block:
   - name: Get irmc firmware and BIOS update settings
-    irmc_fwbios_update:
+    fujitsu.primergy.irmc_fwbios_update:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -97,11 +97,11 @@ EXAMPLES = r'''
       var: fw_settings.fw_update_configuration
   tags:
     - get_fw
-  
+
 # Update server BIOS from local file
 - block:
   - name: Update server BIOS from local file
-    irmc_fwbios_update:
+    fujitsu.primergy.irmc_fwbios_update:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -121,7 +121,7 @@ EXAMPLES = r'''
 # Update server BIOS via TFTP
 - block:
   - name: Update server BIOS via TFTP
-    irmc_fwbios_update:
+    fujitsu.primergy.irmc_fwbios_update:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -142,7 +142,7 @@ EXAMPLES = r'''
 # Update iRMC FW via TFTP
 - block:
   - name: Update iRMC FW via TFTP
-    irmc_fwbios_update:
+    fujitsu.primergy.irmc_fwbios_update:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -249,8 +249,8 @@ import time
 from datetime import datetime
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch, irmc_redfish_post
-from ansible.module_utils.irmc_upload_file import irmc_redfish_post_file
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch, irmc_redfish_post
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_upload_file import irmc_redfish_post_file
 
 # Global
 result = dict()

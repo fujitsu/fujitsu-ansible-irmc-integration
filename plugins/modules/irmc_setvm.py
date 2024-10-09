@@ -77,7 +77,7 @@ options:
 EXAMPLES = r'''
 # Set Virtual CD
 - name: Set Virtual CD
-  irmc_setvm:
+  fujitsu.primergy.irmc_setvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -95,7 +95,7 @@ EXAMPLES = r'''
 
 # Set Virtual HD
 - name: Set Virtual HD
-  irmc_setvm:
+  fujitsu.primergy.irmc_setvm:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -122,7 +122,7 @@ details:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
 from ansible.module_utils.irmc_scci_utils import setup_datadict
 
 

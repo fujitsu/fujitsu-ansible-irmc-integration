@@ -35,7 +35,7 @@
 
   tasks:
     - name: Get system power state
-      irmc_powerstate:
+      fujitsu.primergy.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -50,7 +50,7 @@
       when: powerstate.power_state == "On"
 
     - name: Disconnect Virtual CD
-      irmc_connectvm:
+      fujitsu.primergy.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -59,7 +59,7 @@
       delegate_to: localhost
 
     - name: Set Virtual Media Data
-      irmc_setvm:
+      fujitsu.primergy.irmc_setvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -76,7 +76,7 @@
       delegate_to: localhost
 
     - name: Connect Virtual CD
-      irmc_connectvm:
+      fujitsu.primergy.irmc_connectvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -85,7 +85,7 @@
       delegate_to: localhost
 
     - name: Set Bios to next boot from Virtual CD
-      irmc_setnextboot:
+      fujitsu.primergy.irmc_setnextboot:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -96,7 +96,7 @@
       delegate_to: localhost
 
     - name: Get Virtual Media data
-      irmc_getvm:
+      fujitsu.primergy.irmc_getvm:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -109,7 +109,7 @@
         msg: "{{ vmdata.virtual_media_data }}"
 
     - name: PowerOn System
-      irmc_powerstate:
+      fujitsu.primergy.irmc_powerstate:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

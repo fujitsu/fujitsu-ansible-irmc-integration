@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The `irmc_raid` module has been verified with iRMC S6, and updated documentation.
+- Directory structure is changed as a Galaxy collection.
+- `LICENSE.md` and `CHANGELOG.md` is moved into `docs/`.
+- `README.md` is updated.
+- `pywinrm` is added to requirements.
+
+### Removed
+
+- `DOCUMENTATION.md` is removed.
 
 ## [1.3.0] - 2024-08-30
 

@@ -59,7 +59,7 @@ EXAMPLES = r'''
 # Set Bios to boot from the specified device.
 # Note: boot from virtual CD might fail, if a 'real' DVD drive exists
 - name: Set Bios to boot from the specified device.
-  irmc_setnextboot:
+  fujitsu.primergy.irmc_setnextboot:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -82,7 +82,7 @@ from http import HTTPStatus
 from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
 
 
 def irmc_setnextboot(module: AnsibleModule) -> None:

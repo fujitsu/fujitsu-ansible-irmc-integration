@@ -28,7 +28,7 @@
         - list
       block:
         - name: List iRMC sessions
-          irmc_session:
+          fujitsu.primergy.irmc_session:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -46,7 +46,7 @@
         - get
       block:
         - name: Get specific session information
-          irmc_session:
+          fujitsu.primergy.irmc_session:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -65,7 +65,7 @@
         - remove
       block:
         - name: Remove specific session information
-          irmc_session:
+          fujitsu.primergy.irmc_session:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -80,7 +80,7 @@
 
     # Clear all sessions information
     - name: Clear all sessions information
-      irmc_session:
+      fujitsu.primergy.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -93,7 +93,7 @@
 
     # Terminate specific session
     - name: Terminate specific session
-      irmc_session:
+      fujitsu.primergy.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

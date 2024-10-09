@@ -23,9 +23,9 @@
 
   tasks:
     # Get irmc firmware and BIOS update settings
-    - block: 
+    - block:
       - name: Get irmc firmware and BIOS update settings
-        irmc_fwbios_update:
+        fujitsu.primergy.irmc_fwbios_update:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -38,11 +38,11 @@
           var: fw_settings.fw_update_configuration
       tags:
         - get_fw
-      
+
     # Update server BIOS from local file
     - block:
       - name: Update server BIOS from local file
-        irmc_fwbios_update:
+        fujitsu.primergy.irmc_fwbios_update:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -62,7 +62,7 @@
     # Update server BIOS via TFTP
     - block:
       - name: Update server BIOS via TFTP
-        irmc_fwbios_update:
+        fujitsu.primergy.irmc_fwbios_update:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -79,11 +79,11 @@
           var: bios_update_tftp
       tags:
         - update_bios_tftp
-    
+
     # Update iRMC FW via TFTP
     - block:
       - name: Update iRMC FW via TFTP
-        irmc_fwbios_update:
+        fujitsu.primergy.irmc_fwbios_update:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -104,7 +104,7 @@
         - update_irmc_tftp
 
     - name: Update iRMC FW from local file
-      irmc_fwbios_update:
+      fujitsu.primergy.irmc_fwbios_update:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

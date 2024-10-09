@@ -50,7 +50,7 @@ EXAMPLES = r'''
 # Get Virtual CD data
 - block:
   - name: Get Virtual CD data
-    irmc_getvm:
+    fujitsu.primergy.irmc_getvm:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -67,7 +67,7 @@ EXAMPLES = r'''
 # Get Virtual HD data
 - block:
   - name: Get Virtual HD data
-    irmc_getvm:
+    fujitsu.primergy.irmc_getvm:
       irmc_url: "{{ inventory_hostname }}"
       irmc_username: "{{ irmc_user }}"
       irmc_password: "{{ irmc_password }}"
@@ -147,7 +147,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_get
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get
 
 
 def irmc_getvirtualmedia(module):

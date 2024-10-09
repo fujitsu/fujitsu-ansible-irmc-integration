@@ -56,7 +56,7 @@ EXAMPLES = r'''
     - list
   block:
     - name: List iRMC sessions
-      irmc_session:
+      fujitsu.primergy.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -74,7 +74,7 @@ EXAMPLES = r'''
     - get
   block:
     - name: Get specific session information
-      irmc_session:
+      fujitsu.primergy.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -93,7 +93,7 @@ EXAMPLES = r'''
     - remove
   block:
     - name: Remove specific session information
-      irmc_session:
+      fujitsu.primergy.irmc_session:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -108,7 +108,7 @@ EXAMPLES = r'''
 
 # Clear all sessions information
 - name: Clear all sessions information
-  irmc_session:
+  fujitsu.primergy.irmc_session:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -121,7 +121,7 @@ EXAMPLES = r'''
 
 # Terminate specific session
 - name: Terminate specific session
-  irmc_session:
+  fujitsu.primergy.irmc_session:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -207,7 +207,7 @@ otherwise:
 from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import get_irmc_json, irmc_redfish_delete, irmc_redfish_get
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_delete, irmc_redfish_get
 
 # Global
 result = dict()

@@ -24,7 +24,7 @@
   tasks:
     # Write server location
     - name: Write server location
-      irmc_scci:
+      fujitsu.primergy.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -39,7 +39,7 @@
     # Read server location
     - block:
       - name: "Read server location"
-        irmc_scci:
+        fujitsu.primergy.irmc_scci:
           irmc_url: "{{ inventory_hostname }}"
           irmc_username: "{{ irmc_user }}"
           irmc_password: "{{ irmc_password }}"
@@ -53,10 +53,10 @@
           var: read_result.data
       tags:
         - read
-    
+
     # Power on the server
     - name: "Power on the server"
-      irmc_scci:
+      fujitsu.primergy.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -69,7 +69,7 @@
 
     # Power off the server
     - name: "Power off the server"
-      irmc_scci:
+      fujitsu.primergy.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -82,7 +82,7 @@
 
     # Cancel shutdown
     - name: "Cancel shutdown"
-      irmc_scci:
+      fujitsu.primergy.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -95,7 +95,7 @@
 
     # Reset firmware
     - name: "Reset firmware"
-      irmc_scci:
+      fujitsu.primergy.irmc_scci:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"

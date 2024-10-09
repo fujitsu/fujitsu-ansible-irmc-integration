@@ -75,7 +75,7 @@ options:
 EXAMPLES = r'''
 # Generate eLCM Online Update List
 - name: Generate eLCM Online Update List
-  irmc_elcm_online_update:
+  fujitsu.primergy.irmc_elcm_online_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -87,7 +87,7 @@ EXAMPLES = r'''
 
 # Read eLCM Online Update List
 - name: Read eLCM Online Update List
-  irmc_elcm_online_update:
+  fujitsu.primergy.irmc_elcm_online_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -97,7 +97,7 @@ EXAMPLES = r'''
 
 # De-select entry in eLCM Online Update List
 - name: De-select entry in eLCM Online Update List
-  irmc_elcm_online_update:
+  fujitsu.primergy.irmc_elcm_online_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -111,7 +111,7 @@ EXAMPLES = r'''
 
 # Execute eLCM Online Update
 - name: Execute eLCM Online Update
-  irmc_elcm_online_update:
+  fujitsu.primergy.irmc_elcm_online_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -121,7 +121,7 @@ EXAMPLES = r'''
 
 # Delete eLCM Online Update List
 - name: Delete eLCM Online Update List
-  irmc_elcm_online_update:
+  fujitsu.primergy.irmc_elcm_online_update:
     irmc_url: "{{ inventory_hostname }}"
     irmc_username: "{{ irmc_user }}"
     irmc_password: "{{ irmc_password }}"
@@ -147,7 +147,7 @@ details:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.irmc import (
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import (
     elcm_check_status,
     get_irmc_json,
     irmc_redfish_delete,

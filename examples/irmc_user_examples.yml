@@ -24,7 +24,7 @@
   tasks:
     # Create new user account
     - name: "Create new user account"
-      irmc_user:
+      fujitsu.primergy.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -42,7 +42,7 @@
         - get
       block:
         - name: Get user account data
-          irmc_user:
+          fujitsu.primergy.irmc_user:
             irmc_url: "{{ inventory_hostname }}"
             irmc_username: "{{ irmc_user }}"
             irmc_password: "{{ irmc_password }}"
@@ -57,7 +57,7 @@
 
     # Change user account data
     - name: Change user account data
-      irmc_user:
+      fujitsu.primergy.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
@@ -71,7 +71,7 @@
 
     # Delete user account
     - name: Delete user account
-      irmc_user:
+      fujitsu.primergy.irmc_user:
         irmc_url: "{{ inventory_hostname }}"
         irmc_username: "{{ irmc_user }}"
         irmc_password: "{{ irmc_password }}"
