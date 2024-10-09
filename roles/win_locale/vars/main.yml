@@ -1,2 +1,4 @@
 ---
 # vars file for ./roles/win_locale
+win_locale_download_path: C:\Temp
+win_locale_download_url: https://go.microsoft.com/fwlink/p/?linkid=2195333

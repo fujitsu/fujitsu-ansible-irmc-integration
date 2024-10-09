@@ -1,27 +1,42 @@
 ---
 # tasks file for ./roles/win_locale
+- name: Define the new parameters from vars
+  ansible.builtin.set_fact:
+    download_iso_file: "{{ win_locale_download_path }}\\language_pack.iso"
+    download_path: "{{ win_locale_download_path }}"
+    download_url: "{{ win_locale_download_url }}"
+
+- name: Create the directory
+  ansible.windows.win_file:
+    path: "{{ download_path }}"
+    state: directory
+
 - name: Download the ISO file of language pack
   ansible.windows.win_command:
-    powershell.exe -Command "Invoke-WebRequest -Uri '{{ download_url }}' -OutFile '{{ download_path }}'"
+    powershell.exe -Command "Invoke-WebRequest -Uri '{{ download_url }}' -OutFile '{{ download_iso_file }}'"
   args:
-    creates: '{{ download_path }}'
+    creates: '{{ download_iso_file }}'
+  register: download_result
+  failed_when: download_result.stderr != ""
 
 - name: Mount the ISO file
   ansible.windows.win_command:
-    powershell.exe -Command "$mountResult = Mount-DiskImage '{{ download_path }}' -PassThru;
+    powershell.exe -Command "$mountResult = Mount-DiskImage '{{ download_iso_file }}' -PassThru;
               $driveLetter = ($mountResult | Get-Volume).DriveLetter;
-              $lppath = $driveLetter + ':\LanguagesAndOptionalFeatures\Microsoft-Windows-Server-Language-Pack_x64_{{ language_pack }}.cab';
+              $lppath = $driveLetter + ':\LanguagesAndOptionalFeatures\Microsoft-Windows-Server-Language-Pack_x64_{{ language }}.cab';
               Write-Output $lppath"
   register: mount_result
+  failed_when: mount_result.stderr != ""
 
 - name: Show the mount result
   ansible.builtin.debug:
-    var: mount_result.stdout_lines
+    var: mount_result
 
 - name: Install the language pack
   ansible.windows.win_command:
     dism /online /add-package /packagepath:{{ mount_result.stdout_lines[0] }}
   register: install_result
+  failed_when: install_result.stderr != ""
 
 - name: Show the install result
   ansible.builtin.debug:
@@ -38,16 +53,29 @@
                             Set-WinUserLanguageList -LanguageList {{ language }} -Force;
                             echo reboot_required"
   register: set_language_result
+  failed_when: set_language_result.stderr != ""
 
 - name: Show the set language result
   ansible.builtin.debug:
     var: set_language_result
 
+- name: Unmount the ISO file
+  ansible.windows.win_command:
+    powershell.exe -Command "DisMount-DiskImage {{ download_iso_file }}"
+  register: unmount_result
+  failed_when: unmount_result.stderr != ""
+
+- name: Delete the ISO file
+  ansible.windows.win_command:
+    powershell.exe -Command "Remove-Item {{ download_iso_file }}"
+  register: delete_result
+  failed_when: delete_result.stderr != ""
+
 - name: Change the region
   community.windows.win_region:
     location: "{{ location }}"
-    format: "{{ format }}"
-    unicode_language: "{{ unicode_language }}"
+    format: "{{ language }}"
+    unicode_language: "{{ language }}"
   register: region_result
 
 - name: Change the timezone
