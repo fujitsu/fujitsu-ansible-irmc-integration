@@ -1,0 +1,9 @@
+---
+- name: Setup ServerView Agents
+  hosts: windows
+  vars_files:
+    - ./vars/secrets.yml
+  vars:
+    installer: "/path/to/installer/ServerViewAgents_Win_x64.exe"
+  roles:
+    - role: win_serverview_agents
