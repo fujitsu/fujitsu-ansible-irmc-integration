@@ -1,0 +1,7 @@
+---
+- name: Change Administrator password
+  hosts: windows
+  vars_files:
+    - ./vars/secrets.yml
+  roles:
+    - role: win_admin_password
