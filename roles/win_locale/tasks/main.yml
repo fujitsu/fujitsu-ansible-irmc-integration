@@ -11,6 +11,18 @@
     path: "{{ download_path }}"
     state: directory
 
+- name: Obtain information about the ISO file
+  ansible.windows.win_stat:
+    path: "{{ download_iso_file }}"
+  register: iso_info
+
+- name: Delete the ISO file if it exists
+  ansible.windows.win_command:
+    powershell.exe -Command "Remove-Item {{ download_iso_file }}"
+  register: delete_result
+  when: iso_info.stat.exists
+  failed_when: delete_result.stderr != ""
+
 - name: Download the ISO file of language pack
   ansible.windows.win_command:
     powershell.exe -Command "Invoke-WebRequest -Uri '{{ download_url }}' -OutFile '{{ download_iso_file }}'"
@@ -30,17 +42,13 @@
 
 - name: Show the mount result
   ansible.builtin.debug:
-    var: mount_result
+    var: mount_result.stdout_lines
 
 - name: Install the language pack
   ansible.windows.win_command:
-    dism /online /add-package /packagepath:{{ mount_result.stdout_lines[0] }}
+    dism /online /add-package /packagepath:{{ mount_result.stdout_lines[0] }} /Quiet
   register: install_result
   failed_when: install_result.stderr != ""
-
-- name: Show the install result
-  ansible.builtin.debug:
-    var: install_result
 
 - name: Reboot
   ansible.windows.win_reboot:
@@ -50,8 +58,7 @@
   ansible.windows.win_command:
     powershell.exe -Command "Add-WindowsCapability -Online -Name 'Language.Basic~~~{{ language }}~0.0.1.0';
                             Set-WinUILanguageOverride -Language {{ language }};
-                            Set-WinUserLanguageList -LanguageList {{ language }} -Force;
-                            echo reboot_required"
+                            Set-WinUserLanguageList -LanguageList {{ language }} -Force"
   register: set_language_result
   failed_when: set_language_result.stderr != ""
 
@@ -84,4 +91,3 @@
 
 - name: Reboot
   ansible.windows.win_reboot:
-  when: region_result.restart_required or set_language_result.stdout_lines[6] == "reboot_required"
