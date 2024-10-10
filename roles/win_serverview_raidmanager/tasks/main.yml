@@ -1,0 +1,126 @@
+---
+# tasks file for ./roles/win_serverview_raidmanager
+
+- name: Define a new parameter from vars and defaults.
+  ansible.builtin.set_fact:
+    installer_dest_dir: "{{ win_serverview_raidmanager_installer_dest_dir }}"
+  tags: always
+
+- name: Define a new parameter from vars and defaults.
+  ansible.builtin.set_fact:
+    serverview_raidmanager_username: "{{ username | default(win_serverview_raidmanager_username) }}"
+    serverview_raidmanager_installer_src: "{{ installer }}"
+    serverview_raidmanager_installer_dest: "{{ installer_dest_dir }}\\ServerViewRaidManager_installer.exe"
+    openjdk_installer_src: "{{ openjdk_installer }}"
+    openjdk_installer_dest: "{{ installer_dest_dir }}\\openjdk_installer.msi"
+    openjdk_path_finder_src: "{{ role_path }}/files/find_adoptopenjdk_path.ps1"
+    openjdk_path_finder_dest: "{{ installer_dest_dir }}\\find_adoptopenjdk_path.ps1"
+  tags: always
+
+- name: Define a new *SECRET* parameter from vars and defaults.
+  ansible.builtin.set_fact:
+    serverview_raidmanager_password: "{{ password }}"
+  no_log: true  # Always true because it contains Secret.
+  tags: always
+
+- name: Create local group "raid-adm"
+  ansible.windows.win_group:
+    name: raid-adm
+    description: Group for ServerView RAID Manager Administration
+    scope: Local
+    state: present
+
+- name: Create account for ServerView RAID Manager
+  ansible.windows.win_user:
+    name: "{{ serverview_raidmanager_username }}"
+    password: "{{ serverview_raidmanager_password }}"
+    description: Managing ServerView RAID Manager
+    groups:
+      - raid-adm
+    password_never_expires: true
+    state: present
+
+- name: Ensure destination directory exists and copy installers
+  tags: copy_installer
+  block:
+    - name: Create directory for installer if it does not exist
+      ansible.windows.win_file:
+        path: "{{ installer_dest_dir }}"
+        state: directory
+    - name: Copy installers to Windows Server
+      ansible.windows.win_copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: "{{ serverview_raidmanager_installer_src }}", dest: "{{ serverview_raidmanager_installer_dest }}" }
+        - { src: "{{ openjdk_installer_src }}", dest: "{{ openjdk_installer_dest }}" }
+        - { src: "{{ openjdk_path_finder_src }}", dest: "{{ openjdk_path_finder_dest }}" }
+
+- name: Install OpenJDK and configure environment variables
+  tags: install_openjdk
+  block:
+    - name: Install OpenJDK
+      ansible.windows.win_package:
+        path: "{{ openjdk_installer_dest }}"
+        state: present
+        log_path: "{{ installer_dest_dir }}\\OpenJDK_install.log"
+      register: openjdk_install_result
+
+    - name: Execute PowerShell script to find AdoptOpenJDK installation path
+      ansible.windows.win_shell: |
+        PowerShell.exe -File "{{ openjdk_path_finder_dest }}"
+      register: find_openjdk_path_result
+      ignore_errors: true
+
+    - name: Fail if AdoptOpenJDK is not installed
+      ansible.builtin.fail:
+        msg: "AdoptOpenJDK installation not found."
+      when: find_openjdk_path_result.rc != 0
+
+    - name: Set fact of OpenJDK installation path
+      ansible.builtin.set_fact:
+        openjdk_installation_path: "{{ find_openjdk_path_result.stdout | trim }}"
+      when: find_openjdk_path_result.rc == 0
+
+    - name: Set the environment variable SVRM_JAVA_PATH
+      ansible.windows.win_environment:
+        name: SVRM_JAVA_PATH
+        value: "{{ openjdk_installation_path }}"
+        level: machine
+        state: present
+
+    - name: Remove OpenJDK installer and other files after setup
+      ansible.windows.win_file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ openjdk_installer_dest }}"
+        - "{{ openjdk_path_finder_dest }}"
+      when: openjdk_install_result is succeeded
+
+    - name: Reboot the server if OpenJDK installation requires it
+      ansible.windows.win_reboot:
+        msg: "Reboot initiated by Ansible after OpenJDK installation."
+      when: openjdk_install_result.reboot_required
+
+- name: Install ServerView RAID Manager
+  ansible.windows.win_package:
+    path: "{{ serverview_raidmanager_installer_dest }}"
+    arguments:
+      - /install
+      - /quiet
+      - /log
+      - "{{ installer_dest_dir }}\\ServerViewRAIDManager_install.log"
+    creates_path: C:\Program Files\Fujitsu\ServerView Suite\RAID Manager\eula_ja.rtf
+  register: raidmanager_install_result
+
+- name: Remove RAID Manager installer after installation
+  ansible.windows.win_file:
+    path: "{{ serverview_raidmanager_installer_dest }}"
+    state: absent
+  when: raidmanager_install_result is succeeded
+
+- name: Reboot the server if ServerView RAID Manager installation requires it
+  ansible.windows.win_reboot:
+    msg: "Reboot initiated by Ansible after ServerView RAID Manager installation."
+  when: raidmanager_install_result.reboot_required

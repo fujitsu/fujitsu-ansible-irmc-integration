@@ -1,0 +1,10 @@
+---
+- name: Setup ServerView RAID Manager
+  hosts: windows
+  vars_files:
+    - ./vars/secrets.yml
+  vars:
+    installer: "/path/to/installer/ServerView_RAID_x64.exe"
+    openjdk_installer: "/path/to/installer/OpenJDK8U-jdk_x64_windows_hotspot.msi"
+  roles:
+    - role: win_serverview_raidmanager
