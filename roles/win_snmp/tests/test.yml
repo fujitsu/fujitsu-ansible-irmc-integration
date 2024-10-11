@@ -4,12 +4,12 @@
   roles:
     - role: win_snmp
   vars:
-    authentication: 1
-    community: public
-    contact: MyContact
-    destination: 127.0.0.1
-    location: MyLocation
-    permitted_manager: MyPermittedManager
-    services: 79
-    valid_community_name: public
-    valid_community_permission: 8
+    agent_contact: MyContact
+    agent_location: MyLocation
+    agent_service: 76
+    security_accepted_community: public
+    security_accepted_community_permission: 8
+    security_accepted_host: MyPermittedManager
+    security_send_auth_trap: true
+    trap_community: public
+    trap_destination: 127.0.0.1

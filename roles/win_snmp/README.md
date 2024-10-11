@@ -16,15 +16,15 @@ Role Variables
 
 | Name | Required | Default Value | Choices | Type | Description |
 |------|----------|---------------|---------|------|-------------|
-| `authentication` | true | 1 | 0 <br> 1 | int | Whether to send an authentication trap when an unauthorized community or host requests information. <br> ● 0: false <br> ● 1: true |
-| `community` | true | | | str | Name of the community to which SNMP sends traps. |
-| `contact` | true | | | str | Contact name of the managed node and information on how to contact. |
-| `destination` | true | | | str | IP address or computer name to which SNMP sends traps. |
-| `location` | true | | | str | Physical location of the managed node. |
-| `permitted_manager` | true | | | str | IP address or computer name of the host accepting SNMP packets. |
-| `services` | true | 76 | | int | Any combination of up to five SNMP services. <br> The integer value is derived from the following binary values: <br> ● Physical: 0x01 <br> ● DataLink and Subnet: 0x02 <br> ● Internet: 0x04 <br> ● End-to-end: 0x08 <br> ● Application: 0x40 <br> Ex: A combination of "Internet", "End-to-end" and "Application" has a value of 0x4c (76) |
-| `valid_community_name` | true | | | str | Community name from which the computer running SNMP can accept SNMP requests such as GET, SET, GETNEXT, and GETBULK. |
-| `valid_community_permission` | true | | 0 <br> 2 <br> 4 <br> 8 <br> 16 | int | Type of permissions that the `valid_community_name` has. <br> ● 0: no permission <br> ● 2: notify permission <br> ● 4: read-only permission <br> ● 8: read/write permission <br> ● 16: read/create permission |
+| `agent_contact` | true | | | str | Contact name of the managed node and information on how to contact. |
+| `agent_location` | true | | | str | Physical location of the managed node. |
+| `agent_service` | true | | | int | Any combination of up to five SNMP services. <br> The integer value is derived from the following binary values: <br> ● Physical: 0x01 <br> ● DataLink and Subnet: 0x02 <br> ● Internet: 0x04 <br> ● End-to-end: 0x08 <br> ● Application: 0x40 <br> Ex: A combination of "Internet", "End-to-end" and "Application" has a value of 0x4c (76) |
+| `security_accepted_community` | true | | | str | Community name from which the computer running SNMP can accept SNMP requests such as GET, SET, GETNEXT, and GETBULK. |
+| `security_accepted_community_permission` | true | | 0 <br> 2 <br> 4 <br> 8 <br> 16 | int | Type of permissions that the `security_accepted_community` has. <br> ● 0: no permission <br> ● 2: notify permission <br> ● 4: read-only permission <br> ● 8: read/write permission <br> ● 16: read/create permission |
+| `security_accepted_host` | true | | | str | IP address or computer name of the host accepting SNMP packets. |
+| `security_send_auth_trap` | true | | true <br> false | bool | Whether to send an authentication trap when an unauthorized community or host requests information. |
+| `trap_community` | true | | | str | Community name to which SNMP sends traps. |
+| `trap_destination` | true | | | str | IP address or computer name to which SNMP sends traps. |
 
 Dependencies
 ------------
@@ -39,15 +39,15 @@ Example Playbook
       roles:
         - role: win_snmp
       vars:
-        authentication: 1
-        community: public
-        contact: MyContact
-        destination: 127.0.0.1
-        location: MyLocation
-        permitted_manager: MyPermittedManager
-        services: 79
-        valid_community_name: public
-        valid_community_permission: 8
+        agent_contact: MyContact
+        agent_location: MyLocation
+        agent_service: 79
+        security_accepted_community: public
+        security_accepted_community_permission: 8
+        security_accepted_host: MyPermittedManager
+        security_send_auth_trap: true
+        trap_community: public
+        trap_destination: 127.0.0.1
 
 License
 -------

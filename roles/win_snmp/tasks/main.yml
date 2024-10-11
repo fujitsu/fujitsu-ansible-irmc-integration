@@ -21,42 +21,43 @@
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
     name: sysContact
-    data: "{{ contact }}"
+    data: "{{ agent_contact }}"
     type: string
 
 - name: Change the Location
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
     name: sysLocation
-    data: "{{ location }}"
+    data: "{{ agent_location }}"
     type: string
 
 - name: Change the Service checkboxes
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
     name: sysServices
-    data: "{{ services }}"
+    data: "{{ agent_service }}"
     type: dword
 
 - name: Add the Community name and Trap destinations
   ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ community }}
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ trap_community }}
     name: 1
-    data: "{{ destination }}"
+    data: "{{ trap_destination }}"
     type: string
 
 - name: Change the EnableAuthenticationTraps
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters
     name: EnableAuthenticationTraps
-    data: "{{ authentication }}"
+    data: >-
+      {%- if security_send_auth_trap == false -%} 0{%- else -%} 1{%- endif -%}
     type: dword
 
 - name: Add the accepted community name
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\ValidCommunities
-    name: "{{ valid_community_name }}"
-    data: "{{ valid_community_permission }}"
+    name: "{{ security_accepted_community }}"
+    data: "{{ security_accepted_community_permission }}"
     type: dword
 
 - name: Accept SNMP packets from any host
@@ -68,5 +69,5 @@
 # - name: Add the host that accept SNMP packets
 #   community.windows.win_snmp:
 #     permitted_managers:
-#       - "{{ permitted_manager }}"
+#       - "{{ security_accepted_host }}"
 #     action: add
