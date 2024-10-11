@@ -1,0 +1,72 @@
+---
+# tasks file for ./roles/win_snmp
+- name: Install the SNMP service
+  ansible.windows.win_feature:
+    name: snmp-service
+    state: present
+    include_management_tools: true
+  register: install
+
+- name: Reboot if installing the SNMP service requires it
+  ansible.windows.win_reboot:
+  when: install.reboot_required
+
+- name: Start the SNMP service
+  ansible.windows.win_service:
+    name: snmp
+    start_mode: auto
+    state: started
+
+- name: Change the Contact
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
+    name: sysContact
+    data: "{{ contact }}"
+    type: string
+
+- name: Change the Location
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
+    name: sysLocation
+    data: "{{ location }}"
+    type: string
+
+- name: Change the Service checkboxes
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
+    name: sysServices
+    data: "{{ services }}"
+    type: dword
+
+- name: Add the Community name and Trap destinations
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ community }}
+    name: 1
+    data: "{{ destination }}"
+    type: string
+
+- name: Change the EnableAuthenticationTraps
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters
+    name: EnableAuthenticationTraps
+    data: "{{ authentication }}"
+    type: dword
+
+- name: Add the accepted community name
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\ValidCommunities
+    name: "{{ valid_community_name }}"
+    data: "{{ valid_community_permission }}"
+    type: dword
+
+- name: Accept SNMP packets from any host
+  community.windows.win_snmp:
+    permitted_managers: []
+    action: set
+
+# Please uncomment out this task if you configure to accept SNMP packets only from the specified host.
+# - name: Add the host that accept SNMP packets
+#   community.windows.win_snmp:
+#     permitted_managers:
+#       - "{{ permitted_manager }}"
+#     action: add
