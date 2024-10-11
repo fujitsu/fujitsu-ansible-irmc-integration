@@ -17,32 +17,22 @@
     start_mode: auto
     state: started
 
-- name: Change the Contact
+- name: Change the agent settings
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
-    name: sysContact
-    data: "{{ agent_contact }}"
-    type: string
-
-- name: Change the Location
-  ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
-    name: sysLocation
-    data: "{{ agent_location }}"
-    type: string
-
-- name: Change the Service checkboxes
-  ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
-    name: sysServices
-    data: "{{ agent_service }}"
-    type: dword
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: "{{ item.type }}"
+  loop:
+    - { name: "sysContact", data: "{{ agent.contact }}", type: "string" }
+    - { name: "sysLocation", data: "{{ agent.location }}", type: "string" }
+    - { name: "sysServices", data: "{{ agent.service }}", type: "dword" }
 
 - name: Add the Community name and Trap destinations
   ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ trap_community }}
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ trap.community }}
     name: 1
-    data: "{{ trap_destination }}"
+    data: "{{ trap.destination }}"
     type: string
 
 - name: Change the EnableAuthenticationTraps
@@ -50,14 +40,14 @@
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters
     name: EnableAuthenticationTraps
     data: >-
-      {%- if security_send_auth_trap == false -%} 0{%- else -%} 1{%- endif -%}
+      {%- if security.send_auth_trap == false -%} 0{%- else -%} 1{%- endif -%}
     type: dword
 
 - name: Add the accepted community name
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\ValidCommunities
-    name: "{{ security_accepted_community }}"
-    data: "{{ security_accepted_community_permission }}"
+    name: "{{ security.accepted_community }}"
+    data: "{{ security.accepted_community_permission }}"
     type: dword
 
 - name: Accept SNMP packets from any host
@@ -69,5 +59,5 @@
 # - name: Add the host that accept SNMP packets
 #   community.windows.win_snmp:
 #     permitted_managers:
-#       - "{{ security_accepted_host }}"
+#       - "{{ security.accepted_host }}"
 #     action: add
