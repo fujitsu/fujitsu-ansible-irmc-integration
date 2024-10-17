@@ -39,8 +39,7 @@
   ansible.windows.win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters
     name: EnableAuthenticationTraps
-    data: >-
-      {%- if security.send_auth_trap == false -%} 0{%- else -%} 1{%- endif -%}
+    data: "{{ security.send_auth_trap | ternary(1, 0) }}"
     type: dword
 
 - name: Add the accepted community name
@@ -55,9 +54,9 @@
     permitted_managers: []
     action: set
 
-# Please uncomment out this task if you configure to accept SNMP packets only from the specified host.
-# - name: Add the host that accept SNMP packets
-#   community.windows.win_snmp:
-#     permitted_managers:
-#       - "{{ security.accepted_host }}"
-#     action: add
+- name: Add the host that accept SNMP packets
+  community.windows.win_snmp:
+    permitted_managers:
+      - "{{ security.accepted_host }}"
+    action: add
+  when: security.accepted_host is defined

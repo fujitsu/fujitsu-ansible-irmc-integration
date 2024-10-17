@@ -11,8 +11,7 @@
     security:
       accepted_community: public
       accepted_community_permission: 8
-      accepted_host: MyPermittedManager
       send_auth_trap: true
     trap:
       community: public
-      destination: 127.0.0.1
+      destination: 192.0.2.1
