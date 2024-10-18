@@ -1,0 +1,8 @@
+---
+# vars file for ./roles/irmc_email_alert
+
+# These version numbers are described in "5.1 Profile versions support" of "Specification iRMC RESTful API Version 10.0 (24/05/2023)".
+# You can download it from here:
+#  <https://support.ts.fujitsu.com/IndexDownload.asp?SoftwareGuid=C821591C-C441-43A8-8A39-CC36D37AB2A1>
+irmc_email_alert_profile_server_version: "1.01"
+irmc_email_alert_profile_irmcconfig_version: "1.08"

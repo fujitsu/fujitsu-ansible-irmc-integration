@@ -1,0 +1,9 @@
+---
+- name: Configure E-mail alert for iRMC devices
+  hosts: iRMC_group
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ./vars.yml
+  roles:
+    - role: irmc_email_alert

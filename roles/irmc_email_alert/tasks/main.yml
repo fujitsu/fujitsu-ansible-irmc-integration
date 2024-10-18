@@ -1,0 +1,32 @@
+---
+# tasks file for ./roles/irmc_email_alert
+
+- name: Validate SMTP port
+  ansible.builtin.assert:
+    that:
+      - (smtp.primary_server.port is not defined) or (1 <= smtp.primary_server.port <= 65535)
+      - (smtp.secondary_server.port is not defined) or (1 <= smtp.secondary_server.port <= 65535)
+    fail_msg: "Invalid value for SMTP port. Allowed values are between 1 and 65535."
+  tags: json
+
+- name: Validate SMTP authentication type
+  ansible.builtin.assert:
+    that:
+      - (smtp.primary_server.authentication.type is not defined) or (smtp.primary_server.authentication.type in ['None', 'Smtp'])
+      - (smtp.secondary_server.authentication.type is not defined) or (smtp.secondary_server.authentication.type in ['None', 'Smtp'])
+    fail_msg: "Invalid value for SMTP authentication types. Allowed values are: 'None', 'Smtp'."
+  tags: json
+
+- name: Generate E-mail Alert settings as IRMC profile
+  ansible.builtin.set_fact:
+    email_alert_profile: "{{ vars | fujitsu.primergy.email_alert_profile_filter }}"
+  tags: json
+
+- name: Apply E-mail Alert settings as IRMC profile
+  fujitsu.primergy.irmc_profiles:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "import"
+    profile_json: "{{ email_alert_profile | to_json }}"
