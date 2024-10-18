@@ -1,0 +1,10 @@
+---
+- hosts: windows
+  gather_facts: false
+  vars:
+    state: domain
+    domain: fti.test
+    user_name: FTI\Administrator
+    password: Admin000
+  roles:
+    - role: win_set_membership

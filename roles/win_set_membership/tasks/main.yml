@@ -1,0 +1,24 @@
+---
+- name: Join host to workgroup
+  when: state == "workgroup"
+  block:
+    - name: Join host to workgroup with reboot automatically
+      microsoft.ad.membership:
+        workgroup_name: "{{ workgroup }}"
+        domain_admin_user: "{{ username }}"
+        domain_admin_password: "{{ password }}"
+        state: "{{ state }}"
+        reboot: true
+      register: workgroup_res
+
+- name: Join host to domain
+  when: state == "domain"
+  block:
+    - name: Join host to domain with reboot automatically
+      microsoft.ad.membership:
+        dns_domain_name: "{{ domain }}"
+        domain_admin_user: "{{ username }}"
+        domain_admin_password: "{{ password }}"
+        state: "{{ state }}"
+        reboot: true
+      register: domain_res

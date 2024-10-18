@@ -1,0 +1,7 @@
+---
+- hosts: windows
+  vars:
+    state: "workgroup"
+    workgroup_name: "WORKGROUP"
+  roles:
+    - win_set_membership
