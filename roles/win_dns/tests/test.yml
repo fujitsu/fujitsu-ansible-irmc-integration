@@ -1,0 +1,7 @@
+---
+- name: Set DNS
+  hosts: windws
+  vars_files:
+    - ./vars/test_vars.yml
+  roles:
+    - win_dns

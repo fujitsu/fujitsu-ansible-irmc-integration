@@ -1,0 +1,7 @@
+---
+# tasks file for ./roles/win_dns
+
+- name: Set address on adapter
+  ansible.windows.win_dns_client:
+    adapter_names: "{{ adapter_names }}"
+    ipv4_addresses: "{{ ipv4_addresses }}"

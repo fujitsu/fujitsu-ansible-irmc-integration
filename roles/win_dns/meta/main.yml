@@ -1,0 +1,18 @@
+galaxy_info:
+  author: Jiajun Guo
+  description: Set DNS addresses on adapters in Windows Server.
+  company: Fsas Technologies Inc.
+  license: GPL-3.0-or-later
+
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Windows
+      versions:
+        - "2022"
+
+  galaxy_tags:
+    - windows
+    - dns
+
+dependencies: []
