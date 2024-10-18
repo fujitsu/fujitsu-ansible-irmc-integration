@@ -1,0 +1,8 @@
+---
+- name: Change the organization and owner
+  hosts: windows
+  roles:
+    - role: win_organization_owner
+  vars:
+    organization: Fsas Technologies Inc.
+    owner: MyOwnerName

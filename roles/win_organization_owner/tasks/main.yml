@@ -1,0 +1,6 @@
+---
+# tasks file for ./roles/win_organization_owner
+- name: Change the organization and owner
+  community.windows.win_computer_description:
+   organization: "{{ organization }}"
+   owner: "{{ owner }}"
