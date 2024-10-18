@@ -1,0 +1,9 @@
+---
+- name: Configure SNMP for iRMC devices
+  hosts: iRMC_group
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ./vars.yml
+  roles:
+    - role: irmc_snmp
