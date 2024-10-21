@@ -1,0 +1,62 @@
+---
+# tasks file for ./roles/win_snmp
+- name: Install the SNMP service
+  ansible.windows.win_feature:
+    name: snmp-service
+    state: present
+    include_management_tools: true
+  register: install
+
+- name: Reboot if installing the SNMP service requires it
+  ansible.windows.win_reboot:
+  when: install.reboot_required
+
+- name: Start the SNMP service
+  ansible.windows.win_service:
+    name: snmp
+    start_mode: auto
+    state: started
+
+- name: Change the agent settings
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\RFC1156Agent
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: "{{ item.type }}"
+  loop:
+    - { name: "sysContact", data: "{{ agent.contact }}", type: "string" }
+    - { name: "sysLocation", data: "{{ agent.location }}", type: "string" }
+    - { name: "sysServices", data: "{{ agent.service }}", type: "dword" }
+
+- name: Add the Community name and Trap destinations
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\TrapConfiguration\{{ trap.community }}
+    name: 1
+    data: "{{ trap.destination }}"
+    type: string
+
+- name: Change the EnableAuthenticationTraps
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters
+    name: EnableAuthenticationTraps
+    data: "{{ security.send_auth_trap | ternary(1, 0) }}"
+    type: dword
+
+- name: Add the accepted community name
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\ValidCommunities
+    name: "{{ security.accepted_community }}"
+    data: "{{ security.accepted_community_permission }}"
+    type: dword
+
+- name: Accept SNMP packets from any host
+  community.windows.win_snmp:
+    permitted_managers: []
+    action: set
+
+- name: Add the host that accept SNMP packets
+  community.windows.win_snmp:
+    permitted_managers:
+      - "{{ security.accepted_host }}"
+    action: add
+  when: security.accepted_host is defined
