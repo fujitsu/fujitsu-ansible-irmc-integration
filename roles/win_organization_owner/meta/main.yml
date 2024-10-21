@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Tomohisa Nakai
-  description: Change the organization and owner of Windows Server.
+  description: Change the description, organization and owner of Windows Server.
   company: Fsas Technologies Inc.
   license: GPL-3.0-or-later
 
@@ -14,6 +14,7 @@ galaxy_info:
 
   galaxy_tags:
     - windows
+    - description
     - organization
     - owner
 

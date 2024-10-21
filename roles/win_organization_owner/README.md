@@ -1,11 +1,7 @@
 win_organization_owner
 ======================
 
-Change the organization and owner of Windows Server.
-
-Notes:  
-This role sets Windows license organization and owner.  
-Lisence information can be viewed by `systeminfo` or `winver` commands in Windows Power Shell.
+Change the description, organization and owner of Windows Server.
 
 Requirements
 ------------
@@ -19,8 +15,9 @@ Role Variables
 
 | Name | Required | Default Value | Choices | Type | Description |
 |------|----------|---------------|---------|------|-------------|
-| `organization` | true | | | str | Organization that Windows is licensed to. |
-| `owner` | true | | | str | Persona that Windows is licensed to. |
+| `description` | false | | | str | Description of your machine. <br> It can be viewed by `net config server` command in Windows Power Shell. |
+| `organization` | false | | | str | Organization that Windows is licensed to. <br> It can be viewed by `systeminfo` or `winver` commands in Windows Power Shell. |
+| `owner` | false | | | str | Persona that Windows is licensed to. <br> It can be viewed by `systeminfo` or `winver` commands in Windows Power Shell. |
 
 Dependencies
 ------------
@@ -35,6 +32,7 @@ Example Playbook
       roles:
         - role: win_organization_owner
       vars:
+        description: This is my Windows Server.
         organization: Fsas Technologies Inc.
         owner: MyOwnerName
 
