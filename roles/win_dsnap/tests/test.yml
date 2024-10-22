@@ -1,0 +1,9 @@
+---
+- name: Set up DSNAP
+  hosts: windows
+  roles:
+    - role: win_dsnap
+  vars:
+    filename: SVS15.24.06.03.iso
+    language: Japanese
+    path: /path/to/dsnapfile
