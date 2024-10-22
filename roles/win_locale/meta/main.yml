@@ -1,7 +1,7 @@
 ---
 galaxy_info:
-  author: Tomohisa Nakai
-  description: Change the language, region and timezone of Windows Server.
+  author: Yutaka Kamioka
+  description: Change the language setting (language, region, timezone) of the specified account on Windows Server.
   company: Fsas Technologies Inc.
   license: GPL-3.0-or-later
 

@@ -1,5 +1,5 @@
 ---
-- name: Change the locale
+- name: Change the language setting to Japanese (Japan)
   hosts: windows
   roles:
     - role: win_locale
