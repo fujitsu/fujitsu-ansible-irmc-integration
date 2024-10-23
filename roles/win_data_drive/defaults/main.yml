@@ -1,0 +1,5 @@
+---
+# defaults file for ./roles/win_data_drive
+partition_size: -1
+file_system: null
+new_label: null

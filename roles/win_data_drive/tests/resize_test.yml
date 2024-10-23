@@ -1,0 +1,10 @@
+---
+- name: Resize a partition
+  hosts: windows
+  gather_facts: false
+  vars:
+    drive_letter: D
+    partition_size: 100 GB
+    op: "resize"
+  roles:
+    - win_data_drive

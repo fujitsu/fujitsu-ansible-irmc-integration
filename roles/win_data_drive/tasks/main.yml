@@ -1,0 +1,29 @@
+---
+# tasks file for ./roles/win_data_drive
+
+- name: Create and format a new partition
+  when: op == "create"
+  block:
+    - name: Create a partition
+      community.windows.win_partition:
+        drive_letter: "{{ drive_letter }}"
+        partition_size: "{{ partition_size }}"
+        disk_number: "{{ disk_number }}"
+
+    - name: Format created partition
+      community.windows.win_format:
+        drive_letter: "{{ drive_letter }}"
+        file_system: "{{ file_system }}"
+        new_label: "{{ new_label }}"
+
+- name: Resize a partition
+  community.windows.win_partition:
+    drive_letter: "{{ drive_letter }}"
+    partition_size: "{{ partition_size }}"
+  when: op == "resize"
+
+- name: Remove a partition
+  community.windows.win_partition:
+    drive_letter: "{{ drive_letter }}"
+    state: absent
+  when: op == "remove"

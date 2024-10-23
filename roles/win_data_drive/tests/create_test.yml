@@ -1,0 +1,10 @@
+---
+- name: Create a new partition
+  hosts: windows
+  gather_facts: false
+  vars:
+    drive_letter: D
+    disk_number: 0
+    op: "create"
+  roles:
+    - win_data_drive
