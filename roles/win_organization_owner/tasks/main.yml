@@ -1,0 +1,16 @@
+---
+# tasks file for ./roles/win_organization_owner
+- name: Change the description
+  community.windows.win_computer_description:
+   description: "{{ description }}"
+  when: description is defined
+
+- name: Change the organization
+  community.windows.win_computer_description:
+   organization: "{{ organization }}"
+  when: organization is defined
+
+- name: Change the owner
+  community.windows.win_computer_description:
+   owner: "{{ owner }}"
+  when: owner is defined
