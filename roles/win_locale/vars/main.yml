@@ -1,0 +1,5 @@
+---
+# vars file for ./roles/win_locale
+
+win_locale_temp_dir: C:\Temp
+win_locale_language_pack_download_url: https://go.microsoft.com/fwlink/p/?linkid=2195333

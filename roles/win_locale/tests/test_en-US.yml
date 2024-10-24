@@ -1,0 +1,9 @@
+---
+- name: Change the language setting to English (United States)
+  hosts: windows
+  roles:
+    - role: win_locale
+  vars:
+    language: "en-US"
+    location: "244"
+    timezone: "Eastern Standard Time"

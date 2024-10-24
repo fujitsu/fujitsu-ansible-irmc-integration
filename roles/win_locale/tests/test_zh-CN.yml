@@ -1,0 +1,9 @@
+---
+- name: Change language settings to Chinese (Simplified, China)
+  hosts: windows
+  roles:
+    - role: win_locale
+  vars:
+    language: "zh-CN"
+    location: "45"
+    timezone: "China Standard Time"

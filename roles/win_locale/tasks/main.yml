@@ -1,0 +1,121 @@
+---
+# tasks file for ./roles/win_locale/
+
+- name: Define the new parameters from vars
+  ansible.builtin.set_fact:
+    language_pack_iso_dest: "{{ win_locale_temp_dir }}\\language_pack.iso"
+    reuse_iso: "{{ reuse_iso | default(false) }}"
+    language_pack_installed: false
+    language_pack_iso_exists: false
+  tags: always
+
+- name: Verify if the language pack is already installed
+  ansible.windows.win_shell: |
+    (Get-WindowsCapability -Online | Where-Object { $_.Name -like "Language.Basic*{{ language }}*" }).State
+  register: language_pack_state
+
+- name: Set the language pack installation status
+  ansible.builtin.set_fact:
+    language_pack_installed: "{{ language_pack_state.stdout.strip() == 'Installed' }}"
+
+- name: Install the language pack if not already installed
+  when: not language_pack_installed
+  block:
+    - name: Check for existing the language pack ISO file
+      ansible.windows.win_stat:
+        path: "{{ language_pack_iso_dest }}"
+      register: language_pack_iso_stat
+
+    - name: Determine if ISO file exists and reuse is allowed
+      ansible.builtin.set_fact:
+        language_pack_iso_exists: "{{ language_pack_iso_stat.stat.exists }}"
+
+    - name: Download the language pack if needed
+      when: not (reuse_iso and language_pack_iso_exists)
+      tags: download
+      block:
+        - name: Notify about downloading the language pack
+          ansible.builtin.debug:
+            msg: "DOWNLOADING LANGUAGE PACK FROM {{ win_locale_language_pack_download_url }}"
+
+        - name: Create the temporary directory
+          ansible.windows.win_file:
+            path: "{{ win_locale_temp_dir }}"
+            state: directory
+
+        - name: Download the language pack ISO
+          ansible.windows.win_get_url:
+            url: "{{ win_locale_language_pack_download_url }}"
+            dest: "{{ language_pack_iso_dest }}"
+
+    - name: Mount the language pack ISO and proceed with installation
+      block:
+        - name: Mount the language pack ISO
+          community.windows.win_disk_image:
+            image_path: "{{ language_pack_iso_dest }}"
+            state: present
+          register: mount_result
+
+        - name: Define the CAB file directory
+          ansible.builtin.set_fact:
+            cab_file_dir: "{{ mount_result.mount_paths[0] }}LanguagesAndOptionalFeatures"
+
+        - name: Install the language pack CAB file
+          ansible.windows.win_command:
+            Dism.exe /online /add-package /packagepath:{{ cab_file_dir }}\Microsoft-Windows-Server-Language-Pack_x64_{{ language | lower }}.cab /Quiet
+          register: result
+          failed_when: result.rc != 0
+
+        - name: Add the Windows capability for the language pack
+          ansible.windows.win_shell: |
+            Add-WindowsCapability -Online -Name "Language.Basic~~~{{ language }}~0.0.1.0" -Source "{{ cab_file_dir }}" -LimitAccess
+          register: result
+          failed_when: result.rc != 0
+
+        - name: Reboot the system to apply changes
+          ansible.windows.win_reboot:
+
+    - name: Validate the language pack installation
+      ansible.windows.win_shell: |
+        (Get-WindowsCapability -Online | Where-Object { $_.Name -like "Language.Basic*{{ language }}*" }).State
+      register: language_pack_state
+
+    - name: Fail if the language pack installation failed
+      ansible.builtin.assert:
+        that: language_pack_state.stdout.strip() == "Installed"
+        fail_msg: "Language pack {{ language }} is not installed."
+
+- name: Set UI preferences
+  ansible.windows.win_shell:
+    Set-WinUILanguageOverride -Language {{ language }}
+  register: result
+  failed_when: result.rc != 0
+
+- name: Set User language preferences
+  ansible.windows.win_shell:
+    Set-WinUserLanguageList {{ language }} -Force
+  register: result
+  failed_when: result.rc != 0
+
+- name: Update timezone settings
+  community.windows.win_timezone:
+    timezone: "{{ timezone }}"
+
+- name: Update regional settings
+  community.windows.win_region:
+    location: "{{ location }}"
+    format: "{{ language }}"
+    unicode_language: "{{ language }}"
+    copy_settings: true
+  register: win_region_result
+
+- name: Reboot the system if required
+  ansible.windows.win_reboot:
+  when: win_region_result.restart_required
+
+- name: Remove the language pack ISO if reuse is not enabled
+  ansible.windows.win_file:
+    path: "{{ language_pack_iso_dest }}"
+    state: absent
+  when: not reuse_iso
+  tags: cleanup
