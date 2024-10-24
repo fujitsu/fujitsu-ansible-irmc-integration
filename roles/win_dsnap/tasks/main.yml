@@ -1,62 +1,63 @@
 ---
 # tasks file for ./roles/win_dsnap
+- name: Extract the file name from path
+  ansible.builtin.set_fact:
+    filename: "{{ path | basename }}"
+
 - name: Define the new parameters from vars
   ansible.builtin.set_fact:
-    dsnap_src: "SVSLocalTools\\{{ language | default('English') }}\\DSNAP\\{{ cpu_version | default('x64') }}\\dsnap.exe"
-    file_dest: "{{ win_dsnap_file_dest_dir }}\\{{ filename }}"
-    file_src: "{{ path }}\/{{ filename }}"
+    dsnap_src: "SVSLocalTools\\{{ language | default('English') }}\\DSNAP\\{{ cpu_arch | default('x64') }}\\dsnap.exe"
+    temp_file: "{{ win_dsnap_temp }}\\{{ filename }}"
 
-- name: Ensure the destination directory exists and copy the file from ansible server
+- name: Ensure the destination directory exists and copy the file from ansible control node
   block:
-    - name: Create the directory for the file from ansible server if it does not exist
+    - name: Create the directory for the file from ansible control node if it does not exist
       ansible.windows.win_file:
-        path: "{{ win_dsnap_file_dest_dir }}"
+        path: "{{ win_dsnap_temp }}"
         state: directory
-    - name: Copy the file from ansible server
+    - name: Copy the file from ansible control node
       ansible.windows.win_copy:
-        src: "{{ file_src }}"
-        dest: "{{ file_dest }}"
+        src: "{{ path }}"
+        dest: "{{ temp_file }}"
 
-- name: Find the file from the temp folder
-  ansible.windows.win_find:
-    paths: "{{ win_dsnap_file_dest_dir }}"
-    patterns: "{{ filename }}"
-  register: find_result
-  tags: find
+- name: Determine if the filename ends with .iso
+  ansible.builtin.set_fact:
+    is_iso: "{{ (filename | lower | regex_search('\\.iso$')) | ternary(True, False) }}"
 
-- name: Mount the iso file
-  community.windows.win_disk_image:
-    image_path: "{{ find_result.files[0].path }}"
-    state: present
-  register: mount_result
-  when: "'.iso' in find_result.files[0].path"
+- name: Mount/Unmount the iso file and copy the exe file to the temp folder
+  when: is_iso
+  block:
+    - name: Mount the iso file
+      community.windows.win_disk_image:
+        image_path: "{{ temp_file }}"
+        state: present
+      register: mount_result
+    - name: Copy dsnap.exe from the iso file to the temp folder
+      ansible.windows.win_copy:
+        src: "{{ mount_result.mount_paths[0] }}{{ dsnap_src }}"
+        dest: "{{ win_dsnap_temp }}"
+        remote_src: true
+    - name: Unmount the iso file
+      community.windows.win_disk_image:
+        image_path: "{{ temp_file }}"
+        state: absent
 
 - name: Ensure the destination directory exists and copy dsnap.exe
   block:
     - name: Create the directory for DSNAP if it does not exist
       ansible.windows.win_file:
-        path: "{{ win_dsnap_dsnap_dest_dir }}"
+        path: "{{ win_dsnap_dsnap }}"
         state: directory
     - name: Copy dsnap.exe from the iso file to the created folder
       ansible.windows.win_copy:
-        src: "{{ mount_result.mount_paths[0] }}{{ dsnap_src }}"
-        dest: "{{ win_dsnap_dsnap_dest_dir }}"
+        src: "{{ win_dsnap_exe }}"
+        dest: "{{ win_dsnap_dsnap }}"
         remote_src: true
-      when: "'.iso' in find_result.files[0].path"
-    - name: Copy dsnap.exe from the temp folder to the created folder
-      ansible.windows.win_copy:
-        src: "{{ file_dest }}"
-        dest: "{{ win_dsnap_dsnap_dest_dir }}"
-        remote_src: true
-      when: "'.exe' in find_result.files[0].path"
-
-- name: Unmount the iso file
-  community.windows.win_disk_image:
-    image_path: "{{ find_result.files[0].path }}"
-    state: absent
-  when: "'.iso' in find_result.files[0].path"
 
 - name: Delete the temp file
   ansible.windows.win_file:
-    path: "{{ file_dest }}"
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "{{ temp_file }}"
+    - "{{ win_dsnap_exe }}"

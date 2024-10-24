@@ -1,4 +1,5 @@
 ---
 # vars file for ./roles/win_dsnap
-win_dsnap_file_dest_dir: C:\Temp\DSNAP\ansible
-win_dsnap_dsnap_dest_dir: C:\DSNAP
+win_dsnap_dsnap: C:\DSNAP
+win_dsnap_exe: C:\Temp\dsnap.exe
+win_dsnap_temp: C:\Temp

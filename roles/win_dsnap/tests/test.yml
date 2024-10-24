@@ -4,6 +4,5 @@
   roles:
     - role: win_dsnap
   vars:
-    filename: SVS15.24.06.03.iso
     language: Japanese
-    path: /path/to/dsnapfile
+    path: /path/to/dsnapfile/SVS15.24.06.03.iso
