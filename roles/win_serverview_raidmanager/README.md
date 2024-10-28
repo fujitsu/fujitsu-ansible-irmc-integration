@@ -16,7 +16,7 @@ After downloading ServerView Agents, specify the path to the installer file.
 Download ServerView Agents from <https://support.ts.fujitsu.com/>.
 
 Notes:
-This roll only supports AdoptOpenJDK with HotSpot.
+This role only supports AdoptOpenJDK with HotSpot.
 After downloading the OpenJDK installer, specify the path to the installer file.
 Please download the MSI format JRE installer from <https://adoptium.net/temurin/releases/?os=windows&version=8&arch=x64&package=jre>.
 
