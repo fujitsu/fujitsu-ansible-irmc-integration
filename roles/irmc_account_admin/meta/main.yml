@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  author: Tomohisa Nakai
+  description: Change admin configurations.
+  company: Fsas Technologies Inc.
+  license: GPL-3.0-or-later
+
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: iRMC
+      versions:
+        - S6
+
+  galaxy_tags:
+    - fujitsu
+    - fti
+    - primergy
+    - irmc
+    - user
+    - account
+    - administrator
+    - admin
+
+dependencies: []
