@@ -1,0 +1,11 @@
+---
+- name: Set iRMC certificates
+  connection: local
+  hosts: iRMC_group
+  gather_facts: false
+  roles:
+    - irmc_set_certificate
+  vars:
+    ssl_private_key_path: /path/to/sslprivatekey/server.key
+    ssl_cert_path: /path/to/sslcert/server.crt
+    ssl_ca_cert_path: /path/to/sslcacert/ca.crt
