@@ -1,0 +1,91 @@
+---
+# tasks file for ./roles/irmc_update_bios
+
+- name: Set default path mapping if 'bios_firmware_path_mapping' is not defined
+  ansible.builtin.set_fact:
+    bios_firmware_path_mapping: "{{ bios_firmware_path_mapping | default({}) }}"
+
+- name: Turn off the power of the iRMC device
+  fujitsu.primergy.irmc_powerstate:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    state: "PowerOff"
+  delegate_to: localhost
+
+- name: Get the facts of iRMC device (before update)
+  fujitsu.primergy.irmc_facts:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "get"
+  delegate_to: localhost
+  register: get_facts_result
+
+- name: Get BIOS version (before update)
+  ansible.builtin.set_fact:
+    version_before: "{{ get_facts_result.facts.system.bios_version }}"
+
+- name: Set "model_name" from the facts
+  ansible.builtin.set_fact:
+    model_name: "{{ get_facts_result.facts.system.model | replace(' ', '_') }}"
+
+- name: Set firmware path based on model_name
+  ansible.builtin.set_fact:
+    bios_firmware_path: "{{ bios_firmware_path_mapping[model_name] }}"
+  when: model_name in bios_firmware_path_mapping
+
+- name: Ensure firmware path is defined
+  ansible.builtin.assert:
+    that:
+      - bios_firmware_path is defined
+    fail_msg: "Firmware path is not defined for model '{{ model_name }}'. Aborting BIOS update."
+
+- name: Message
+  ansible.builtin.debug:
+    msg: >-
+      Firmware path is correctly defined for model '{{ model_name }}'.
+      Proceeding with BIOS firmware update with '{{ bios_firmware_path }}'.
+
+- name: Convert the unit of timeout
+  ansible.builtin.set_fact:
+    # 単位を秒から分に変換（切り上げ）
+    timeout_minutes: "{{ ((timeout | int) + 59) // 60 }}"
+  when: timeout is defined
+
+- name: Update BIOS firmware
+  fujitsu.primergy.irmc_fwbios_update:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "update"
+    update_type: "bios"
+    update_source: "{{ (tftp_server is defined) | ternary('tftp', 'file') }}"
+    server_name: "{{ tftp_server | default(omit) }}"
+    file_name: "{{ bios_firmware_path }}"
+    timeout: "{{ timeout_minutes | default(omit) }}"
+  delegate_to: localhost
+
+- name: Get the facts of iRMC device (after update)
+  fujitsu.primergy.irmc_facts:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "get"
+  delegate_to: localhost
+  register: get_facts_result
+
+- name: Get BIOS version (after update)
+  ansible.builtin.set_fact:
+    version_after: "{{ get_facts_result.facts.system.bios_version }}"
+
+- name: Show BIOS update result
+  ansible.builtin.debug:
+    msg:
+      - "Before: {{ version_before }}"
+      - "After:  {{ version_after }}"
