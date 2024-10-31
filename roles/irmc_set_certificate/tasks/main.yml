@@ -28,12 +28,44 @@
   ansible.builtin.uri:
     url: "https://{{ inventory_hostname }}/rest/v1/Oem/iRMC/Reset"
     method: POST
+    url_username: "{{ irmc_user }}"
+    url_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
     headers:
       Accept: application/json
       Content type: application/json
     status_code: 202
-    validate_certs: false
-    user: "{{ irmc_user }}"
-    password: "{{ irmc_password }}"
     force_basic_auth: true
   tags: reboot
+
+- name: Pause until start of iRMC reboot
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Health check until end of iRMC reboot
+  block:
+    - name: Define wait parameters
+      ansible.builtin.set_fact:
+        timelimit: 600   # 最大待ち時間（秒）
+        delay: 15        # 各リトライ間の待機時間（秒）
+
+    - name: Define wait parameters
+      ansible.builtin.set_fact:
+        retries: "{{ timelimit // delay }}"  # 最大リトライ回数を計算
+
+    - name: Health check to iRMC
+      ansible.builtin.uri:
+        url: "https://{{ inventory_hostname }}/redfish/v1/Managers/iRMC"
+        method: GET
+        url_username: "{{ irmc_user }}"
+        url_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        headers:
+          Accept: application/json
+          Content type: application/json
+        force_basic_auth: true
+      register: response
+      until: response.status == 200
+      retries: "{{ retries }}"
+      delay: "{{ delay }}"
+  tags: healthcheck
