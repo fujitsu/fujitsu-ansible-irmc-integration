@@ -1,0 +1,12 @@
+---
+# tasks file for ./fujitsu/primergy/roles/irmc_set_license
+- name: Set iRMC license key
+  fujitsu.primergy.irmc_license:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    license_key: "{{ item }}"
+  loop: "{{ license_keys }}"
+  delegate_to: localhost

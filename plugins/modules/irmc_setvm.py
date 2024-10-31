@@ -123,7 +123,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc import get_irmc_json, irmc_redfish_get, irmc_redfish_patch
-from ansible.module_utils.irmc_scci_utils import setup_datadict
+from ansible_collections.fujitsu.primergy.plugins.module_utils.irmc_scci_utils import setup_datadict
 
 
 def irmc_setvirtualmedia(module):
