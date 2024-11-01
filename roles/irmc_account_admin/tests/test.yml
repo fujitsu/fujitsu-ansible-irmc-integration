@@ -1,0 +1,10 @@
+---
+- name: Change admin configurations
+  connection: local
+  hosts: iRMC_group
+  gather_facts: false
+  roles:
+    - irmc_account_admin
+  vars_files:
+    - ./vars/secrets.yml
+    - ./vars/vars.yml
