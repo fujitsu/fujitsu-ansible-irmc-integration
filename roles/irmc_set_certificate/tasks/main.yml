@@ -44,8 +44,8 @@
   block:
     - name: Define wait parameters
       ansible.builtin.set_fact:
-        timeout: "{{ sec_until_timeout | default(600) }}"   # 最大待ち時間（秒）
-        delay: 15                                           # 各リトライ間の待機時間（秒）
+        timeout: "{{ sec_until_timeout }}"   # 最大待ち時間（秒）
+        delay: 15                            # 各リトライ間の待機時間（秒）
 
     - name: Define wait parameters
       ansible.builtin.set_fact:
