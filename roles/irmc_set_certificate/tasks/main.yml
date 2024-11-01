@@ -8,7 +8,6 @@
   loop:
     - { regexp: "BEGIN PRIVATE KEY", replace: "BEGIN RSA PRIVATE KEY" }
     - { regexp: "END PRIVATE KEY", replace: "END RSA PRIVATE KEY" }
-  tags: convert
 
 - name: Set iRMC certificates
   fujitsu.primergy.irmc_certificate:
@@ -22,7 +21,6 @@
     ssl_ca_cert_path: "{{ ssl_ca_cert_path }}"
   delegate_to: localhost
   register: set_result
-  tags: set
 
 - name: Reboot iRMC
   ansible.builtin.uri:
@@ -36,8 +34,8 @@
       Content type: application/json
     status_code: 202
     force_basic_auth: true
-  tags: reboot
 
+# 再起動が始まるまでにヘルスチェックを行うと200が返ってきて終了してしまうのでしばらく待つ
 - name: Pause until start of iRMC reboot
   ansible.builtin.pause:
     seconds: 30
@@ -46,12 +44,12 @@
   block:
     - name: Define wait parameters
       ansible.builtin.set_fact:
-        timelimit: 600   # 最大待ち時間（秒）
-        delay: 15        # 各リトライ間の待機時間（秒）
+        timeout: "{{ sec_until_timeout | default(600) }}"   # 最大待ち時間（秒）
+        delay: 15                                           # 各リトライ間の待機時間（秒）
 
     - name: Define wait parameters
       ansible.builtin.set_fact:
-        retries: "{{ timelimit // delay }}"  # 最大リトライ回数を計算
+        retries: "{{ timeout // delay }}"  # 最大リトライ回数を計算
 
     - name: Health check to iRMC
       ansible.builtin.uri:
@@ -68,4 +66,3 @@
       until: response.status == 200
       retries: "{{ retries }}"
       delay: "{{ delay }}"
-  tags: healthcheck

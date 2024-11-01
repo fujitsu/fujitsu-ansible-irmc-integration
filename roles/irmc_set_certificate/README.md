@@ -19,6 +19,7 @@ Role Variables
 | `ssl_private_key_path` | true | | | str | Path to file containing SSL private key. |
 | `ssl_cert_path` | true | | | str | Path to file containing SSL CA certificate. |
 | `ssl_ca_cert_path` | true | | | str | Path to file containing SSL certificate. |
+| `sec_until_timeout` | false | `600` | | int | Seconds before timeout of health check. <br> It is recommended that this parameter not be changed. <br> Please change it only if PRIMERGY takes a long time to reboot and health check fails.  |
 
 Dependencies
 ------------

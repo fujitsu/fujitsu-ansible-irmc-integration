@@ -1,2 +1,3 @@
 ---
 # defaults file for ./roles/irmc_set_certificate
+sec_until_timeout: 600
