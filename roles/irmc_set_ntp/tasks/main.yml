@@ -1,0 +1,15 @@
+---
+# tasks file for ./fujitsu/primergy/roles/irmc_set_ntp
+- name: Set iRMC time option(s)
+  fujitsu.primergy.irmc_ntp:
+    irmc_url: "{{ inventory_hostname }}"
+    irmc_username: "{{ irmc_user }}"
+    irmc_password: "{{ irmc_password }}"
+    validate_certs: "{{ validate_certificate }}"
+    command: "set"
+    ntp_server_primary: "{{ ntp_server_primary | default(omit) }}"
+    ntp_server_secondary: "{{ ntp_server_secondary | default(omit) }}"
+    time_mode: "{{ time_mode | default(omit) }}"
+    time_zone_location: "{{ time_zone_location | default(omit) }}"
+    rtc_mode: "{{ rtc_mode | default(omit) }}"
+  delegate_to: localhost
