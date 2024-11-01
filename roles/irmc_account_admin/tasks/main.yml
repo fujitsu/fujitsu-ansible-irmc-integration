@@ -27,7 +27,6 @@
     storage_enabled: "{{ irmc_account_admin.access.avr.enable_remote_storage | default(omit) }}"
     snmpv3_enabled: "{{ irmc_account_admin.snmpv3.enable | default(omit) }}"
     email_enabled: "{{ irmc_account_admin.email.general.enable | default(omit) }}"
-    email_encrypted: "{{ irmc_account_admin.email.general.encrypt | default(omit) }}"
     email_type: "{{ irmc_account_admin.email.general.format | default(omit) }}"
     email_server: "{{ irmc_account_admin.email.general.server | default(omit) }}"
     email_address: "{{ irmc_account_admin.email.general.address | default(omit) }}"

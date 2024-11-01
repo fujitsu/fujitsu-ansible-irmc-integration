@@ -25,7 +25,6 @@ Role Variables
 | `irmc_account_admin.access.avr.enable_remote_storage` | false | | | bool | User may use Remote Storage. |
 | `irmc_account_admin.snmpv3.enable` | false | | | bool | User may use SNMPv3. |
 | `irmc_account_admin.email.general.enable` | false | | | bool | Alert email enabled. |
-| `irmc_account_admin.email.general.encrypt` | false | | | bool | Alert email is encrypted. |
 | `irmc_account_admin.email.general.format` | false | | `Standard` <br> `Fixed Subject` <br> `ITS-Format` <br> `SMS` | str | Alert email format. |
 | `irmc_account_admin.email.general.server` | false | | `Automatic` <br> `Primary` <br> `Secondary` | str | Preferred mail server for alert email. |
 | `irmc_account_admin.email.general.address` | false | | | str | Alert email address. |
@@ -89,7 +88,6 @@ vars.yml:
       email:
         general:
           enable: true
-          encrypt: false
           format: Standard
           server: Automatic
           address: User02@domain.com

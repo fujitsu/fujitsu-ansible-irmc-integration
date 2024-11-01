@@ -18,7 +18,6 @@ irmc_account_admin:
   email:
     general:
       enable: true
-      encrypt: false
       format: Standard
       server: Automatic
       address: User02@domain.com
