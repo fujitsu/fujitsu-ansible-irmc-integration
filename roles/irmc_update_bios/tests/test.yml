@@ -1,0 +1,23 @@
+---
+- name: Update BIOS firmware
+  hosts: iRMC_group
+  connection: local
+  gather_facts: false
+  roles:
+    - role: fujitsu.primergy.irmc_update_bios
+      vars:
+        bios_firmware_path: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
+
+    # - role: fujitsu.primergy.irmc_update_bios
+    #   vars:
+    #     bios_firmware_path_mapping:
+    #       PRIMERGY_RX1330_M5R: "/any/where/firm/RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
+    #       PRIMERGY_RX1330_M6S: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
+
+    # - role: fujitsu.primergy.irmc_update_bios
+    #   vars:
+    #     tftp_server: 10.124.64.89
+    #     bios_firmware_path_mapping:
+    #       PRIMERGY_RX1330_M5R: "RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
+    #       PRIMERGY_RX1330_M6S: "RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
+    #     timeout: 60
