@@ -1,0 +1,99 @@
+---
+# tasks file for ./fujitsu/primergy/roles/irmc_install_windows
+- name: Install OS via virtual CD
+  block:
+    - name: Get system power state
+      fujitsu.primergy.irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "get"
+      register: powerstate
+      delegate_to: localhost
+
+    - name: Check that server is 'Off'
+      ansible.builtin.fail:
+        msg: "Cannot continue, server is 'On'. Please shutdown the server."
+      when: powerstate.power_state == "On"
+
+    - name: Disconnect Virtual CD
+      fujitsu.primergy.irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "DisconnectCD"
+      delegate_to: localhost
+
+    - name: Set Virtual Media Data
+      fujitsu.primergy.irmc_setvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        server: "{{ server }}"
+        share: "{{ share }}"
+        image: "{{ image }}"
+        share_type: "{{ share_type }}"
+        vm_domain: "{{ vm_domain | default(omit) }}"
+        vm_user: "{{ vm_user | default(omit) }}"
+        vm_password: "{{ vm_password | default(omit) }}"
+        force_remotemount_enabled: true
+        force_mediatype_active: true
+      delegate_to: localhost
+
+    - name: Connect Virtual CD
+      fujitsu.primergy.irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "ConnectCD"
+      delegate_to: localhost
+
+    - name: Set Bios to next boot from Virtual CD
+      fujitsu.primergy.irmc_setnextboot:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        bootsource: "Cd"
+        bootoverride: "Once"
+        bootmode: "UEFI"
+      delegate_to: localhost
+
+    - name: Get Virtual Media data
+      fujitsu.primergy.irmc_getvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        vm_type: CDImage
+      register: vmdata
+      delegate_to: localhost
+    - name: Show Virtual Media data
+      ansible.builtin.debug:
+        msg:
+          - "Boot from following media:"
+          - "{{ vmdata.virtual_media_data }}"
+
+    - name: PowerOn System
+      fujitsu.primergy.irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        state: "PowerOn"
+      delegate_to: localhost
+
+    - name: Show attention
+      ansible.builtin.debug:
+        msg: "OS is installing. Please login iRMC and open AVR to setup WinRM and IP address after OS installation is completed."
+
+    - name: Show WinRM setting command
+      ansible.builtin.debug:
+        msg:
+          - "Execute the following command to enable WinRM."
+          - "New-NetFirewallRule -Name 'WinRM HTTP' -DisplayName 'Allow WinRM over HTTP' -Enabled True -Direction Inbound -Protocol TCP -LocalPort 5985 -Action Allow"
