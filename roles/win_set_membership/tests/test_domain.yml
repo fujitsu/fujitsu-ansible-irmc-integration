@@ -4,7 +4,7 @@
   vars:
     state: domain
     domain: fti.test
-    user_name: FTI\Administrator
+    username: FTI\Administrator
     password: Admin000
   roles:
     - role: win_set_membership
