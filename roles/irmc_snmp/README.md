@@ -43,26 +43,24 @@ playbook.yml:
     - hosts: iRMC_group
       connection: local
       gather_facts: false
-      vars_files:
-        - ./vars.yml
       roles:
-        - role: irmc_snmp
-
-vars.yml:
-
-    snmp:
-      enabled: true
-      protocol: "All"
-      community_name: "public"
-
-    snmp_trap_destination:
-      community_name: "trap-public"
-      servers:
-        - index: 0
-          name: "Destination1"
-          protocol: "SnmpV2c"
-        - index: 1
-          name: ""  # Empty string setting means disabling
+        - role: fujitsu.primergy.irmc_snmp
+          vars:
+            snmp:
+              enabled: true
+              protocol: "All"  # "All" or "V3only"
+              community_name: "public"
+            snmp_trap_destination:
+              community_name: "trap-public"
+              servers:
+                - index: 0
+                  name: "Destination1"
+                  protocol: "SnmpV1"
+                - index: 1
+                  name: "Destination2"
+                  protocol: "SnmpV2c"
+                - index: 2
+                  name: ""  # Empty string setting means disabling
 
 inventory.ini:
 

@@ -3,7 +3,40 @@
   hosts: iRMC_group
   connection: local
   gather_facts: false
-  vars_files:
-    - ./vars.yml
   roles:
-    - role: irmc_email_alert
+    - role: fujitsu.primergy.irmc_email_alert
+      vars:
+        email_alert:
+          enabled: true
+          retries: 3
+          retry_delay: 30
+          response_timeout: 45
+        smtp:
+          primary_server:
+            address: 192.0.2.1
+            port: 25
+            authentication:
+              type: "Smtp"
+              username: "AuthUserName"
+              password: "AuthPassword"
+            fqdn_with_ehlo_helo: false
+            use_ssl_tls: false
+            verify_certificate: false
+          secondary_server:
+            address: 192.0.2.2
+            port: 25
+            authentication:
+              type: "None"
+            fqdn_with_ehlo_helo: true
+            use_ssl_tls: true
+            verify_certificate: true
+        email_format:
+          from: "MailFrom@example.com"
+          subject: "FixedMailSubject"
+          message: "FixedMailMessage"
+          admin_name: "ITS_UserInfo0"
+          admin_phone: "ITS_UserInfo1"
+          country_code: "US"
+          customer_id: "example"
+          server_url: "http://www.server.example.com"
+          attach_screenshot: true
