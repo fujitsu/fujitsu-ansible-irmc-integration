@@ -58,7 +58,7 @@ playbook.yml:
       hosts: iRMC_group
       gather_facts: false
       roles:
-        - irmc_account_admin
+        - role: fujitsu.primergy.irmc_account_admin
       vars_files:
         - ./vars/secrets.yml
         - ./vars/vars.yml

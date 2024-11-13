@@ -48,10 +48,10 @@ Example Playbook
     - name: Set up DSNAP
       hosts: windows
       roles:
-        - role: win_dsnap
-      vars:
-        language: Japanese
-        path: /path/to/dsnapfile/SVS15.24.06.03.iso
+        - role: fujitsu.primergy.win_dsnap
+          vars:
+            language: Japanese
+            path: /path/to/dsnapfile/SVS15.24.06.03.iso
 
 License
 -------
