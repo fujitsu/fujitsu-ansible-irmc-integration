@@ -33,34 +33,32 @@ playbook.yml:
     ---
     - name: Create a new partition
       hosts: windows
-      gather_facts: false
-      vars:
-        drive_letter: D
-        disk_number: 0
-        op: "create"
       roles:
-        - win_data_drive
+        - role: fujitsu.primergy.win_data_drive
+          vars:
+            drive_letter: D
+            disk_number: 0
+            op: "create"
 
     ---
     - name: Resize a partition
       hosts: windows
-      gather_facts: false
-      vars:
-        drive_letter: D
-        partition_size: 100 GB
-        op: "resize"
       roles:
-        - win_data_drive
+        - role: fujitsu.primergy.win_data_drive
+          vars:
+            drive_letter: D
+            partition_size: 100 GB
+            op: "resize"
 
     ---
     - name: Remove a partition
       hosts: windows
       gather_facts: false
-      vars:
-        drive_letter: D
-        op: "remove"
       roles:
-        - win_data_drive
+        - role: fujitsu.primergy.win_data_drive
+          vars:
+            drive_letter: D
+            op: "remove"
 
 License
 -------

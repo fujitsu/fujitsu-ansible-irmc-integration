@@ -1,7 +1,10 @@
 ---
 - name: Set DNS
-  hosts: windws
-  vars_files:
-    - ./vars/test_vars.yml
+  hosts: windows
   roles:
-    - win_dns
+    - role: fujitsu.primergy.win_dns
+      vars:
+        adapter_names: Ethernet
+        ipv4_addresses:
+          - 192.0.2.1
+          - 192.0.2.2

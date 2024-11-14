@@ -1,10 +1,10 @@
 ---
-- hosts: windows
-  gather_facts: false
-  vars:
-    state: domain
-    domain: fti.test
-    username: FTI\Administrator
-    password: Admin000
+- name: Join a domain
+  hosts: windows
   roles:
-    - role: win_set_membership
+    - role: fujitsu.primergy.win_set_membership
+      vars:
+        state: domain
+        domain: fti.test
+        username: FTI\Administrator
+        password: Admin000

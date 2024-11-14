@@ -30,12 +30,12 @@ playbook.yml:
       connection: local
       hosts: iRMC_group
       gather_facts: false
-      vars:
-        license_keys:
-          - "AAAAAA-AAAAAAA-AAAAA"
-          - "BBBBBB-BBBBBBB-BBBBB"
       roles:
-        - fujitsu.primergy.irmc_set_license
+        - role: fujitsu.primergy.irmc_set_license
+          vars:
+            license_keys:
+              - "AAAAAA-AAAAAAA-AAAAA"
+              - "BBBBBB-BBBBBBB-BBBBB"
 
 License
 -------

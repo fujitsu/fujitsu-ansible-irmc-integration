@@ -34,14 +34,14 @@ playbook.yml:
       connection: local
       hosts: iRMC_group
       gather_facts: false
-      vars:
-        ntp_server_primary: 192.0.2.1
-        ntp_server_secondary: 192.0.2.2
-        time_mode: "System RTC"
-        time_zone_location: "Asia/Tokyo"
-        rtc_mode: "local time"
       roles:
-        - fujitsu.primergy.irmc_set_ntp
+        - role: fujitsu.primergy.irmc_set_ntp
+          vars:
+            ntp_server_primary: 192.0.2.1
+            ntp_server_secondary: 192.0.2.2
+            time_mode: "System RTC"
+            time_zone_location: "Asia/Tokyo"
+            rtc_mode: "local time"
 
 License
 -------

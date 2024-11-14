@@ -1,6 +1,0 @@
----
-
-adapter_names: Ethernet
-ipv4_addresses:
-  - 192.0.2.1
-  - 192.0.2.2

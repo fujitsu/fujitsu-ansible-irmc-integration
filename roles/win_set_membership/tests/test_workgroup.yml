@@ -1,7 +1,8 @@
 ---
-- hosts: windows
-  vars:
-    state: "workgroup"
-    workgroup_name: "WORKGROUP"
+- name: Join a workgroup
+  hosts: windows
   roles:
-    - win_set_membership
+    - role: fujitsu.primergy.win_set_membership
+      vars:
+        state: "workgroup"
+        workgroup_name: "WORKGROUP"

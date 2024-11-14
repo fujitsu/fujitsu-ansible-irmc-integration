@@ -26,14 +26,12 @@ Example Playbook
 playbook.yml:
 
     ---
-
     - name: Enable remote desktop
       hosts: windows
-      gather_facts: false
-      vars:
-        enabled: true
       roles:
-        - role: win_set_rdp
+        - role: fujitsu.primergy.win_set_rdp
+          vars:
+            enabled: true
 
 License
 -------

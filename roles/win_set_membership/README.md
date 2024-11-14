@@ -30,26 +30,26 @@ Example Playbook
 playbook.yml(join workgroup):
 
     ---
-    - hosts: windows
-      gather_facts: false
-      vars:
-        state: workgroup
-        workgroup: WORKGROUP
+    - name: Join a workgroup
+      hosts: windows
       roles:
-        - role: win_set_membership
+        - role: fujitsu.primergy.win_set_membership
+          vars:
+            state: workgroup
+            workgroup: WORKGROUP
 
 playbook.yml(join a domain):
 
     ---
-    - hosts: windows
-      gather_facts: false
-      vars:
-        state: domain
-        domain: fti.test
-        username: FTI\Administrator
-        password: Admin000
+    - name: Join a domain
+      hosts: windows
       roles:
-        - role: win_set_membership
+        - role: fujitsu.primergy.win_set_membership
+          vars:
+            state: domain
+            domain: fti.test
+            username: FTI\Administrator
+            password: Admin000
 
 License
 -------

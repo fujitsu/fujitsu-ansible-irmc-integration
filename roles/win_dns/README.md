@@ -28,14 +28,14 @@ playbook.yml:
 
     ---
     - name: Set DNS
-      hosts: windws
-      vars:
-        adapter_names: Enthernet
-        ipv4_addresses:
-          - 192.0.2.1
-          - 192.0.2.2
+      hosts: windows
       roles:
-        - win_dns
+        - role: fujitsu.primergy.win_dns
+          vars:
+            adapter_names: Enthernet
+            ipv4_addresses:
+              - 192.0.2.1
+              - 192.0.2.2
 
 License
 -------

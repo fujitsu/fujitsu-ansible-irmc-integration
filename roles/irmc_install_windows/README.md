@@ -43,13 +43,13 @@ playbook.yml:
       connection: local
       hosts: iRMC_group
       gather_facts: false
-      vars:
-        server: "192.0.2.1"
-        share: "/var/share"
-        image: "/image.iso"
-        share_type: "NFS"
       roles:
-        - fujitsu.primergy.irmc_install_windows
+        - role: fujitsu.primergy.irmc_install_windows
+          vars:
+            server: "192.0.2.1"
+            share: "/var/share"
+            image: "/image.iso"
+            share_type: "NFS"
 
     - name: Waiting for OS installation completed
       hosts: windows
@@ -61,7 +61,7 @@ playbook.yml:
         - name: Show completion message
           ansible.builtin.debug:
             msg: "OS installation is completed."
-    
+
     - name: Disconnect iRMC Virtual CD after installation
       hosts: iRMC_group
       gather_facts: false
