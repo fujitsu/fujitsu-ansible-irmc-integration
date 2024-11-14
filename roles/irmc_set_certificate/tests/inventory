@@ -1,0 +1,5 @@
+[iRMC_group]
+<hostname-or-ipaddress> irmc_user=admin irmc_password=<password>
+
+[iRMC_group:vars]
+validate_certificate=false
