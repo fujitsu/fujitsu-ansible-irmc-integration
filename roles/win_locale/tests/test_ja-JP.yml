@@ -2,8 +2,8 @@
 - name: Change the language setting to Japanese (Japan)
   hosts: windows
   roles:
-    - role: win_locale
-  vars:
-    language: "ja-JP"
-    location: "122"
-    timezone: "Tokyo Standard Time"
+    - role: fujitsu.primergy.win_locale
+      vars:
+        language: "ja-JP"
+        location: "122"
+        timezone: "Tokyo Standard Time"

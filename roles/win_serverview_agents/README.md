@@ -41,7 +41,7 @@ Example Playbook
     ---
     - hosts: windows
       roles:
-        - role: win_serverview_agents
+        - role: fujitsu.primergy.win_serverview_agents
           vars:
             password: P@ssw0rd
             installer: "/path/to/installer/ServerViewAgents_Win_x64.exe"

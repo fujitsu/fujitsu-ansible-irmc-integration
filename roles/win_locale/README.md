@@ -41,11 +41,11 @@ Example Playbook
     ---
     - hosts: windows
       roles:
-        - role: win_locale
-      vars:
-        language: "ja-JP"
-        location: "122"
-        timezone: "Tokyo Standard Time"
+        - role: fujitsu.primergy.win_locale
+          vars:
+            language: "ja-JP"
+            location: "122"
+            timezone: "Tokyo Standard Time"
 
 License
 -------
