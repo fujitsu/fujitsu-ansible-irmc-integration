@@ -28,7 +28,7 @@ Role Variables
 | `smtp.primary_server.port` | false | | 1 to 65535 | int | SMTP port of the mail server. |
 | `smtp.primary_server.authentication.type` | false | | 'None', 'Smtp' | str | Authentication type for connecting the iRMC to the mail server. 'Smtp' is Authentication according to RFC 2554: SMTP Service Extension for Authentication. |
 | `smtp.primary_server.authentication.username` | false | | | str | User name for authentication on the mail server. |
-| `smtp.primary_server.authentication.password` | false | | 0 to 64 | str | Password for authentication on the mail server. |
+| `smtp.primary_server.authentication.password` | false | | | str | Password for authentication on the mail server. |
 | `smtp.primary_server.fqdn_with_ehlo_helo` | false | | | bool | Enables sending the FQDN with EHLO/HELO. |
 | `smtp.primary_server.use_ssl_tls` | false | | | bool | Depending on the configured network port, the iRMC will either directly establish an SSL connection (SMTPS legacy port 465) or check for the presence of the STARTTLS keyword. |
 | `smtp.primary_server.verify_certificate` | false | | | bool | The SSL certificate from the SMTP server is verified against the stored CA certificate in the iRMC. |
