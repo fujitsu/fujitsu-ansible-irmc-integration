@@ -28,9 +28,9 @@ Example Playbook
     ---
     - hosts: windows
       roles:
-        - role: win_hostname
-      vars:
-        hostname: Hostname
+        - role: fujitsu.primergy.win_hostname
+          vars:
+            hostname: Hostname
 
 License
 -------

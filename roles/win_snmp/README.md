@@ -37,19 +37,19 @@ Example Playbook
     ---
     - hosts: windows
       roles:
-        - role: win_snmp
-      vars:
-        agent:
-          contact: MyContact
-          location: MyLocation
-          service: 76
-        security:
-          accepted_community: public
-          accepted_community_permission: 8
-          send_auth_trap: true
-        trap:
-          community: public
-          destination: 192.0.2.1
+        - role: fujitsu.primergy.win_snmp
+          vars:
+            agent:
+              contact: MyContact
+              location: MyLocation
+              service: 76
+            security:
+              accepted_community: public
+              accepted_community_permission: 8
+              send_auth_trap: true
+            trap:
+              community: public
+              destination: 192.0.2.1
 
 License
 -------

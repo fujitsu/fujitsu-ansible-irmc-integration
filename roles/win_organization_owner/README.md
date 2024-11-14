@@ -30,11 +30,11 @@ Example Playbook
     ---
     - hosts: windows
       roles:
-        - role: win_organization_owner
-      vars:
-        description: This is my Windows Server.
-        organization: Fsas Technologies Inc.
-        owner: MyOwnerName
+        - role: fujitsu.primergy.win_organization_owner
+          vars:
+            description: This is my Windows Server.
+            organization: Fsas Technologies Inc.
+            owner: MyOwnerName
 
 License
 -------

@@ -4,7 +4,41 @@
   hosts: iRMC_group
   gather_facts: false
   roles:
-    - irmc_account_admin
-  vars_files:
-    - ./vars/secrets.yml
-    - ./vars/vars.yml
+    - role: fujitsu.primergy.irmc_account_admin
+      vars:
+        password: P@ssw0rd
+        description: my description
+        access:
+          redfish:
+            enable: true
+            role: Administrator
+          ipmi:
+            lan_privilege: OEM
+            serial_privilege: Administrator
+            enable_user_account_conf: true
+            enable_irmc_settings_conf: true
+          avr:
+            enable_avr: true
+            enable_remote_storage: true
+        snmpv3:
+          enable: true
+        email:
+          general:
+            enable: true
+            format: Standard
+            server: Automatic
+            address: User02@domain.com
+          alert:
+            fan: Warning
+            temperature: Warning
+            hardware_error: All
+            system_hang: Critical
+            post_error: All
+            security: Warning
+            status: None
+            disk: Critical
+            network: Warning
+            remote: Critical
+            power: Warning
+            memory: Critical
+            other: None
