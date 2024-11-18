@@ -21,11 +21,11 @@ Role Variables
 | Name | Required | Default Value | Choices | Type | Description |
 |------|----------|---------------|---------|------|-------------|
 | `email_alert.enabled` | false | | | bool | Enable E-mail Alerting. |
-| `email_alert.retries` | false | | 0 to 7 | int | Number of SMTP retries. |
+| `email_alert.retries` | false | | 0 to 7 (*1) | int | Number of SMTP retries. |
 | `email_alert.retry_delay` | false | | | int | Time (up to 255 in seconds) between SMTP retries. |
-| `email_alert.response_timeout` | false | | 10 to 300 | int | Timeout (in seconds) for an SMTP response. |
+| `email_alert.response_timeout` | false | | 10 to 300 (*1) | int | Timeout (in seconds) for an SMTP response. |
 | `smtp.primary_server.address` | false | | | str | IP address, domain name or FQDN of the mail server. |
-| `smtp.primary_server.port` | false | | 1 to 65535 | int | SMTP port of the mail server. |
+| `smtp.primary_server.port` | false | | 1 to 65535 (*1) | int | SMTP port of the mail server. |
 | `smtp.primary_server.authentication.type` | false | | 'None', 'Smtp' | str | Authentication type for connecting the iRMC to the mail server. 'Smtp' is Authentication according to RFC 2554: SMTP Service Extension for Authentication. |
 | `smtp.primary_server.authentication.username` | false | | | str | User name for authentication on the mail server. |
 | `smtp.primary_server.authentication.password` | false | | | str | Password for authentication on the mail server. |
@@ -43,6 +43,8 @@ Role Variables
 | `email_format.server_url` | false | | | str | A URL under which the server is accessible under certain conditions. This must be entered manually. Only active for the Standard mail format. |
 | `email_format.attach_screenshot` | false | | | bool | A screenshot generated automatically by the iRMC in the case of a critical OS stop event is attached to the corresponding 'Critical O/S Stop' event E-mail. |
 
+- *1: No error occurs if an out-of-range value is specified.
+  The error is displayed on the appropriate iRMC(GUI) parameter setting screen.
 - The E-mail format for each user is configured in “iRMC Local User Accounts”.
   The following E-mail formats are supported:
   - Standard
