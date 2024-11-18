@@ -1,4 +1,4 @@
 ---
 # defaults file for ./roles/win_set_membership
-win_set_membership_username: ""
-win_set_membership_password: ""
+username: ""
+password: ""
