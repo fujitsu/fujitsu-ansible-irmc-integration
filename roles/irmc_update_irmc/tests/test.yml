@@ -8,13 +8,13 @@
     # - role: fujitsu.primergy.irmc_update_irmc
     #   vars:
     #     irmc_firmware_path: "/any/where/firm/RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
-    #     destination: 1  # 2 is same as "low"
+    #     destination: 1  # 1 is same as "low"
 
     - role: fujitsu.primergy.irmc_update_irmc
       vars:
         tftp_server: 192.0.2.1
         irmc_firmware_path: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
-        destination: 1  # 2 is same as "low"
+        destination: 2  # 2 is same as "high"
 
     # - role: fujitsu.primergy.irmc_update_irmc
     #   vars:
