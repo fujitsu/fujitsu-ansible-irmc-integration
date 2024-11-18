@@ -3,6 +3,9 @@ irmc_account_admin
 
 Change admin configurations.
 
+Note:  
+At least one role variable must be set.
+
 Requirements
 ------------
 
