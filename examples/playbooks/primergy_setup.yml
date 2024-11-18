@@ -1,0 +1,250 @@
+---
+# iRMC設定
+- name: iRMC Configuration
+  connection: local
+  hosts: iRMC_group
+  tasks:
+    # SSL証明書・CA証明書設定
+    - name: Set certificates
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_certificate
+      vars:
+        ssl_private_key_path: /path/to/sslprivatekey/server.key
+        ssl_cert_path: /path/to/sslcert/server.crt
+        ssl_ca_cert_path: /path/to/sslcacert/ca.crt
+    # SNMP設定
+    - name: Configure SNMP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_snmp
+      vars:
+        snmp:
+          enabled: true
+          protocol: "All"  # "All" or "V3only"
+          community_name: "test-public"
+        snmp_trap_destination:
+          community_name: "trap-trap-public"
+          servers:
+            - index: 0
+              name: "Destination1"
+              protocol: "SnmpV1"
+            - index: 1
+              name: "Destination2"
+              protocol: "SnmpV2c"
+            - index: 2
+              name: ""  # Empty string setting means disabling
+    # Eメール警告送信設定
+    - name: Configure E-mail alert
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_email_alert
+      vars:
+        email_alert:
+          enabled: true
+          retries: 3
+          retry_delay: 30
+          response_timeout: 45
+        smtp:
+          primary_server:
+            address: 192.0.2.1
+            port: 25
+            authentication:
+              type: "Smtp"
+              username: "AuthUserName"
+              password: "AuthPassword"
+            fqdn_with_ehlo_helo: false
+            use_ssl_tls: false
+            verify_certificate: false
+          secondary_server:
+            address: 192.0.2.2
+            port: 25
+            authentication:
+              type: "None"
+            fqdn_with_ehlo_helo: true
+            use_ssl_tls: true
+            verify_certificate: true
+        email_format:
+          from: "MailFrom@example.com"
+          subject: "FixedMailSubject"
+          message: "FixedMailMessage"
+          admin_name: "ITS_UserInfo0"
+          admin_phone: "ITS_UserInfo1"
+          country_code: "US"
+          customer_id: "example"
+          server_url: "http://www.server.example.com"
+          attach_screenshot: true
+    # ローカルユーザアカウント設定
+    - name: Change admin configurations
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_account_admin
+      vars:
+        password: P@ssw0rd
+        description: my description
+        access:
+          redfish:
+            enable: true
+            role: Administrator
+          ipmi:
+            lan_privilege: OEM
+            serial_privilege: Administrator
+            enable_user_account_conf: true
+            enable_irmc_settings_conf: true
+          avr:
+            enable_avr: true
+            enable_remote_storage: true
+        snmpv3:
+          enable: true
+        email:
+          general:
+            enable: true
+            format: Standard
+            server: Automatic
+            address: User02@domain.com
+          alert:
+            fan: Warning
+            temperature: Warning
+            hardware_error: All
+            system_hang: Critical
+            post_error: All
+            security: Warning
+            status: None
+            disk: Critical
+            network: Warning
+            remote: Critical
+            power: Warning
+            memory: Critical
+            other: None
+    # 時刻同期設定
+    - name: Set ntp
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_ntp
+      vars:
+        ntp_server_primary: 192.0.2.1
+        ntp_server_secondary: 192.0.2.2
+        time_mode: "System RTC"
+        time_zone_location: "Asia/Tokyo"
+        rtc_mode: "local time"
+    # ライセンス設定
+    - name: Set license key
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_license
+      vars:
+        license_keys:
+          - "AAAAAA-AAAAAAA-AAAAA"
+          - "BBBBBB-BBBBBBB-BBBBB"
+  post_tasks:
+    # iRMC経由でPRIMERGYの電源オン
+    - name: Turn ON the server
+      fujitsu.primergy.irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: "set"
+        state: "PowerOn"
+      delegate_to: localhost
+
+# 電源投入後、Ansibleで操作可能になるまで待機
+- name: Wait for Windows node to become available
+  hosts: windows
+  gather_facts: false
+  tasks:
+    - name: Wait for WinRM port to become available on the target Windows node
+      ansible.builtin.wait_for_connection:
+        timeout: 10800  # 最大待機時間（秒）
+
+# Windows Server設定
+- name: Windows Server Configuration
+  hosts: windows
+  gather_facts: true
+  tasks:
+    # データドライブ設定
+    - name: Create a new partition
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_data_drive
+      vars:
+        rive_letter: D
+        disk_number: 0
+        op: "create"
+    # 名前・組織名設定
+    - name: Change organization and owner
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_organization_owner
+      vars:
+        description: This is my Windows Server.
+        organization: Fsas Technologies Inc.
+        owner: MyOwnerName
+    # ホスト名設定
+    - name: Change hostname
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_hostname
+      vars:
+        hostname: Hostname
+    # 言語・地域設定
+    - name: Change language settings to Japanese (Japan)
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_locale
+      vars:
+        language: "ja-JP"
+        location: "122"
+        timezone: "Tokyo Standard Time"
+    # DNS設定
+    - name: Set DNS
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_dns
+      vars:
+        adapter_names: Ethernet
+        ipv4_addresses:
+          - 192.0.2.1
+          - 192.0.2.2
+    # ドメイン参加
+    - name: Join a domain
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_set_membership
+      vars:
+        state: domain
+        domain: fti.test
+        username: FTI\Administrator
+        password: Admin000
+    # SNMP設定
+    - name: Configure SNMP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_snmp
+      vars:
+        agent:
+          contact: MyContact
+          location: MyLocation
+          service: 76
+        security:
+          accepted_community: public
+          accepted_community_permission: 8
+          send_auth_trap: true
+        trap:
+          community: public
+          destination: 192.0.2.1
+    # リモートデスクトップ有効化
+    - name: Enable remote desktop
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_set_rdp
+      vars:
+        enabled: true
+    # ServerView Agentsセットアップ
+    - name: Setup ServerView Agents
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_serverview_agents
+      vars:
+        password: P@ssw0rd
+        installer: "/path/to/installer/ServerViewAgents_Win_x64.exe"
+    # ServerView RAID Managerセットアップ
+    - name: Setup ServerView RAID Manager
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_serverview_raidmanager
+      vars:
+        password: P@ssw0rd
+        installer: "/path/to/installer/ServerView_RAID_x64.exe"
+        openjdk_installer: "/path/to/installer/OpenJDK8U-jdk_x64_windows_hotspot.msi"
+    # DSNAPセットアップ
+    - name: Setup DSNAP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_dsnap
+      vars:
+        language: Japanese
+        path: /path/to/dsnapfile/SVS15.24.06.03.iso
