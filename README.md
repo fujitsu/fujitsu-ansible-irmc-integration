@@ -1,22 +1,77 @@
+# Manage Fujitsu PRIMERGY servers via iRMC with Ansible
 
-# Manage Fujitsu PRIMERGY servers via iRMC
-
-Fujitsu PRIMERGY have been integrated into Fsas Technologies Inc. from April 1, 2024, and the notation will be changed sequentially. Please note Fujitsu notation may be remained in some cases.
+Fujitsu PRIMERGY has been integrated into Fsas Technologies Inc. as of April 1, 2024.
+Please note that some instances may still use the Fujitsu branding during the transition period.
 
 The Fujitsu Software Serverview Ansible iRMC Integration features modules to access and manage
 Fujitsu PRIMERGY servers via iRMC.
 
 ## Overview
 
-These modules and examples are intended to provide easy-to-follow and understandable solutions to manage
-Fujitsu PRIMERY server settings via iRMC.
+These collection and examples are intended to provide easy-to-follow and understandable solutions to manage
+Fujitsu PRIMERY server settings via iRMC.  
+See [User Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUID_ja/) more details.
+
+## Contiributing
+
+See [Contribution Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING_ja/) more details.
 
 ## Requirements
 
+### Hardware
+
 - Fujitsu PRIMERGY Server with iRMC S6
-- Ansible >= 2.15
+
+### Software
+
 - Python >= 3.10
-- Python modules 'requests', 'urllib3', 'requests_toolbelt'
+- Ansible >= 2.15
+- Python modules: 'requests', 'urllib3', 'requests', 'requests_toolbelt' and 'pywinrm'
+
+## Roles
+
+This collection provides roles for managing both iRMC settings and Windows Server 2022 configurations.  
+See [Configuration Gudie (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/) for details.
+
+### for iRMC
+
+#### Update firmware
+
+- [irmc_update_bios](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_update_bios/) - Update BIOS firmware on iRMC devices
+- [irmc_update_irmc](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_update_irmc/) - Update iRMC firmware on iRMC devices
+
+#### Configuration iRMC
+
+- [irmc_account_admin](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_account_admin/) - Configuration settings only for the `admin` account
+- [irmc_set_certificate](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_set_certificate/) - Register the SSL certificate
+- [irmc_set_license](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_set_license/) - Register the license key and activate the license
+- [irmc_set_ntp](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_set_ntp/) - Settings for time synchronization
+- [irmc_snmp](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_snmp/) - Configure SNMP settings
+- [irmc_email_alert](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_email_alert/) - Configure E-mail Alert settings
+
+#### OS Install
+
+- [irmc_install_windows](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_install_windows/) - Install Windows OS via iRMC virtual CD
+
+### for Windows Server 2022
+
+#### Configuration Windows
+
+- [win_admin_password](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_admin_password/) - Change the password for the `Administrator` account
+- [win_hostname](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_hostname/) - Change the hostname
+- [win_organization_owner](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_organization_owner/) - Change the description, organization and owner
+- [win_set_membership](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_set_membership/) - Join host to workgroup or domain
+- [win_data_drive](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_data_drive/) - Create, resize, and delete data drives
+- [win_dns](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_dns/) - Configure IPv4 DNS to the specified network adapter
+- [win_locale](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_locale/) - Change language settings (language, region, time zone) for a specified account
+- [win_set_rdp](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_set_rdp/) - Enable or Disable remote desktop
+- [win_snmp](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_snmp/) - Enabling and configuring SNMP service
+
+#### Install management software
+
+- [win_serverview_agents](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_serverview_agents/) - Set up ServerView Agent
+- [win_serverview_raidmanager](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_serverview_raidmanager/) - Set up ServerView RAID Manager
+- [win_dsnap](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_dsnap/) - Set up DSNAP
 
 ## Modules
 
