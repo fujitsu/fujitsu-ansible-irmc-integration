@@ -1,4 +1,4 @@
-win_set_certificate
+irmc_set_certificate
 ===================
 
 Set iRMC certificates.
