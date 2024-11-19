@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Roles and their examples based on operational scenes have been added. See `README.md` for details.
+- The user guide and contribution guide have been added in Japanese.
+
 ### Fixed
 
 - The problem that prevented setting only numeric strings for `ntp_server_primary` and `ntp_server_secondary` has been fixed in the `irmc_ntp` module.
@@ -14,11 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The directory structure and documents has been changed for the release to [Ansible Galaxy](https://galaxy.ansible.com/).
 - The `irmc_raid` module has been verified with iRMC S6, and updated documentation.
-- Directory structure is changed as a Galaxy collection.
-- `LICENSE.md` and `CHANGELOG.md` is moved into `docs/`.
-- `README.md` is updated.
-- `pywinrm` is added to requirements.
+- Python module `pywinrm` add to the requirements.
 
 ### Removed
 
