@@ -39,7 +39,7 @@
 # 再起動が始まるまでにヘルスチェックを行うと200が返ってきて終了してしまうのでしばらく待つ
 - name: Pause until start of iRMC reboot
   ansible.builtin.pause:
-    seconds: 30
+    seconds: 60
 
 - name: Health check until end of iRMC reboot
   block:
