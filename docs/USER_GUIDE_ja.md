@@ -132,7 +132,7 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 
 ### コレクションの全体構成
 
-詳細なモジュールやロールの一覧については、
+このコレクションの詳細なモジュールやロールの一覧については、
 [Ansible Galaxyのコレクションページ](https://galaxy.ansible.com/fujitsu/primergy)
 を参照してください。
 
@@ -140,9 +140,17 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 
 [設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)を参照してください。
 
+### サンプルプレイブックの説明
+
+[サンプルプレイブック（`EXAMPLE_PLAYBOOKS_ja.md`）](./EXAMPLE_PLAYBOOKS_ja.md)を参照してください。
+
 ### トラブルシューティング
 
 プレイブック実行中に発生したエラーの詳細を確認するには、`-vvv`オプションを使用してデバッグログを取得し、エラーメッセージや変数の値を確認してください。
+
+```shell
+ansible-playbook -i inventory.ini playbook.yml -vvv
+```
 
 ## 4. フィードバックと貢献方法
 
@@ -166,7 +174,7 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 #### GitHub Issues
 
 公開のフィードバックや貢献のご提案は、GitHubの「Issues」ページにて受け付けています。  
-GitHub Issues: https://github.com/fujitsu/fujitsu-ansible-irmc-integration/issues
+GitHub Issues: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration/issues>
 
 #### フィードバックの際のお願い
 

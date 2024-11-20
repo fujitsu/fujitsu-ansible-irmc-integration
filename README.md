@@ -10,11 +10,14 @@ Fujitsu PRIMERGY servers via iRMC.
 
 These collection and examples are intended to provide easy-to-follow and understandable solutions to manage
 Fujitsu PRIMERY server settings via iRMC.  
-See [User Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUID_ja/) more details.
+See [User Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE_ja/) more details.
 
 ## Contiributing
 
-See [Contribution Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING_ja/) more details.
+See
+[Contribution Guide (English)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING/)
+[(Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING_ja/)
+more details.
 
 ## Requirements
 
