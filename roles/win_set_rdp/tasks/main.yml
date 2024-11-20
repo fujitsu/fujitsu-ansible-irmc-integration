@@ -1,10 +1,17 @@
 ---
 # tasks file for ./roles/win_set_rdp
-
 - name: Set Remote Desktop
-  ansible.windows.win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server
-    name: fDenyTSConnections
-    type: dword
-    data: "{{ enabled | ternary(0, 1) }}"
-    state: present
+  block:
+    - name: Enable Remote Desktop firewall rule
+      ansible.windows.win_shell: |
+        netsh advfirewall firewall set rule group="Remote Desktop" new enable=yes
+      register: firewall_status
+      when: enabled
+
+    - name: Set Remote Desktop registry key
+      ansible.windows.win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server
+        name: fDenyTSConnections
+        type: dword
+        data: "{{ enabled | ternary(0, 1) }}"
+        state: present
