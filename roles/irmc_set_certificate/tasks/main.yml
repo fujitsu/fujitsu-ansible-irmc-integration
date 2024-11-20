@@ -34,11 +34,12 @@
       Content type: application/json
     status_code: 202
     force_basic_auth: true
+    use_proxy: false
 
 # 再起動が始まるまでにヘルスチェックを行うと200が返ってきて終了してしまうのでしばらく待つ
 - name: Pause until start of iRMC reboot
   ansible.builtin.pause:
-    seconds: 30
+    seconds: 60
 
 - name: Health check until end of iRMC reboot
   block:
@@ -66,6 +67,7 @@
           Accept: application/json
           Content type: application/json
         force_basic_auth: true
+        use_proxy: false
       register: response
       until: response.status == 200
       retries: "{{ max_retries }}"
