@@ -1,0 +1,192 @@
+---
+# iRMC設定
+- name: iRMC Configuration
+  connection: local
+  hosts: iRMC_group
+  roles:
+    # ローカルユーザアカウント設定
+    - role: fujitsu.primergy.irmc_account_admin
+      vars:
+        description: my description
+        access:
+          redfish:
+            enable: true
+            role: Administrator
+          ipmi:
+            lan_privilege: OEM
+            serial_privilege: Administrator
+            enable_user_account_conf: true
+            enable_irmc_settings_conf: true
+          avr:
+            enable_avr: true
+    # SSL証明書・CA証明書設定
+    - role: fujitsu.primergy.irmc_set_certificate
+      vars:
+        ssl_private_key_path: "/path/to/sslprivatekey/server.key"
+        ssl_cert_path: "/path/to/sslcert/server.crt"
+        ssl_ca_cert_path: "/path/to/sslcacert/ca.crt"
+    # SNMP設定
+    - role: fujitsu.primergy.irmc_snmp
+      vars:
+        snmp:
+          enabled: true
+          protocol: All
+          community_name: public
+        snmp_trap_destination:
+          community_name: public
+          servers:
+            - index: 0
+              name: 192.0.2.1
+              protocol: SnmpV1
+    # Eメール警告送信設定
+    - role: fujitsu.primergy.irmc_email_alert
+      vars:
+        email_alert:
+          enabled: true
+        smtp:
+          primary_server:
+            address: smtp.mycompany.example.com
+            authentication:
+              type: Smtp
+              username: AuthUserName
+              password: AuthPassword
+        email_format:
+          from: MailFrom@example.com
+          subject: FixedMailSubject
+          message: FixedMailMessage
+    # 時刻同期設定
+    - role: fujitsu.primergy.irmc_set_ntp
+      vars:
+        ntp_server_primary: ntp1.mycompany.example.com
+        ntp_server_secondary: ntp2.mycompany.example.com
+        time_mode: System RTC
+        time_zone_location: Asia/Tokyo
+        rtc_mode: local time
+    # ライセンス設定
+    - role: fujitsu.primergy.irmc_set_license
+      vars:
+        license_keys:
+          - "AAAAAA-AAAAAAA-AAAAA"
+  post_tasks:
+    # iRMC経由でPRIMERGYの電源オフ
+    - name: Turn OFF the server
+      fujitsu.primergy.irmc_powerstate:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: set
+        state: PowerOff
+
+# Windows Serverインストール
+- name: Windows Server Installation
+  connection: local
+  hosts: iRMC_group
+  roles:
+    - role: fujitsu.primergy.irmc_install_windows
+      vars:
+        server: 192.0.2.2
+        share: "/path/to/installer/"
+        image: "/ws2022se.iso"
+        share_type: NFS
+
+# 電源投入後、Ansibleで操作可能になるまで待機
+- name: Wait for Windows node to become available
+  hosts: windows
+  gather_facts: false
+  tasks:
+    - name: Wait for WinRM port to become available on the target Windows node
+      ansible.builtin.wait_for_connection:
+        timeout: 5400
+    - name: Show completion message
+      ansible.builtin.debug:
+        msg: OS installation is completed.
+
+# OSインストールメディアのアンマウント
+- name: Disconnect iRMC Virtual CD after installation
+  hosts: iRMC_group
+  connection: local
+  tasks:
+    - name: Disconnect Virtual CD
+      fujitsu.primergy.irmc_connectvm:
+        irmc_url: "{{ inventory_hostname }}"
+        irmc_username: "{{ irmc_user }}"
+        irmc_password: "{{ irmc_password }}"
+        validate_certs: "{{ validate_certificate }}"
+        command: DisconnectCD
+
+# Windows Server設定
+- name: Windows Server Configuration
+  hosts: windows
+  gather_facts: true
+  roles:
+    # DNS設定
+    - role: fujitsu.primergy.win_dns
+      vars:
+        adapter_names: Ethernet
+        ipv4_addresses:
+          - 192.0.2.3
+          - 192.0.2.4
+    # データドライブ設定
+    - role: fujitsu.primergy.win_data_drive
+      vars:
+        drive_letter: D
+        disk_number: 0
+        op: create
+    # 名前・組織名設定
+    - role: fujitsu.primergy.win_organization_owner
+      vars:
+        description: This is my Windows Server.
+        organization: My Company Inc.
+        owner: MyOwnerName
+    # ホスト名設定
+    - role: fujitsu.primergy.win_hostname
+      vars:
+        hostname: Hostname
+    # 言語・地域設定
+    - role: fujitsu.primergy.win_locale
+      vars:
+        language: ja-JP
+        location: 122
+        timezone: Tokyo Standard Time
+    # ドメイン参加
+    - role: fujitsu.primergy.win_set_membership
+      vars:
+        state: domain
+        domain: ansible.mycompany.local
+        username: ANSIBLE\Administrator
+        password: P@ssw0rd
+    # SNMP設定
+    - role: fujitsu.primergy.win_snmp
+      vars:
+        agent:
+          contact: MyContact
+          location: MyLocation
+          service: 76
+        security:
+          accepted_community: public
+          accepted_community_permission: 8
+          send_auth_trap: true
+        trap:
+          community: public
+          destination: 192.0.2.1
+    # リモートデスクトップ有効化
+    - role: fujitsu.primergy.win_set_rdp
+      vars:
+        enabled: true
+    # ServerView Agentsセットアップ
+    - role: fujitsu.primergy.win_serverview_agents
+      vars:
+        password: P@ssw0rd
+        installer: "/path/to/installer/ServerViewAgents_Win_x64.exe"
+    # ServerView RAID Managerセットアップ
+    - role: fujitsu.primergy.win_serverview_raidmanager
+      vars:
+        password: P@ssw0rd
+        installer: "/path/to/installer/ServerView_RAID_x64.exe"
+        openjdk_installer: "/path/to/installer/OpenJDK8U-jdk_x64_windows_hotspot.msi"
+    # DSNAPセットアップ
+    - role: fujitsu.primergy.win_dsnap
+      vars:
+        language: Japanese
+        path: "/path/to/installer/dsnap.exe"
