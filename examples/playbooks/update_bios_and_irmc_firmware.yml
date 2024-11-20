@@ -1,0 +1,19 @@
+---
+- name: Update BIOS and iRMC firmware for multiple devices via tftp server
+  hosts: iRMC_group
+  connection: local
+  gather_facts: false
+  vars:
+    tftp_server: 192.0.2.100
+  roles:
+    - role: fujitsu.primergy.irmc_update_bios
+      vars:
+        bios_firmware_path_mapping:
+          PRIMERGY_RX1330_M5R: "RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
+          PRIMERGY_RX1330_M6S: "RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
+    - role: fujitsu.primergy.irmc_update_irmc
+      vars:
+        irmc_firmware_path_mapping:
+          PRIMERGY_RX1330_M5R: "RX1330_M5R/irmc/FTS_PRIMERGYRX1330M5iRMC124SSDR341.BIN"
+          PRIMERGY_RX1330_M6S: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
+        destination: low
