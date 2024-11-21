@@ -26,6 +26,13 @@ version_added: "2.4"
 author:
     - Nakamura Takayuki (@nakamura-taka)
 
+known_bugs:
+    - The iRMC will automatically reboot after the firmware update is complete.
+      However, the completion of the reboot may not be detected correctly,
+      which may result in an error due to a timeout.
+    - To update iRMC via file,
+      parameter `irmc_flash_selector` and `irmc_boot_selector` will not work correctly.
+
 options:
     irmc_url:
         description: IP address of the iRMC to be requested for data.

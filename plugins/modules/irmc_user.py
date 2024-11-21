@@ -25,6 +25,25 @@ version_added: "2.4"
 author:
     - Nakamura Takayuki (@nakamura-taka)
 
+known_bugs:
+    - When creating an account (`command`=`"create"`), the value specified for the `description` parameter is ignored.
+
+unresolved_issues_in_iRMC_S6:
+    - The `redfish_role` parameter cannot be set to `"NoAccess"`, and `"ReadOnly"` is set instead.
+    - The `lan_privilege` parameter cannot be set to `"Reserved"` or `"NoAccess"`.
+    - The `lan_privilege` parameter cannot be set to `"Callback"`, and it is treated as `"User"`.
+    - The `serial_privilege` parameter cannot be set to `"Reserved"` or `"NoAccess"`.
+    - The `shell` parameter cannot be set to
+      `"SMASH CLP"`, `"CLI"`, `"Remote Manager"`, `"IPMI basic mode"`, or `"IPMI terminal mode"`,
+      and it is treated as `"Remote Manager"`.
+    - The `shell` parameter cannot be set to `"None"`.
+    - The `snmpv3_enabled` parameter cannot be changed from `true` to `false` for accounts other than `admin`.
+    - The `snmpv3_access` parameter cannot be changed to values other than `"ReadOnly"`.
+    - The `snmpv3_privacy` parameter cannot be set to `"Undefined"` or `"None"`.
+    - Even if the `snmpv3_privacy` parameter is set to `"AES"` or `"DES"`,
+      the display in the iRMC(GUI) does not change.
+    - The `email_type` parameter cannot be set to `"REMCS"`.
+
 options:
     irmc_url:
         description: IP address of the iRMC to be requested for data.
