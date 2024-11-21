@@ -83,6 +83,9 @@
         validate_certs: "{{ validate_certificate }}"
         command: set
         state: PowerOff
+    - name: Pause until shutdown of the server
+      ansible.builtin.pause:
+        seconds: 30
   roles:
     # インストール
     - role: fujitsu.primergy.irmc_install_windows
