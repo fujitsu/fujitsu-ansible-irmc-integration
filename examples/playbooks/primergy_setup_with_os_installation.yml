@@ -68,7 +68,12 @@
         license_keys: []
         # license_keys:
         #   - AAAAAA-AAAAAAA-AAAAA
-  post_tasks:
+
+# Windows Serverインストール
+- name: Windows Server Installation
+  connection: local
+  hosts: iRMC_group
+  pre_tasks:
     # iRMC経由でPRIMERGYの電源オフ
     - name: Turn OFF the server
       fujitsu.primergy.irmc_powerstate:
@@ -78,18 +83,14 @@
         validate_certs: "{{ validate_certificate }}"
         command: set
         state: PowerOff
-
-# Windows Serverインストール
-- name: Windows Server Installation
-  connection: local
-  hosts: iRMC_group
   roles:
+    # インストール
     - role: fujitsu.primergy.irmc_install_windows
       vars:
+        share_type: NFS
         server: 192.0.2.2
         share: "/path/to/installer/"
         image: "/ws2022se.iso"
-        share_type: NFS
 
 # 電源投入後、Ansibleで操作可能になるまで待機
 - name: Wait for Windows node to become available
