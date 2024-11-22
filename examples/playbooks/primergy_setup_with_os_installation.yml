@@ -1,8 +1,9 @@
 ---
 # iRMC設定
 - name: iRMC Configuration
-  connection: local
   hosts: iRMC_group
+  connection: local
+  gather_facts: false
   roles:
     # ローカルユーザアカウント設定
     - role: fujitsu.primergy.irmc_account_admin
@@ -71,8 +72,9 @@
 
 # Windows Serverインストール
 - name: Windows Server Installation
-  connection: local
   hosts: iRMC_group
+  connection: local
+  gather_facts: false
   pre_tasks:
     # iRMC経由でPRIMERGYの電源オフ
     - name: Turn OFF the server
@@ -111,6 +113,7 @@
 - name: Disconnect iRMC Virtual CD after installation
   hosts: iRMC_group
   connection: local
+  gather_facts: false
   tasks:
     - name: Disconnect Virtual CD
       fujitsu.primergy.irmc_connectvm:
@@ -123,7 +126,6 @@
 # Windows Server設定
 - name: Windows Server Configuration
   hosts: windows
-  gather_facts: true
   roles:
     # DNS設定
     - role: fujitsu.primergy.win_dns
