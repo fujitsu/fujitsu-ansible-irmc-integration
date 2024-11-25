@@ -1,7 +1,7 @@
 ---
 - name: Set iRMC certificates
-  connection: local
   hosts: iRMC_group
+  connection: local
   gather_facts: false
   roles:
     - role: fujitsu.primergy.irmc_set_certificate
