@@ -22,15 +22,15 @@ Role Variables
 |------|----------|---------------|---------|------|-------------|
 | `snmp.enabled` | false | | | bool | Enables/disables the SNMP service. |
 | `snmp.port` | false | | | int | Port on which the SNMP service is listening (normally UDP 161). |
-| `snmp.protocol` | false | | 'All', 'V3only' | str | SNMP protocol version to be used. If 'All' is specified, all SNMP protocol versions (SNMP v1/v2c/v3) are supported. |
+| `snmp.protocol` | false | | `All`, `V3only` | str | SNMP protocol version to be used. If "All" is specified, all SNMP protocol versions (SNMP v1/v2c/v3) are supported. |
 | `snmp.community_name` | false | | | | SNMPv1/v2c Community name |
 | `snmp_trap_destination.community_name` | false | | | str | Community name used for SNMP v1/v2 trap sending. |
 | `snmp_trap_destination.engine_id` | false | | | str | The Engine ID is used for sending SNMPv3 traps. |
 | `snmp_trap_destination.servers[].index` | true | | 0 to 6 | int | Forwarding of SNMP traps to up to seven SNMP servers is supported. |
 | `snmp_trap_destination.servers[].name` | true | | | str | DNS names or IP addresses of the servers that are configured as trap destinations.<br/> If the empty string is specified, the trap transmission will be disabled.|
-| `snmp_trap_destination.servers[].protocol` | true | | 'SnmpV1', 'SnmpV2c', 'SnmpV3' (*1) | str | SNMP protocol version to be used. |
+| `snmp_trap_destination.servers[].protocol` | true | | `SnmpV1`, `SnmpV2c`, `SnmpV3` (*1) | str | SNMP protocol version to be used. |
 
-*1: 'SnmpV3' can only be specified if an SNMPv3 enabled account exists.
+*1: `SnmpV3` can only be specified if an SNMPv3 enabled account exists.
 
 Dependencies
 ------------

@@ -19,31 +19,31 @@ Role Variables
 | `password` | false | | | str | User account password. |
 | `description` | false | | | str | User account desciption. |
 | `access.redfish.enable` | false | | | bool | User may use iRMC Redfish interface. |
-| `access.redfish.role` | false | | `Administrator` <br> `Operator` <br> `ReadOnly` | str | User account Redfish role. |
-| `access.ipmi.lan_privilege` | false | | `User` <br> `Operator` <br> `Administrator` <br> `OEM` | str | IPMI LAN channel privilege. |
-| `access.ipmi.serial_privilege` | false | | `User` <br> `Operator` <br> `Administrator` <br> `OEM` | str | IPMI serial channel privilege. |
+| `access.redfish.role` | false | | `Administrator`, <br> `Operator`, <br> `ReadOnly` | str | User account Redfish role. |
+| `access.ipmi.lan_privilege` | false | | `User`, <br> `Operator`, <br> `Administrator`, <br> `OEM` | str | IPMI LAN channel privilege. |
+| `access.ipmi.serial_privilege` | false | | `User`, <br> `Operator`, <br> `Administrator`, <br> `OEM` | str | IPMI serial channel privilege. |
 | `access.ipmi.enable_user_account_conf` | false | | | bool | User may configure user accounts. |
 | `access.ipmi.enable_irmc_settings_conf` | false | | | bool | User may configure iRMC settings. |
 | `access.avr.enable_avr` | false | | | bool | User may use Advanved Video Redirection (AVR). |
 | `access.avr.enable_remote_storage` | false | | | bool | User may use Remote Storage. |
 | `snmpv3.enable` | false | | | bool | User may use SNMPv3. |
 | `email.general.enable` | false | | | bool | Alert email enabled. |
-| `email.general.format` | false | | `Standard` <br> `Fixed Subject` <br> `ITS-Format` <br> `SMS` | str | Alert email format. |
-| `email.general.server` | false | | `Automatic` <br> `Primary` <br> `Secondary` | str | Preferred mail server for alert email. |
+| `email.general.format` | false | | `Standard`, <br> `Fixed Subject`, <br> `ITS-Format`, <br> `SMS` | str | Alert email format. |
+| `email.general.server` | false | | `Automatic`, <br> `Primary`, <br> `Secondary` | str | Preferred mail server for alert email. |
 | `email.general.address` | false | | | str | Alert email address. |
-| `email.alert.fan` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for fan sensors. |
-| `email.alert.temperature` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for temperature sensors. |
-| `email.alert.hardware_error` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for critical hardware errors. |
-| `email.alert.system_hang` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for system hang. |
-| `email.alert.post_error` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for POST errors. |
-| `email.alert.security` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for security. |
-| `email.alert.status` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for system status. |
-| `email.alert.disk` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for disk drivers & controllers. |
-| `email.alert.network` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for network interface. |
-| `email.alert.remote` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for remote management. |
-| `email.alert.power` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for system power. |
-| `email.alert.memory` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for memory. |
-| `email.alert.other` | false | | `None` <br> `Critical` <br> `Warning` <br> `All` | str | Define alert level for other. |
+| `email.alert.fan` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for fan sensors. |
+| `email.alert.temperature` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for temperature sensors. |
+| `email.alert.hardware_error` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for critical hardware errors. |
+| `email.alert.system_hang` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for system hang. |
+| `email.alert.post_error` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for POST errors. |
+| `email.alert.security` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for security. |
+| `email.alert.status` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for system status. |
+| `email.alert.disk` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for disk drivers & controllers. |
+| `email.alert.network` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for network interface. |
+| `email.alert.remote` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for remote management. |
+| `email.alert.power` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for system power. |
+| `email.alert.memory` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for memory. |
+| `email.alert.other` | false | | `None`, <br> `Critical`, <br> `Warning`, <br> `All` | str | Define alert level for other. |
 
 Dependencies
 ------------

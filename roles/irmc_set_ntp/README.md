@@ -15,9 +15,9 @@ Role Variables
 |------|----------|---------------|---------|------|-------------|
 | `ntp_server_primary` | false | | | str | IP address (IPv4 or IPv6) or DNS name of primary NTP server to be set. |
 | `ntp_server_secondary` | false | | | str | IP address (IPv4 or IPv6) or DNS name of secondary NTP server to be set. |
-| `rtc_mode` | false | | `local time`<br>`UTC/GMT` | str | Defines how iRMC interprets the system's hardware RTC time. |
-| `time_mode` | false | | `System RTC`<br>`NTP` | str | Defines how iRMC synchronizes its real-time clock (RTC). |
-| `time_zone_location` | false | | | str | iRMC time zone (e.g. 'Europe/Berlin'; based on Linux 'tzdata'). |
+| `rtc_mode` | false | | `local time`,<br>`UTC/GMT` | str | Defines how iRMC interprets the system's hardware RTC time. |
+| `time_mode` | false | | `System RTC`,<br>`NTP` | str | Defines how iRMC synchronizes its real-time clock (RTC). |
+| `time_zone_location` | false | | | str | iRMC time zone (e.g. "Europe/Berlin"; based on Linux "tzdata"). |
 
 Dependencies
 ------------

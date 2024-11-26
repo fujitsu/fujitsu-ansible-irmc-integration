@@ -38,7 +38,7 @@ Role Variables
 | `irmc_firmware_path_mapping` | false | | | dict | Mapping of paths to the firmware with the model name of the target node (e.g. `"PRIMERGY_RX1330_M6S"`) as key.<br/>The specification of the path description is the same as the parameter `irmc_firmware_path`.<br/>If there is no key corresponding to the model name and the parameter `irmc_firmware_path` is not specified, an error is raised. |
 | `tftp_server` | false(*2) | | | str | IP address or hostname of the TFTP server from which to download the firmware.<br/>If not specified, the path is assumed to be the file system of the Ansible control node. |
 | `timeout` | false | 1800 | | int | Timeout for the update process (seconds).<br/>However, only Ansible tasks are interrupted by timeouts, and update tasks that have started executing on the target node are not stopped. |
-| `destination` | true | | "low" or 1, "high" or 2 | str or int | Specify the destination to which the firmware will be written.<br/>After the update is complete, the iRMC will reboot from this destination. |
+| `destination` | true | | `low` or `1`, `high` or `2` | str or int | Specify the destination to which the firmware will be written.<br/>After the update is complete, the iRMC will reboot from this destination. |
 
 *2: The parameter `tftp_server` is optional, but if you do not specify it and perform an update from the local file system, the parameter `destination` will not work correctly.
 

@@ -32,8 +32,8 @@ Role Variables
 
 | Name | Required | Default Value | Choices | Type | Description |
 |------|----------|---------------|---------|------|-------------|
-| `cpu_arch` | false | `x64` | `x64` <br> `x86` | str | Architecture of your Windows Server. <br> This parameter is used when the ISO file is selected for `filename`. |
-| `language` | false | `English` | `English` <br> `Japanese` | str | Language Version of DSNAP. <br> This parameter is used when the ISO file is selected for `filename`. |
+| `cpu_arch` | false | `x64` | `x64`, <br> `x86` | str | Architecture of your Windows Server. <br> This parameter is used when the ISO file is selected for `filename`. |
+| `language` | false | `English` | `English`, <br> `Japanese` | str | Language Version of DSNAP. <br> This parameter is used when the ISO file is selected for `filename`. |
 | `path` | true | | | str | Path to the EXE or ISO file placed on the Ansible control node. <br> Example: <ul> <li>/path/to/dsnapfile/dsnap.exe</li> <li>/path/to/dsnapfile/SVS15.24.06.03.iso</li> </ul>  |
 
 Dependencies
