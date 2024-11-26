@@ -1,8 +1,9 @@
 ---
 # iRMC設定
 - name: iRMC Configuration
-  connection: local
   hosts: iRMC_group
+  connection: local
+  gather_facts: false
   roles:
     # ローカルユーザアカウント設定
     - role: fujitsu.primergy.irmc_account_admin
