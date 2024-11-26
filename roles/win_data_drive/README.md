@@ -6,7 +6,9 @@ Create/resize/remove a data partition.
 Requirements
 ------------
 
-None
+This role depends on the following Ansible collections:
+
+- `community.windows` >= 2.3.0
 
 Role Variables
 --------------
