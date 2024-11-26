@@ -1,0 +1,56 @@
+---
+DOCUMENTATION:
+  name: snmp_profile_filter
+  short_description: Create an SNMP profile
+  version_added: 2.0.0
+  author: Yutaka Kamioka <yutaka.kamioka@fujitsu.com>
+  description:
+    - NOT INTENDED FOR STANDALONE USE.
+    - Accepts parameters from the `fujitsu.primergy.irmc_snmp` role and creates an SNMP profile.
+    - Used within the `fujitsu.primergy.irmc_snmp` role to call the `fujitsu.primergy.irmc_profiles` module.
+  options:
+    data:
+      description:
+        - Dictionary containing the parameters applied to the `fujitsu.primergy.irmc_snmp` role.
+      required: true
+      type: dict
+
+RETURN:
+  _result:
+    description:
+      - Dictionary containing the SNMP profile to be applied to the `fujitsu.primergy.irmc_profiles` module.
+    type: dict
+
+EXAMPLES: |
+  from plugins.filter.snmp_profile_filter import snmp_profile_filter
+
+  import json
+  import yaml
+
+  # Parameters to be specified for the `fujitsu.primergy.irmc_snmp` role
+  s = '''
+  snmp:
+    enabled: true
+    protocol: "All"  # "All" or "V3only"
+    community_name: "public"
+  snmp_trap_destination:
+    community_name: "trap-public"
+    servers:
+      - index: 0
+        name: "Destination1"
+        protocol: "SnmpV1"
+      - index: 1
+        name: "Destination2"
+        protocol: "SnmpV2c"
+      - index: 2
+        name: ""  # Empty string setting means disabling
+  '''
+
+  params = yaml.safe_load(s)
+  params |= {'irmc_snmp_profile_server_version': '0.0'}
+  params |= {'irmc_snmp_profile_irmcconfig_version': '0.0'}
+
+  result = snmp_profile_filter(params)
+
+  # JSON-formatted profile to be applied to the "import" command of the `fujitsu.primergy.irmc_profiles` module
+  print(json.dumps(result, indent=2))
