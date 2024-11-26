@@ -1,12 +1,14 @@
 ---
 # iRMC設定
-- name: iRMC Configuration
+- name: Configure iRMC
   hosts: iRMC_group
   connection: local
   gather_facts: false
-  roles:
+  tasks:
     # ローカルユーザアカウント設定
-    - role: fujitsu.primergy.irmc_account_admin
+    - name: Configure admin account
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_account_admin
       vars:
         description: my description
         access:
@@ -20,14 +22,20 @@
             enable_irmc_settings_conf: true
           avr:
             enable_avr: true
-    # SSL証明書・CA証明書設定
-    - role: fujitsu.primergy.irmc_set_certificate
+
+    # SSL証明書・CA証明書の登録
+    - name: Register SSL certificate and CA certificate
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_certificate
       vars:
-        ssl_private_key_path: "/path/to/sslprivatekey/server.key"
-        ssl_cert_path: "/path/to/sslcert/server.crt"
-        ssl_ca_cert_path: "/path/to/sslcacert/ca.crt"
+        ssl_private_key_path: "/path/to/certs/server.key"
+        ssl_cert_path: "/path/to/certs/server.crt"
+        ssl_ca_cert_path: "/path/to/certs/ca.crt"
+
     # SNMP設定
-    - role: fujitsu.primergy.irmc_snmp
+    - name: Set SNMP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_snmp
       vars:
         snmp:
           enabled: true
@@ -39,8 +47,11 @@
             - index: 0
               name: 192.0.2.1
               protocol: SnmpV1
+
     # Eメール警告送信設定
-    - role: fujitsu.primergy.irmc_email_alert
+    - name: Configure E-mail Alerting
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_email_alert
       vars:
         email_alert:
           enabled: true
@@ -52,23 +63,32 @@
               username: AuthUserName
               password: AuthPassword
         email_format:
-          from: MailFrom@example.com
+          from: MailFrom@mycompany.example.com
           subject: FixedMailSubject
           message: FixedMailMessage
+
     # 時刻同期設定
-    - role: fujitsu.primergy.irmc_set_ntp
+    - name: Configure time syncronization
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_ntp
       vars:
         ntp_server_primary: ntp1.mycompany.example.com
         ntp_server_secondary: ntp2.mycompany.example.com
         time_mode: System RTC
         time_zone_location: Asia/Tokyo
         rtc_mode: local time
+
     # ライセンス設定
-    - role: fujitsu.primergy.irmc_set_license
-      vars:
-        license_keys: []
-        # license_keys:
-        #   - AAAAAA-AAAAAAA-AAAAA
+    - name: Register and activate license keys
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_set_license
+      # NOTE: The 'license_keys' variable should be defined in the 'host_vars' file for each host.
+      # Example:
+      #   host_vars/<ipaddress-of-irmc>.yml:
+      #     license_keys:
+      #       - LICENSE-KEY1
+      #       - LICENSE-KEY2
+      # This ensures that each host gets the correct license keys for registration.
 
 # Windows Serverインストール
 - name: Windows Server Installation
@@ -88,14 +108,16 @@
     - name: Pause until shutdown of the server
       ansible.builtin.pause:
         seconds: 30
-  roles:
-    # インストール
-    - role: fujitsu.primergy.irmc_install_windows
+  tasks:
+    # Windowsサーバーのインストール
+    - name: Install Windows Server
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.irmc_install_windows
       vars:
         share_type: NFS
         server: 192.0.2.2
-        share: "/path/to/installer/"
-        image: "/ws2022se.iso"
+        share: "/path/to/installer"
+        image: "ws2022se.iso"
 
 # 電源投入後、Ansibleで操作可能になるまで待機
 - name: Wait for Windows node to become available
@@ -104,7 +126,7 @@
   tasks:
     - name: Wait for WinRM port to become available on the target Windows node
       ansible.builtin.wait_for_connection:
-        timeout: 5400
+        timeout: 5400  # 5400 seconds = 90 minutes
     - name: Show completion message
       ansible.builtin.debug:
         msg: OS installation is completed.
@@ -123,48 +145,70 @@
         validate_certs: "{{ validate_certificate }}"
         command: DisconnectCD
 
-# Windows Server設定
-- name: Windows Server Configuration
+
+# Windowsサーバー設定
+- name: Configure Windows Server
   hosts: windows
-  roles:
+  tasks:
     # DNS設定
-    - role: fujitsu.primergy.win_dns
+    - name: Set DNS
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_dns
       vars:
         adapter_names: "*"
         ipv4_addresses:
+          # When joining a Windows domain, specify a primary DNS server that is associated with the domain controller:
           - 192.0.2.3
           - 192.0.2.4
-    # データドライブ設定
-    - role: fujitsu.primergy.win_data_drive
+
+    # データドライブ割り当て
+    - name: Assign data drive
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_data_drive
       vars:
         drive_letter: D
         disk_number: 0
         op: create
-    # 名前・組織名設定
-    - role: fujitsu.primergy.win_organization_owner
+
+    # 組織名と名前の設定
+    - name: Set organization and owner
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_organization_owner
       vars:
         description: This is my Windows Server.
-        organization: My Company Inc.
-        owner: MyOwnerName
-    # ホスト名設定
-    - role: fujitsu.primergy.win_hostname
+        organization: MyCompany Inc.
+        owner: MyName
+
+    # ホスト名変更
+    - name: Set hostname
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_hostname
       vars:
-        hostname: Hostname
-    # 言語・地域設定
-    - role: fujitsu.primergy.win_locale
+        hostname: myhostname
+
+    # 言語・地域・タイムゾーン設定
+    - name: Set locale, region and timezone
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_locale
       vars:
         language: ja-JP
         location: 122
         timezone: Tokyo Standard Time
-    # ドメイン参加
-    - role: fujitsu.primergy.win_set_membership
+
+    # Windowsドメインへの参加
+    - name: Join windows domain
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_set_membership
       vars:
         state: domain
         domain: ansible.mycompany.local
         username: ANSIBLE\Administrator
         password: P@ssw0rd
+
     # SNMP設定
-    - role: fujitsu.primergy.win_snmp
+    - name: Set SNMP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_snmp
       vars:
         agent:
           contact: MyContact
@@ -177,23 +221,35 @@
         trap:
           community: public
           destination: 192.0.2.1
-    # リモートデスクトップ有効化
-    - role: fujitsu.primergy.win_set_rdp
+
+    # リモートデスクトップの有効化
+    - name: Enable Remote Desktop
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_set_rdp
       vars:
         enabled: true
-    # ServerView Agentsセットアップ
-    - role: fujitsu.primergy.win_serverview_agents
+
+    # ServerView Agentsのセットアップ
+    - name: Setup ServerView Agents
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_serverview_agents
       vars:
-        password: P@ssw0rd
+        password: User001
         installer: "/path/to/installer/ServerViewAgents_Win_x64.exe"
-    # ServerView RAID Managerセットアップ
-    - role: fujitsu.primergy.win_serverview_raidmanager
+
+    # ServerView RAID Managerのセットアップ
+    - name: Setup ServerView RAID Manager
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_serverview_raidmanager
       vars:
-        password: P@ssw0rd
+        password: User002
         installer: "/path/to/installer/ServerView_RAID_x64.exe"
-        openjdk_installer: "/path/to/installer/OpenJDK8U-jdk_x64_windows_hotspot.msi"
-    # DSNAPセットアップ
-    - role: fujitsu.primergy.win_dsnap
+        openjdk_installer: "/path/to/installer/OpenJDK8U-jre_x64_windows_hotspot.msi"
+
+    # DSNAPのセットアップ
+    - name: Setup DSNAP
+      ansible.builtin.include_role:
+        name: fujitsu.primergy.win_dsnap
       vars:
         language: Japanese
-        path: "/path/to/installer/dsnap.exe"
+        path: "/path/to/iso/SVS15.24.06.03.iso"
