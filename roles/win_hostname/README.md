@@ -3,6 +3,9 @@ win_hostname
 
 Change the hostname of Windows Server.
 
+Note:  
+If computer has joined a domain, hostname cannot be changed by this role.
+
 Requirements
 ------------
 
