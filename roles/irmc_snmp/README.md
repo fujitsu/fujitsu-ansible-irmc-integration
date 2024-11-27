@@ -3,7 +3,7 @@ irmc_snmp
 
 Configure SNMP settings for iRMC devices.
 
-NOTE:  
+**Notes**:
 For more information, see P.159 "Simple Network Management Protocol (SNMP)" in "Fujitsu Software ServerView Suite iRMC S6 Web Interface 2.x".
 Documents can be downloaded from the link below:
 

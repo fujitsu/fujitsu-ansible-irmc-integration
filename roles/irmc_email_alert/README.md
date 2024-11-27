@@ -3,7 +3,7 @@ irmc_email_alert
 
 Configure E-mail Alert settings for iRMC devices.
 
-NOTE:  
+**Notes**:
 For more information, see P.161 "E-mail Alerting" in "Fujitsu Software ServerView Suite iRMC S6 Web Interface 2.x".
 Documents can be downloaded from the link below:
 
@@ -45,12 +45,15 @@ Role Variables
 
 - *1: No error occurs if an out-of-range value is specified.
   The error is displayed on the appropriate iRMC(GUI) parameter setting screen.
-- The E-mail format for each user is configured in “iRMC Local User Accounts”.
-  The following E-mail formats are supported:
-  - Standard
-  - Fixed Subject
-  - ITS Format
-  - SMS Format
+
+**About E-mail formats**:
+The E-mail format for each user is configured in “iRMC Local User Accounts”.
+The following E-mail formats are supported:
+
+- Standard
+- Fixed Subject
+- ITS Format
+- SMS Format
 
 Dependencies
 ------------
