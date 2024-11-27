@@ -8,7 +8,7 @@ Requirements
 
 This role depends on the following Ansible collections:
 
-- `community.windows` >= 2.3.0
+- `community.windows` >= 1.13.0
 
 Role Variables
 --------------

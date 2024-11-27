@@ -8,7 +8,7 @@ Requirements
 
 This role depends on the following Ansible collections:
 
-- `microsoft.ad` >= 1.7.1
+- `microsoft.ad` >= 1.4.1
 
 Domain controller exists when joining host to Domain.
 
