@@ -1,8 +1,12 @@
 # Contribution Guidelines
 
+**Note**:
+This document may not display properly when viewed on <https://galaxy.ansible.com/>.
+Therefore, it is recommended to view it on [github.com](https://github.com/fujitsu/fujitsu-ansible-irmc-integration).
+
 ## 1. Introduction
 
-This project provides an Ansible collection for managing Fujitsu PRIMERGY series systems.
+This project provides an Ansible collection for managing the PRIMERGY series, a product of Fsas Technologies Inc.
 
 - Ansible modules to control nodes via iRMC, the remote management feature of PRIMERGY
 - Ansible roles to set up iRMC devices and Windows Servers based on PRIMERGY's "Configuration Sheets"
@@ -24,10 +28,10 @@ This project adheres to the [Ansible Community Code of Conduct](https://docs.ans
 
 - Ansible requires a Unix (Linux) environment to execute.
 - Although it can run on Windows Subsystem for Linux (WSL), this is not officially supported and is not recommended for production systems. For details, refer to:  
-  <https://docs.ansible.com/ansible/latest/os_guide/windows_faq.html#can-ansible-run-on-windows>
+  <https://docs.ansible.com/ansible/latest/os_guide/intro_windows.html#using-windows-as-the-control-node>
 - This project has two Git repositories:
-  1. Public: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration>
-  2. Internal development: URL not disclosed  
+  1. **Public**: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration>
+  2. **Internal development**: URL not disclosed
 
   If you participate in development as an employee of our company,
   please use the Git repository "Internal development".
@@ -85,7 +89,7 @@ This project adheres to the [Ansible Community Code of Conduct](https://docs.ans
 
 3. In the `ansible.cfg` file, specify the directory where the `ansible_collections` directory is located.
 
-   ```ini
+   ```shell
    [defaults]
    collections_path = ~/git
    ```
@@ -93,7 +97,7 @@ This project adheres to the [Ansible Community Code of Conduct](https://docs.ans
 4. Prepare an `inventory.ini` file. This file must include the `iRMC_group` and `windows` groups with the necessary credentials and parameters for each target node.
    When managing Windows nodes with Ansible, WinRM connection settings are required.
 
-   ```ini
+   ```shell
    [iRMC_group]
    <ipaddress-of-iRMC-device> irmc_user=admin irmc_password=<password>
 

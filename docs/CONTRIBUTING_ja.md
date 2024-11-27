@@ -1,5 +1,11 @@
 # コントリビューションガイドライン
 
+**ご注意**：
+このドキュメントは、<https://galaxy.ansible.com/>上で閲覧する際に、
+レイアウトが崩れる場合があります。
+そのため[github.com](https://github.com/fujitsu/fujitsu-ansible-irmc-integration)
+上で閲覧することを推奨します。
+
 ## 1. はじめに
 
 このプロジェクトではエフサステクノロジーズのPRIMERGYシリーズを運用するためのAnsibleコレクションの提供を行っています。
@@ -27,11 +33,11 @@
 - Windows Subsystem for Linux（WSL）では実行できますが、
   正式なサポートでは無く、本番システムへの適用には推奨されていません。
   詳細はこのURLを参照してください：
-  <https://docs.ansible.com/ansible/latest/os_guide/windows_faq.html#can-ansible-run-on-windows>
+  <https://docs.ansible.com/ansible/latest/os_guide/intro_windows.html#using-windows-as-the-control-node>
   を参照してください。
 - このプロジェクトには二つのGitリポジトリがあります：
-  1. 公開用: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration>
-  2. 社内開発用: URL非公開
+  1. **公開用**: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration>
+  2. **社内開発用**: URL非公開
 
   当社社員として開発に参加する場合は「社内開発用」のGitリポジトリを使ってください。
   以下の説明で`github.com`のURLで記述していますが、
