@@ -8,6 +8,7 @@ DSNAP is software for collecting information of failure analisys in a batch.
 
 Note:  
 You must download ServerView Management and Serviceability DVD to use this role.
+
 1. Access <https://support.ts.fujitsu.com/>.
 2. Press "Select a new Product" button.
 3. Select "Serial-ident number", enter the serial number of your PRIMERGY and press the "Continue" button.
@@ -24,16 +25,16 @@ Requirements
 
 This role depends on the following Ansible collections:
 
-- `ansible.windows` >= 2.5.0
-- `community.windows` >= 2.3.0
+- `ansible.windows` >= 1.14.0
+- `community.windows` >= 1.13.0
 
 Role Variables
 --------------
 
 | Name | Required | Default Value | Choices | Type | Description |
 |------|----------|---------------|---------|------|-------------|
-| `cpu_arch` | false | `x64` | `x64` <br> `x86` | str | Architecture of your Windows Server. <br> This parameter is used when the ISO file is selected for `filename`. |
-| `language` | false | `English` | `English` <br> `Japanese` | str | Language Version of DSNAP. <br> This parameter is used when the ISO file is selected for `filename`. |
+| `cpu_arch` | false | `x64` | `x64`, <br> `x86` | str | Architecture of your Windows Server. <br> This parameter is used when the ISO file is selected for `filename`. |
+| `language` | false | `English` | `English`, <br> `Japanese` | str | Language of DSNAP. <br> This parameter is used when the ISO file is selected for `filename`. |
 | `path` | true | | | str | Path to the EXE or ISO file placed on the Ansible control node. <br> Example: <ul> <li>/path/to/dsnapfile/dsnap.exe</li> <li>/path/to/dsnapfile/SVS15.24.06.03.iso</li> </ul>  |
 
 Dependencies

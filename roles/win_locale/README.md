@@ -15,8 +15,8 @@ Requirements
 
 This role depends on the following Ansible collections:
 
-- `ansible.windows` >= 2.5.0
-- `community.windows` >= 2.3.0
+- `ansible.windows` >= 1.14.0
+- `community.windows` >= 1.13.0
 
 If a language pack download occurs, internet connection settings are required.
 

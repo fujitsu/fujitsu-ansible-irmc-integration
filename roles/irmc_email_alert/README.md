@@ -26,7 +26,7 @@ Role Variables
 | `email_alert.response_timeout` | false | | 10 to 300 (*1) | int | Timeout (in seconds) for an SMTP response. |
 | `smtp.primary_server.address` | false | | | str | IP address, domain name or FQDN of the mail server. |
 | `smtp.primary_server.port` | false | | 1 to 65535 (*1) | int | SMTP port of the mail server. |
-| `smtp.primary_server.authentication.type` | false | | 'None', 'Smtp' | str | Authentication type for connecting the iRMC to the mail server. 'Smtp' is Authentication according to RFC 2554: SMTP Service Extension for Authentication. |
+| `smtp.primary_server.authentication.type` | false | | `None`, `Smtp` | str | Authentication type for connecting the iRMC to the mail server. "Smtp" is Authentication according to RFC 2554: SMTP Service Extension for Authentication. |
 | `smtp.primary_server.authentication.username` | false | | | str | User name for authentication on the mail server. |
 | `smtp.primary_server.authentication.password` | false | | | str | Password for authentication on the mail server. |
 | `smtp.primary_server.fqdn_with_ehlo_helo` | false | | | bool | Enables sending the FQDN with EHLO/HELO. |
@@ -41,7 +41,7 @@ Role Variables
 | `email_format.country_code` | false | | | str | Two-character country code based on ISO 3166, ISO 3166 alpha 2. |
 | `email_format.customer_id` | false | | | str | Identifier for the customer. |
 | `email_format.server_url` | false | | | str | A URL under which the server is accessible under certain conditions. This must be entered manually. Only active for the Standard mail format. |
-| `email_format.attach_screenshot` | false | | | bool | A screenshot generated automatically by the iRMC in the case of a critical OS stop event is attached to the corresponding 'Critical O/S Stop' event E-mail. |
+| `email_format.attach_screenshot` | false | | | bool | A screenshot generated automatically by the iRMC in the case of a critical OS stop event is attached to the corresponding "Critical O/S Stop" event E-mail. |
 
 - *1: No error occurs if an out-of-range value is specified.
   The error is displayed on the appropriate iRMC(GUI) parameter setting screen.

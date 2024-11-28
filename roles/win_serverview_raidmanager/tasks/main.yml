@@ -1,12 +1,12 @@
 ---
 # tasks file for ./roles/win_serverview_raidmanager
 
-- name: Define a new parameter from vars and defaults.
+- name: Define a new parameter from vars and defaults
   ansible.builtin.set_fact:
     installer_dest_dir: "{{ win_serverview_raidmanager_installer_dest_dir }}"
   tags: always
 
-- name: Define a new parameter from vars and defaults.
+- name: Define a new parameter from vars and defaults
   ansible.builtin.set_fact:
     serverview_raidmanager_username: "{{ username | default(win_serverview_raidmanager_username) }}"
     serverview_raidmanager_installer_src: "{{ installer }}"
@@ -17,7 +17,7 @@
     openjdk_path_finder_dest: "{{ installer_dest_dir }}\\find_adoptopenjdk_path.ps1"
   tags: always
 
-- name: Define a new *SECRET* parameter from vars and defaults.
+- name: Define a new *SECRET* parameter from vars and defaults
   ansible.builtin.set_fact:
     serverview_raidmanager_password: "{{ password }}"
   no_log: true  # Always true because it contains Secret.

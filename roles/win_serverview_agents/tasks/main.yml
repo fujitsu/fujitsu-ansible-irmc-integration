@@ -1,7 +1,7 @@
 ---
 # tasks file for ./roles/win_serverview_agents/
 
-- name: Define a new parameter from vars and defaults.
+- name: Define a new parameter from vars and defaults
   ansible.builtin.set_fact:
     serverview_agents_installer_src: "{{ installer }}"
     serverview_agents_installer_dest: "{{ win_serverview_agents_installer_dest_dir }}\\ServerViewAgents_installer.exe"
@@ -9,7 +9,7 @@
     serverview_agents_username: "{{ username | default(win_serverview_agents_username) }}"
   tags: always
 
-- name: Define a new *SECRET* parameter from vars and defaults.
+- name: Define a new *SECRET* parameter from vars and defaults
   ansible.builtin.set_fact:
     serverview_agents_password: "{{ password }}"
   no_log: true  # Always true because it contains Secret.

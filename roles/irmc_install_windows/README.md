@@ -23,7 +23,7 @@ Role Variables
 | `server` | true | | | str | Remote server (IP or DNS name) where the image is located. |
 | `share` | true | | | str | Path on the remote server where the image is located. |
 | `image` | true | | | str | Name of the remote image. |
-| `share_type` | true | | `NFS`<br>`SMB` | str | Share type (NFS share or SMB share). |
+| `share_type` | true | | `NFS`,<br>`SMB` | str | Share type (NFS share or SMB share). |
 | `vm_user` | false | | | str | User account in case of SMB share. |
 | `vm_password` | false | | | str | User password in case of SMB share. |
 | `vm_domain` | false | | | str | User domain in case of SMB share. |
