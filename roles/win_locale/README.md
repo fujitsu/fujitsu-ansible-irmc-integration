@@ -3,12 +3,12 @@ win_locale
 
 Change the language setting (language, region, timezone) of the specified account on Windows Server.
 
-Notes:
+**Notes**:
+For languages for which no language pack is initially installed, a language pack is downloaded.
+This requires setting up an internet connection and takes about 30 minutes to download the language pack.  
+Initially installed language pack is following (differences depending on the installation media.):
 
-- For languages for which no language pack is initially installed, a language pack is downloaded.
-  This requires setting up an internet connection and takes about 30 minutes to download the language pack.
-- Initially installed language pack is following (differences depending on the installation media.):
-  - de-DE, en-US, es-ES, fr-FR, it-IT, ja-JP, ko-KR, zh-TW
+- de-DE, en-US, es-ES, fr-FR, it-IT, ja-JP, ko-KR, zh-TW
 
 Requirements
 ------------

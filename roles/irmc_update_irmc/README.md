@@ -50,62 +50,54 @@ None
 Example Playbook
 ----------------
 
-- **WARNING**: (DOES NOT WORK AS EXPECTED) To update with specified firmware from local file system:
+**WARNING**: (DOES NOT WORK AS EXPECTED) To update with specified firmware from local file system:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_irmc
-        vars:
-          irmc_firmware_path: "/any/where/firm/RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
-          destination: low
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_irmc
+          vars:
+            irmc_firmware_path: "/any/where/firm/RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
+            destination: low
 
-- To update with specified firmware via tftp server:
+To update with specified firmware via tftp server:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_irmc
-        vars:
-          tftp_server: 192.0.2.1
-          irmc_firmware_path: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
-          destination: low
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_irmc
+          vars:
+            tftp_server: 192.0.2.1
+            irmc_firmware_path: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
+            destination: low
 
-- When updating with firmware for each model name via a TFTP server:
+When updating with firmware for each model name via a TFTP server:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_irmc
-        vars:
-          tftp_server: 192.0.2.1
-          irmc_firmware_path_mapping:
-            PRIMERGY_RX1330_M5R: "RX1330_M5R/irmc/FTS_PRIMERGYRX1330M5iRMC124SSDR341.BIN"
-            PRIMERGY_RX1330_M6S: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
-          destination: high
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_irmc
+          vars:
+            tftp_server: 192.0.2.1
+            irmc_firmware_path_mapping:
+              PRIMERGY_RX1330_M5R: "RX1330_M5R/irmc/FTS_PRIMERGYRX1330M5iRMC124SSDR341.BIN"
+              PRIMERGY_RX1330_M6S: "RX1330_M6/irmc/FTS_PRIMERGYRX1330M6iRMC253SSDR227.BIN"
+            destination: high
 
-- inventory.ini:
+inventory.ini:
 
-  ```ini
-  [iRMC_group]
-  192.0.2.101 irmc_user=admin irmc_password=SECRET
-  192.0.2.102 irmc_user=admin irmc_password=SECRET
+    [iRMC_group]
+    192.0.2.101 irmc_user=admin irmc_password=SECRET
+    192.0.2.102 irmc_user=admin irmc_password=SECRET
 
-  [iRMC_group:vars]
-  validate_certificate=false  # When iRMC deivce is operated without a server certificate
-  ```
+    [iRMC_group:vars]
+    validate_certificate=false  # When iRMC deivce is operated without a server certificate
 
 License
 -------

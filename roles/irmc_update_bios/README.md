@@ -42,60 +42,52 @@ None
 Example Playbook
 ----------------
 
-- To update with specified firmware:
+To update with specified firmware:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_bios
-        vars:
-          bios_firmware_path: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_bios
+          vars:
+            bios_firmware_path: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
 
-- When updating with firmware for each model name:
+When updating with firmware for each model name:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_bios
-        vars:
-          bios_firmware_path_mapping:
-            PRIMERGY_RX1330_M5R: "/any/where/firm/RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
-            PRIMERGY_RX1330_M6S: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_bios
+          vars:
+            bios_firmware_path_mapping:
+              PRIMERGY_RX1330_M5R: "/any/where/firm/RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
+              PRIMERGY_RX1330_M6S: "/any/where/firm/RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
 
-- When updating with firmware for each model name via a TFTP server:
+When updating with firmware for each model name via a TFTP server:
 
-  ```yaml
-  ---
-  - hosts: iRMC_group
-    connection: local
-    gather_facts: false
-    roles:
-      - role: fujitsu.primergy.irmc_update_bios
-        vars:
-          tftp_server: 192.0.2.1
-          bios_firmware_path_mapping:
-            PRIMERGY_RX1330_M5R: "RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
-            PRIMERGY_RX1330_M6S: "RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
-  ```
+    ---
+    - hosts: iRMC_group
+      connection: local
+      gather_facts: false
+      roles:
+        - role: fujitsu.primergy.irmc_update_bios
+          vars:
+            tftp_server: 192.0.2.1
+            bios_firmware_path_mapping:
+              PRIMERGY_RX1330_M5R: "RX1330_M5R/bios/D3929-A1x.R1.41.0.UPC"
+              PRIMERGY_RX1330_M6S: "RX1330_M6/bios/D4133-A1x.R1.1.0.UPC"
 
-- inventory.ini:
+inventory.ini:
 
-  ```ini
-  [iRMC_group]
-  192.0.2.101 irmc_user=admin irmc_password=SECRET
-  192.0.2.102 irmc_user=admin irmc_password=SECRET
+    [iRMC_group]
+    192.0.2.101 irmc_user=admin irmc_password=SECRET
+    192.0.2.102 irmc_user=admin irmc_password=SECRET
 
-  [iRMC_group:vars]
-  validate_certificate=false  # When iRMC deivce is operated without a server certificate
-  ```
+    [iRMC_group:vars]
+    validate_certificate=false  # When iRMC deivce is operated without a server certificate
 
 License
 -------
