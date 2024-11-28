@@ -7,18 +7,41 @@ version: 1.0.0
 readme: README.md
 
 authors:
-- Shinya Hamano <hamano.shinya@fujitsu.com>
-- Yutaka Kamioka <yutaka.kamioka@fujitsu.com>
-- Jiajun Guo <guo.jiajun@fujitsu.com>
-- Tomohisa Nakai <nakai.tomohisa@fujitsu.com>
+  - Shinya Hamano <hamano.shinya@fujitsu.com>
+  - Yutaka Kamioka <yutaka.kamioka@fujitsu.com>
+  - Jiajun Guo <guo.jiajun@fujitsu.com>
+  - Tomohisa Nakai <nakai.tomohisa@fujitsu.com>
 
 description: Ansible iRMC Collection for PRIMERGY Distribution by Fsas Technologies Inc..
 
 license:
-- GPL-3.0-or-later
+  - GPL-3.0-or-later
 
-tags: [fujitsu, primergy, irmc, fti]
+tags:
+  - fujitsu
+  - primergy
+  - irmc
+  - fti
+  - infrastructure
+  - windows
+  - tools
 
 repository: https://github.com/fujitsu/fujitsu-ansible-irmc-integration
 
-build_ignore: ['examples', 'group_vars', 'tests', 'inventory.ini', 'ansible.cfg', '.gitignore', '.editorconfig', 'pyproject.toml', 'requirements.lock', 'requirements-dev.lock', '.python-version', '.venv', '.ruff_cache']
+build_ignore:
+  - examples
+  - group_vars
+  - host_vars
+  - tests
+  - inventory.ini
+  - ansible.cfg
+  - .gitignore
+  - .editorconfig
+  - pyproject.toml
+  - requirements.lock
+  - requirements-dev.lock
+  - .python-version
+  - .venv
+  - .ruff_cache
+  - .ansible-lint
+  - .markdownlint-cli2.yaml
