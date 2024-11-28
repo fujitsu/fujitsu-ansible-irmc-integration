@@ -1,5 +1,11 @@
 # Ansibleコレクション `fujitsu.primergy` 設定ガイド
 
+**ご注意**：
+このドキュメントは、<https://galaxy.ansible.com/>上で閲覧する際に、
+レイアウトが崩れる場合があります。
+そのため[github.com](https://github.com/fujitsu/fujitsu-ansible-irmc-integration)
+上で閲覧することを推奨します。
+
 ## 1. はじめに
 
 このドキュメントはAnsibleコレクション`fujitsu.primergy`で提供している各ロールの利用方法を、

@@ -1,5 +1,11 @@
 # サンプルプレイブック説明書
 
+**ご注意**：
+このドキュメントは、<https://galaxy.ansible.com/>上で閲覧する際に、
+レイアウトが崩れる場合があります。
+そのため[github.com](https://github.com/fujitsu/fujitsu-ansible-irmc-integration)
+上で閲覧することを推奨します。
+
 ## 1. プレイブック
 
 `./example/playbooks/`には以下のプレイブックが用意されています。
