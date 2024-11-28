@@ -1,6 +1,6 @@
 [project]
 name = "fujitsu-ansible-irmc-integration"
-version = "1.3.0"
+version = "2.0.0"
 description = "Ansible modules for manage Fujitsu PRIMERGY servers via iRMC"
 authors = []
 dependencies = [
