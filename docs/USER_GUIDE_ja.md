@@ -21,14 +21,18 @@ Ansibleコレクションのセットアップ方法やロールの使用例、
 
 ### 必要な前提条件
 
+#### OSとソフトウェア
+
 - Linux（Windowsの場合は「5. よくある質問 (FAQ)」の「WindowsでAnsibleを実行できますか？」を参照）
 - Python 3.10
-- Python modules:
-  - `ansible` >= 8.0.0
-  - `pywinrm` >= 0.5.0
-  - `requests` >= 2.32.0
-  - `requests_toolbelt` >= 1.0.0
-  - `urllib3` >= 2.2.0
+
+#### Pythonモジュール
+
+- `ansible` >= 8.0.0
+- `pywinrm` >= 0.5.0
+- `requests` >= 2.32.0
+- `requests_toolbelt` >= 1.0.0
+- `urllib3` >= 2.2.0
 
 ### Ansible実行環境のセットアップ
 
@@ -138,11 +142,15 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 
 ### 各ロールの使い方
 
-[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)を参照してください。
+[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)
+（link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/)）
+を参照してください。
 
 ### サンプルプレイブックの説明
 
-[サンプルプレイブック（`EXAMPLE_PLAYBOOKS_ja.md`）](./EXAMPLE_PLAYBOOKS_ja.md)を参照してください。
+[サンプルプレイブック（`EXAMPLE_PLAYBOOKS_ja.md`）](./EXAMPLE_PLAYBOOKS_ja.md)
+（link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS_ja/)）
+を参照してください。
 
 ### トラブルシューティング
 
@@ -169,7 +177,7 @@ ansible-playbook -i inventory.ini playbook.yml -vvv
 - Jiajun Guo (<[guo.jiajun@fujitsu.com](mailto:guo.jiajun@fujitsu.com)>)
 - Tomohisa Nakai (<[nakai.tomohisa@fujitsu.com](mailto:nakai.tomohisa@fujitsu.com)>)
 
-※メンバーおよびEmailアドレスは2024年12月現在のものです。
+※*メンバーおよびEmailアドレスは2024年12月現在のものです。*
 
 #### GitHub Issues
 
@@ -184,7 +192,7 @@ GitHub Issues: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration/issu
 - 発生した事象 - 実行結果や予期しない動作など、実際に起きた内容を具体的に記述してください。
 - 再現手順や状況 - 問題の再現に必要な手順や、発生した際の環境や状況を記述してください。
 - 使用環境（機器やバージョンなど） - 使用機器の機種名やBIOS・iRMCのバージョンを記述してください（ターゲットがiRMC機器の場合）。
-  「[iRMC機器への疎通テスト](#irmc機器への疎通テスト)」に記載した方法で`irmc_facts`を取得するのも良い方法です。
+  本ドキュメントの項目「[iRMC機器への疎通テスト](#irmc機器への疎通テスト)」に記載した方法で`irmc_facts`を取得するのも良い方法です。
 - Ansible実行ログ - Ansible実行ログも添付していただけると原因の特定に役立ちます。特に`-vvv`オプションを使用した詳細なログがあるとより分析がしやすくなります。
 
 ## 5. よくある質問 (FAQ)
@@ -195,7 +203,7 @@ Windowsには対応していません。
 Windows Subsystem for Linux（WSL）では実行できますが、
 正式なサポートでは無く、本番システムへの適用には推奨されていません。  
 詳細はこのURLを参照してください：
-<https://docs.ansible.com/ansible/latest/os_guide/windows_faq.html#can-ansible-run-on-windows>
+<https://docs.ansible.com/ansible/latest/os_guide/intro_windows.html#using-windows-as-the-control-node>
 
 ## 6. 追加情報
 
