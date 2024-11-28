@@ -1,0 +1,75 @@
+---
+DOCUMENTATION:
+  name: email_alert_profile_filter
+  short_description: Create an E-mail alerting profile
+  version_added: 2.0.0
+  author: Yutaka Kamioka <yutaka.kamioka@fujitsu.com>
+  description:
+    - NOT INTENDED FOR STANDALONE USE.
+    - Accepts parameters from the `fujitsu.primergy.irmc_email_alert` role and creates an E-mail alerting profile.
+    - Used within the `fujitsu.primergy.irmc_email_alert` role to call the `fujitsu.primergy.irmc_profiles` module.
+  options:
+    data:
+      description:
+        - Dictionary containing the parameters applied to the `fujitsu.primergy.irmc_email_alert` role.
+      required: true
+      type: dict
+
+RETURN:
+  _result:
+    description:
+      - Dictionary containing the E-mail alerting profile to be applied to the `fujitsu.primergy.irmc_profiles` module.
+    type: dict
+
+EXAMPLES: |
+  from plugins.filter.email_alert_profile_filter import email_alert_profile_filter
+
+  import json
+  import yaml
+
+  # Parameters to be specified for the `fujitsu.primergy.irmc_email_alert` role
+  s = '''
+  email_alert:
+    enabled: true
+    retries: 3
+    retry_delay: 30
+    response_timeout: 45
+  smtp:
+    primary_server:
+      address: 192.0.2.1
+      port: 25
+      authentication:
+        type: "Smtp"
+        username: "AuthUserName"
+        password: "AuthPassword"
+      fqdn_with_ehlo_helo: false
+      use_ssl_tls: false
+      verify_certificate: false
+    secondary_server:
+      address: 192.0.2.2
+      port: 25
+      authentication:
+        type: "None"
+      fqdn_with_ehlo_helo: true
+      use_ssl_tls: true
+      verify_certificate: true
+  email_format:
+    from: "MailFrom@example.com"
+    subject: "FixedMailSubject"
+    message: "FixedMailMessage"
+    admin_name: "ITS_UserInfo0"
+    admin_phone: "ITS_UserInfo1"
+    country_code: "US"
+    customer_id: "example"
+    server_url: "http://www.server.example.com"
+    attach_screenshot: true
+  '''
+
+  params = yaml.safe_load(s)
+  params |= {'irmc_email_alert_profile_server_version': '0.0'}
+  params |= {'irmc_email_alert_profile_irmcconfig_version': '0.0'}
+
+  result = email_alert_profile_filter(params)
+
+  # JSON-formatted profile to be applied to the "import" command of the `fujitsu.primergy.irmc_profiles` module
+  print(json.dumps(result, indent=2))
