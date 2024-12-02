@@ -1,8 +1,13 @@
 [project]
 name = "fujitsu-ansible-irmc-integration"
-version = "2.0.0"
-description = "Ansible modules for manage Fujitsu PRIMERGY servers via iRMC"
-authors = []
+version = "2.0.1"
+description = "Ansible collection for manage PRIMERGY servers via iRMC"
+authors = [
+    {name = "Shinya Hamano", email = "hamano.shinya@fujitsu.com"},
+    {name = "Yutaka Kamioka", email = "yutaka.kamioka@fujitsu.com"},
+    {name = "Jiajun Guo", email = "guo.jiajun@fujitsu.com"},
+    {name = "Tomohisa Nakai", email = "nakai.tomohisa@fujitsu.com"},
+]
 dependencies = [
     "ansible>=8.7.0",
     "requests>=2.32.3",
@@ -11,6 +16,7 @@ dependencies = [
     "pywinrm>=0.5.0",
 ]
 readme = "README.md"
+license = {file = "docs/LICENSE.md"}
 requires-python = ">= 3.10"
 
 [build-system]
