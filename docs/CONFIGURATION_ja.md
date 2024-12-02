@@ -17,7 +17,7 @@
 
 PRIMERGYのiRMC（遠隔管理機能）の設定を行います。
 
-### 環境設定シート・ハードウェア編
+### 環境設定シート -ハードウェア編-
 
 PRIMERGYの機種ごとに提供されている「環境設定シート -ハードウェア編-」
 （以下「環境設定シート(PRIMERGY)」と表記）をあわせて参照してください。  
@@ -32,25 +32,25 @@ iRMCの各設定項目の説明は「iRMC S6 Webインターフェイス ユー�
 （以下「iRMCユーザガイド」と表記）も合わせて参照ください。  
 「iRMCユーザガイド」は以下の手順で取得できます：
 
-1. <https://support.ts.fujitsu.com/Index.asp?lng=jp>
+1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > 製品の検索 > "iRMC"
-3. （表示された場合のみ）次へ
+3. （表示された場合のみ）ダウンロード > 次へ
 4. 右記OSに関連した情報を表示する: No Operationg System Dependencies
 5. ドキュメント > User Guide > iRMC S6 - Web インターフェース 2.x > ダウンロード
 
 ### iRMCファームウェア更新
 
 iRMCのファームウェアをアップデートします。  
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.1 Toolsの設定項目 / Setting item for Tools」
 に相当する項目です。
 
 ファームウェアは事前にダウンロードしてください：
 
-1. <https://support.ts.fujitsu.com/Index.asp?lng=jp>
+1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > 識別番号
 3. シリアル番号: <シリアル番号>(*1)
-4. （表示された場合のみ）次へ
+4. （表示された場合のみ）ダウンロード > 次へ
 5. 右記OSに関連した情報を表示する: OS Independent (BIOS, Firmware, etc.)
 6. ドライバ > サーバ管理コントローラ > "*** リモートアップデートツール" > ダウンロード
 
@@ -62,16 +62,15 @@ iRMCのファームウェアをアップデートします。
 - 異なる機種に同時適用するような場合は、それぞれの機種に応じたファームウェアを指定する必要があります。
   パラメタ`irmc_firmware_path_mapping`を参照してください。
 
-注意：
+**注意**：
 
 - 実行すると、まず最初にiRMC機器の電源をオフにします。
   稼働中のOSは強制的に電源切断となりますので、ご注意下さい。
 - （2024-11-14現在では）パラメタ`tftp_server`の指定は必須です。
   tftpサーバーを経由しないアップデートを実施した場合、
-  パラメタ`destination`で指定した側に対するアップデート・再起動されない可能性があるためです。
+  パラメタ`destination`で指定した側にアップデート・再起動されない可能性があるためです。
 - ファームウェアアップデート後、自動的にiRMCは再起動されますが、再起動の完了を検知出来ずAnsibleタスクがエラーになる場合があります。
-  そのため、他のロールやモジュールと組み合わせて一つのプレイブックで実行することは推奨しません。
-  他のロール・タスクと組み合わせる場合は、このロールに`ignore_errors: true`を付けて運用することも視野に入れてください。
+  そのため、他のロールやモジュールと組み合わせて一つのプレイブックで実行することは推奨しません。  
 
 ```yaml
 ---
@@ -89,16 +88,16 @@ iRMCのファームウェアをアップデートします。
 ### BIOSファームウェア更新
 
 BIOSのファームウェアをアップデートします。  
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.1 Toolsの設定項目 / Setting item for Tools」
 に相当する項目です。
 
 ファームウェアは事前にダウンロードしてください：
 
-1. <https://support.ts.fujitsu.com/Index.asp?lng=jp>
+1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > 識別番号
 3. シリアル番号: <シリアル番号>(*1)
-4. （表示された場合のみ）次へ
+4. （表示された場合のみ）ダウンロード > 次へ
 5. 右記OSに関連した情報を表示する: OS Independent (BIOS, Firmware, etc.)
 6. BIOS > "*** オフライン／リモートアップデートツール" > ダウンロード
 7. ZIPファイルを展開し`*.upd`ファイル、または`*.upc`ファイルを取り出す
@@ -111,7 +110,7 @@ BIOSのファームウェアをアップデートします。
 - 異なる機種に同時適用するような場合は、それぞれの機種に応じたファームウェアを指定する必要があります。
   パラメタ`bios_firmware_path_mapping`を参照してください。
 
-注意：
+**注意**：
 
 - 実行すると、まず最初にiRMC機器の電源をオフにします。
   稼働中のOSは強制的に電源切断となりますので、ご注意下さい。
@@ -133,7 +132,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 - SSL証明書とCA証明書は、事前の作成または入手が必要です。
 - パラメタなどの詳細については
-  <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_ssl_certificate/>
+  <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_set_certificate/>
   を参照してください。
 
 ```yaml
@@ -151,7 +150,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### SNMP
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.2 Settings の設定項目 / Setting item for Settings」 >
 「■Services」 >
 「Simple Network Management Protocol (SNMP)」
@@ -192,7 +191,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### Eメール警告送信
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.2 Settings の設定項目 / Setting item for Settings」 >
 「■Services」 >
 「E-mail Alerting」
@@ -232,7 +231,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 #### 1番目のユーザの設定(購入時のユーザー名`admin`)
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.3 Settings の設定項目 / Setting item for Settings」 >
 「■User Management」 >
 「iRMC Local User Accounts」
@@ -260,7 +259,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 #### 2～15番目までのユーザの設定
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.3 Settings の設定項目 / Setting item for Settings」 >
 「■User Management」 >
 「iRMC Local User Accounts」
@@ -275,7 +274,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### 時刻同期
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.3 Settings の設定項目 / Setting item for Settings」 >
 「■Baseboard Management Controller」 >
 「Time Synchronization」
@@ -284,7 +283,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 - [iRMCユーザガイド](#irmcユーザガイド)
   の「2.4.9 ベースボードマネジメントコントローラ」 > 「時刻同期」も合わせて参照してください。
 - パラメタなどの詳細については
-  <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_email_alert/>
+  <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/irmc_set_ntp/>
   を参照してください。
 
 ```yaml
@@ -304,7 +303,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### ライセンスキー
 
-[環境設定シート(PRIMERGY)](#環境設定シートハードウェア編)の
+[環境設定シート(PRIMERGY)](#環境設定シート--ハードウェア編-)の
 「C.3 Settings の設定項目 / Setting item for Settings」 >
 「■Baseboard Management Controller」 >
 「License Keys」
@@ -418,7 +417,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ## 4. Windows Server 2022
 
-### 環境設定シート・InstrallationManager編
+### 環境設定シート -ServerView Installation Manager編-
 
 「環境設定シート -ServerView Installation Manager編-」
 のシート「Win2K**_ガイド」（以下「環境設定シート(Windowsサーバー)」と表記）をあわせて参照してください。  
@@ -448,7 +447,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### 名前と組織名
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(1)」 > 「基本設定」 > 「名前」・「組織名」
 に相当する項目です。
 
@@ -468,7 +467,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### ホスト名
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(1)」 > 「基本設定」 > 「コンピュータ名」
 に相当する項目です。
 
@@ -487,7 +486,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### 言語・地域設定
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(1)」 > 「基本設定」 > 「タイムゾーン」・「地域と言語」・「キーボード」
 に相当する項目です。
 
@@ -510,7 +509,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### DNSの設定
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(2)」 > 「TCP/IP パラメータ 詳細設定」 > 「DNSサーバ」
 に相当する項目です。
 
@@ -534,7 +533,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### ワークグループへの参加
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(1)」 > 「システムの設定」 > 「参加先」「ワークグループ名」
 に相当する項目です。
 
@@ -554,7 +553,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### ドメインへの参加
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(1)」 > 「システムの設定」 > 「参加先」「ドメイン名」「ドメインユーザ名・パスワード」
 に相当する項目です。
 
@@ -578,7 +577,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### SNMPの設定
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(2)」 > 「SNMPサービス」
 および
 シート「Win2K19_ガイド(3)」 > 「『SNMPサービス』選択時のみ」 > 「SNMPサービス」・「トラップ構成項目」・「セキュリティ」・「エージェント」
@@ -609,7 +608,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### リモートデスクトップの有効化
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(3)」 > 「追加のパラメータ」 > 「Remote Desktop」
 に相当する項目です。
 
@@ -628,7 +627,7 @@ iRMCのSSL証明書とCA証明書を設定します。
 
 ### ServerView Agentsのセットアップ
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(3)」 > 「アプリケーションウィザード」 > 「ServerView Suite」 > 「ServerView Agents」
 に相当する項目です。
 
@@ -636,10 +635,11 @@ ServerView Agentsは事前にダウンロードしてください:
 
 1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > カテゴリから探す > Software > ServerView > Operation > Agents, Agentless Service & Providers
-3. （表示された場合のみ）次へ
+3. （表示された場合のみ）ダウンロード > 次へ
 4. 右記OSに関連した情報を表示する: Windows Server 2022
-5. アプリケーション > ServerView Agents for Windows > ダウンロードする
+5. アプリケーション > ServerView Agents for Windows > ダウンロード
 6. `FTS_ServerViewAgentsforWindows_<version>_*.exe`を実行して展開する
+7. `ServerView\Agents\ServerViewAgents_Win_x64.exe`を取り出す
 
 - パラメタなどの詳細については
   <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_serverview_agents/>
@@ -659,7 +659,7 @@ ServerView Agentsは事前にダウンロードしてください:
 
 ### ServerView RAID Managerのセットアップ
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(3)」 > 「アプリケーションウィザード」 > 「ServerView Suite」 > 「ServerView RAID Manager」
 に相当する項目です。
 
@@ -667,10 +667,11 @@ ServerView RAID Managerは事前にダウンロードしてください:
 
 1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > カテゴリから探す > Software > ServerView > Operation > RAID Management
-3. 次へ
+3. （表示された場合のみ）ダウンロード > 次へ
 4. 右記OSに関連した情報を表示する: Windows Server 2022
-5. アプリケーション > ServerView RAID Manager (Windows, 64-bit) > ダウンロードする
+5. アプリケーション > ServerView RAID Manager (Windows, 64-bit) > ダウンロード
 6. `FTS_ServerViewRAIDManagerWindows64bit_<version>_*.zip`を展開する
+7. `Windows\x64\ServerView_RAID_<version>_x64.exe`を取り出す
 
 AdoptOpenJDKは事前にダウンロードしてください:
 
@@ -695,19 +696,19 @@ AdoptOpenJDKは事前にダウンロードしてください:
 
 ### 高信頼ツールDSNAPのセットアップ
 
-[環境設定シート（Windowsサーバー）](#環境設定シートinstrallationmanager編)の
+[環境設定シート（Windowsサーバー）](#環境設定シート--serverview-installation-manager編-)の
 シート「Win2K19_ガイド(3)」 > 「アプリケーションウィザード」 > 「Add-on Packages」 > 「DSNAP」
 に相当する項目です。
 
 DSNAPはServerView Suiteに格納されています。
 ServerView Suite（ServerView Management and Serviceability DVD）は事前にダウンロードしてください:
 
-1. <https://support.ts.fujitsu.com/Index.asp?lng=jp>
+1. <https://support.ts.fujitsu.com/index.asp?ld=jp>
 2. 製品を選択する > 識別番号
 3. シリアル番号: <シリアル番号>(*1)
-4. （表示された場合のみ）次へ
+4. （表示された場合のみ）ダウンロード > 次へ
 5. 右記OSに関連した情報を表示する: Windows Server 2022
-6. アプリケーション > ServerView Management and Serviceability DVD > ダウンロード
+6. アプリケーション > Server Management Software > ServerView - ServerView Suite CDs/DVDs/ISO-Images > ServerView Management and Serviceability DVD > ダウンロード
 7. `FTS_ServerViewManagementandServiceabilityDVD_*.zip`ファイルを展開し、isoファイルを取り出す
 
 - パラメタなどの詳細については
