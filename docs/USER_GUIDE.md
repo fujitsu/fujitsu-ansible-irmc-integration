@@ -8,9 +8,11 @@ Therefore, it is recommended to view it on [github.com](https://github.com/fujit
 
 This document is a guide for users of the Ansible collection `fujitsu.primergy`.  
 Ansible collections are packages that bundle Ansible playbooks, modules, roles, plugins, documentation, and more.  
-The Ansible collection `fujitsu.primergy` aims to automate configuration tasks based on PRIMERGY's "Configuration Sheet" and provides Ansible roles and modules.
+The Ansible collection `fujitsu.primergy` aims to automate configuration tasks
+based on PRIMERGY's "Environment and setting sheet" and provides Ansible roles and modules.
 
-This user guide provides information on setting up the Ansible collection, usage examples of roles, and troubleshooting.
+This user guide provides information on setting up the Ansible collection,
+usage examples of roles, and troubleshooting.
 
 ### Target Audience
 
@@ -24,7 +26,7 @@ This document is intended for users with basic knowledge of Ansible.
 
 - Linux
   (For Windows, refer to "5. Frequently Asked Questions (FAQ)" under
-  ["Can I run Ansible on Windows?"](#can-i-run-ansible-on-windows))
+  "[Can I run Ansible on Windows?](#can-i-run-ansible-on-windows))"
 - Python 3.10
 
 #### Python Modules
@@ -37,7 +39,8 @@ This document is intended for users with basic knowledge of Ansible.
 
 ### Setting Up the Ansible Execution Environment
 
-Create and activate a Python virtual environment (venv), then install the necessary Python modules including Ansible:
+Create and activate a Python virtual environment (venv),
+then install the necessary Python modules including Ansible:
 
 ```shell
 $ mkdir -p ~/ansible/primergy && cd $_  # Create and move to a directory of your choice
@@ -45,7 +48,8 @@ $ python -m venv venv && . $_/bin/activate
 (venv) $ python -m pip install ansible pywinrm requests requests_toolbelt urllib3
 ```
 
-Use Ansible installed in the virtual environment (venv) to install the Ansible collection `fujitsu.primergy` from <https://galaxy.ansible.com/>:
+Use Ansible installed in the virtual environment (venv)
+to install the Ansible collection `fujitsu.primergy` from <https://galaxy.ansible.com/>:
 
 ```bash
 (venv) $ ansible-galaxy collection install fujitsu.primergy
@@ -56,11 +60,15 @@ Use Ansible installed in the virtual environment (venv) to install the Ansible c
 In Ansible, managed devices are defined in an "inventory file".
 
 - Define two groups: `[iRMC_group]` and `[windows]`.
-  These group names align with the examples of how to execute Ansible playbooks explained in this "User Guide" and "Configuration Guide".
-- In `[iRMC_group]`, specify the IP address of PRIMERGY's remote management interface, an account with administrative privileges (if in shipped condition, `admin` is available), and its password.
-- In `[windows]`, specify the IP address of the Windows server, an account with administrative privileges (usually `Administrator`), and its password.
+  These group names align with the examples of how to execute Ansible playbooks
+  explained in this "User Guide" and "Configuration Guide".
+- In `[iRMC_group]`, specify the IP address of PRIMERGY's remote management interface,
+  an account with administrative privileges (if in shipped condition, `admin` is available), and its password.
+- In `[windows]`, specify the IP address of the Windows server,
+  an account with administrative privileges (usually `Administrator`), and its password.
 - Both groups can list multiple devices/servers.
-- In `[*:vars]`, you can specify common parameters for each group. Here, connection setting parameters are specified.
+- In `[*:vars]`, you can specify common parameters for each group.
+  Here, connection setting parameters are specified.
 
 Name the file `inventory.ini` and include the following content:
 
@@ -101,7 +109,8 @@ localhost | SUCCESS => {
 }
 ```
 
-`irmc_url`, `irmc_username`, and `irmc_password` correspond to the entries described in the `[iRMC_group]` group in the inventory file.
+`irmc_url`, `irmc_username`, and `irmc_password` correspond to the entries described
+in the `[iRMC_group]` group in the inventory file.
 
 #### Connectivity Test to Windows Servers
 
@@ -130,21 +139,23 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 
 ### Overall Structure of the Collection
 
-For a detailed list of modules and roles in this collection, refer to the [Ansible Galaxy Collection Page](https://galaxy.ansible.com/fujitsu/primergy).
+For a detailed list of modules and roles in this collection,
+refer to the [Ansible Galaxy Collection Page](https://galaxy.ansible.com/fujitsu/primergy).
 
 ### How to Use Each Role
 
-Refer to the [Configuration Guide (`CONFIGURATION_ja.md`)](./CONFIGURATION_ja.md)  
-(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/)).
+Refer to the [Configuration Guide (`CONFIGURATION.md`)](./CONFIGURATION.md)  
+(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/)).
 
 ### Explanation of Sample Playbooks
 
-Refer to the [Sample Playbooks (`EXAMPLE_PLAYBOOKS_ja.md`)](./EXAMPLE_PLAYBOOKS_ja.md)  
-(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS_ja/)).
+Refer to the [Sample Playbooks (`EXAMPLE_PLAYBOOKS.md`)](./EXAMPLE_PLAYBOOKS.md)  
+(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS/)).
 
 ### Troubleshooting
 
-To check the details of errors that occurred during playbook execution, use the `-vvv` option to obtain debug logs and examine error messages and variable values.
+To check the details of errors that occurred during playbook execution,
+use the `-vvv` option to obtain debug logs and examine error messages and variable values.
 
 ```shell
 ansible-playbook -i inventory.ini playbook.yml -vvv
@@ -178,19 +189,26 @@ GitHub Issues: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration/issu
 
 When reporting bugs, including the following information will facilitate smooth handling.
 
-- **Purpose and Operations Performed**: Describe the purpose of the setting and the specific operations/settings performed to achieve it.
-- **Occurrence Details**: Describe specifically what actually happened, such as execution results or unexpected behaviors.
-- **Steps or Situation to Reproduce**: Describe the steps required to reproduce the problem, and the environment or situation when it occurred.
-- **Usage Environment (Equipment and Versions, etc.)**: Describe the model name of the equipment used, and BIOS or iRMC versions (if the target is iRMC devices).  
-  Obtaining `irmc_facts` using the method described in the section ["Connectivity Test to iRMC Devices"](#connectivity-test-to-irmc-devices) of this document is also a good method.
-- **Ansible Execution Log**: Including the Ansible execution log will help identify the cause. Particularly, having detailed logs using the `-vvv` option makes analysis easier.
+- **Purpose and Operations Performed**:
+  Describe the purpose of the setting and the specific operations/settings performed to achieve it.
+- **Occurrence Details**:
+  Describe specifically what actually happened, such as execution results or unexpected behaviors.
+- **Steps or Situation to Reproduce**:
+  Describe the steps required to reproduce the problem, and the environment or situation when it occurred.
+- **Usage Environment (Equipment and Versions, etc.)**:
+  Describe the model name of the equipment used, and BIOS or iRMC versions (if the target is iRMC devices).  
+  Obtaining `irmc_facts` using the method described in the section
+  "[Connectivity Test to iRMC Devices](#connectivity-test-to-irmc-devices)" of this document is also a good method.
+- **Ansible Execution Log**: Including the Ansible execution log will help identify the cause.
+  Particularly, having detailed logs using the `-vvv` option makes analysis easier.
 
 ## 5. Frequently Asked Questions (FAQ)
 
 ### Can I Run Ansible on Windows?
 
 It is not supported on Windows.
-Ansible can be run on Windows Subsystem for Linux (WSL), but it is not officially supported and is not recommended for use in production systems.  
+Ansible can be run on Windows Subsystem for Linux (WSL),
+but it is not officially supported and is not recommended for use in production systems.  
 For details, refer to this URL:  
 <https://docs.ansible.com/ansible/latest/os_guide/intro_windows.html#using-windows-as-the-control-node>
 
