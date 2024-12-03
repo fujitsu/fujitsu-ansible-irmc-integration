@@ -22,9 +22,9 @@ The `./example/playbooks/` directory contains the following playbooks:
 
 - An inventory file is required for executing any playbook.
 - Please create an inventory file `inventory.ini`
-  following the "Inventory File Configuration Example"
-  in the [User Guide (`USER_GUIDE.md`)](./USER_GUIDE.md#example-inventory-file-configuration).
-  (`USER_GUIDE.md` is included in the `docs` directory of this project)
+  following the "[Example Inventory File Configuration](./USER_GUIDE.md#example-inventory-file-configuration)"
+  in the User Guide.
+  (User Guide `USER_GUIDE.md` is included in the `docs` directory of this project)
 
 #### File Sharing Server
 
@@ -42,9 +42,12 @@ The `./example/playbooks/` directory contains the following playbooks:
 #### 2.2.2 Preparation
 
 - Obtain the firmware appropriate for your model in advance.
-  For how to obtain it, refer to the "BIOS Firmware Update" and "iRMC Firmware Update" sections
-  in the [Configuration Guide (`CONFIGURATION.md`)](./CONFIGURATION.md).
-  (`CONFIGURATION.md` is included in the `docs` directory of this project)
+  For how to obtain it, refer to the
+  "[BIOS Firmware Update](./CONFIGURATION.md#bios-firmware-update)"
+  and
+  "[iRMC Firmware Update](./CONFIGURATION.md#irmc-firmware-update)"
+  sections in the Configuration Guide.
+  (Configuration Guide `CONFIGURATION.md` is included in the `docs` directory of this project)
 - Set up a TFTP server and place the obtained firmware on it.
 
 #### 2.2.3 Configuration in the Playbook
