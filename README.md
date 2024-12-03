@@ -14,7 +14,7 @@ See User Guide more details.
 
 - [User Guide (English)](./docs/USER_GUIDE.md)
   (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE/))
-- [User Guide (Japanese)](./docs/USER_GUIDE.md)
+- [User Guide (Japanese)](./docs/USER_GUIDE_ja.md)
   (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE_ja/))
 
 ## Contiributing
