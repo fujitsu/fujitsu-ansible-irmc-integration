@@ -43,7 +43,8 @@ You can obtain the "iRMC User Guide" using the following steps:
 ### iRMC Firmware Update
 
 Update the firmware of iRMC.  
-This corresponds to "C.1 Setting item for Tools"
+This corresponds to
+"C.1 Toolsの設定項目 / Setting item for Tools"
 in the [Environment and setting sheet (PRIMERGY)](#environment-and-setting-sheet-hardware-).
 
 Please download the firmware in advance:
@@ -91,7 +92,8 @@ Please download the firmware in advance:
 ### BIOS Firmware Update
 
 Update the BIOS firmware.  
-This corresponds to "C.1 Setting item for Tools"
+This corresponds to
+"C.1 Toolsの設定項目 / Setting item for Tools"
 in the [Environment and setting sheet (PRIMERGY)](#environment-and-setting-sheet-hardware-).
 
 Please download the firmware in advance:
