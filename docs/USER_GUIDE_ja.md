@@ -160,7 +160,7 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 `examples/playbooks/`にはサンプルのプレイブックが用意されています。
 
 使い方については、
-[サンプルプレイブック](./EXAMPLE_PLAYBOOKS_ja.md)
+[サンプルプレイブック説明書](./EXAMPLE_PLAYBOOKS_ja.md)
 （link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS_ja/)）
 を参照してください。
 

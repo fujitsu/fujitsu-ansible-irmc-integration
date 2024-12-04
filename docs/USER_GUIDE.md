@@ -152,7 +152,7 @@ Refer to the [Configuration Guide](./CONFIGURATION.md)
 Sample playbooks are provided in `examples/playbooks/`.
 
 For usage information,
-Refer to the [Sample Playbooks](./EXAMPLE_PLAYBOOKS_ja.md)
+Refer to the [Sample Playbook Documentation](./EXAMPLE_PLAYBOOKS.md)
 (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS/)).
 
 ### Troubleshooting
