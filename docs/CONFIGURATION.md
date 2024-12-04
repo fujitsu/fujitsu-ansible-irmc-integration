@@ -66,15 +66,14 @@ Please download the firmware in advance:
 
 **CAUTION**:
 
-- When executed, the iRMC device will first power off.  
+- When executed, the iRMC device will first power off.
   Be aware that the operating OS will be forcibly powered off.
-- (As of 2024-11-14) Specifying the parameter `tftp_server` is mandatory.  
+- (As of 2024-11-14) Specifying the parameter `tftp_server` is mandatory.
   If you perform an update without going through a TFTP server,
   the update and restart for the side specified by the parameter `destination` may not occur.
 - After the firmware update, iRMC will automatically restart,
-  but Ansible tasks may fail if they cannot detect the completion of the restart.  
-  Therefore, it is not recommended to execute it as a single playbook combined with other roles or modules.  
-  If combining with other roles/tasks, consider adding `ignore_errors: true` to this role.
+  but Ansible tasks may fail if they cannot detect the completion of the restart.
+  Therefore, it is not recommended to execute it as a single playbook combined with other roles or modules.
 
 ```yaml
 ---
@@ -522,7 +521,7 @@ in the [Environment and setting sheet (Windows Server)](#environment-and-setting
 
 - For details on parameters, etc.,
   refer to <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_dns/>
-- If joining a [domain](#joining-a-domain),
+- If [joining a domain](#joining-a-domain),
   you need to specify the DNS servers that are linked to the domain controller.
 
 ```yaml
@@ -565,7 +564,7 @@ in the [Environment and setting sheet (Windows Server)](#environment-and-setting
 - For details on parameters, etc.,
   refer to <https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/content/role/win_set_membership/>
 - When joining a domain,
-  you need to set up [DNS servers](#dns-configuration) that are linked to the domain controller in advance.
+  you need to [set up DNS servers](#dns-configuration) that are linked to the domain controller in advance.
 
 ```yaml
 ---
