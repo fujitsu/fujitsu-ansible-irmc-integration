@@ -149,15 +149,18 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 [Ansible Galaxyのコレクションページ](https://galaxy.ansible.com/fujitsu/primergy)
 を参照してください。
 
-### 各ロールの使い方
+### ロールの使い方
 
-[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)
+[設定ガイド](./CONFIGURATION_ja.md)
 （link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/)）
 を参照してください。
 
 ### サンプルプレイブックの説明
 
-[サンプルプレイブック（`EXAMPLE_PLAYBOOKS_ja.md`）](./EXAMPLE_PLAYBOOKS_ja.md)
+`examples/playbooks/`にはサンプルのプレイブックが用意されています。
+
+使い方については、
+[サンプルプレイブック](./EXAMPLE_PLAYBOOKS_ja.md)
 （link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS_ja/)）
 を参照してください。
 

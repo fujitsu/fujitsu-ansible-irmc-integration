@@ -142,14 +142,17 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 For a detailed list of modules and roles in this collection,
 refer to the [Ansible Galaxy Collection Page](https://galaxy.ansible.com/fujitsu/primergy).
 
-### How to Use Each Role
+### How to Use Roles
 
-Refer to the [Configuration Guide (`CONFIGURATION.md`)](./CONFIGURATION.md)  
+Refer to the [Configuration Guide](./CONFIGURATION.md)
 (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/)).
 
-### Explanation of Sample Playbooks
+### Description of Sample Playbooks
 
-Refer to the [Sample Playbooks (`EXAMPLE_PLAYBOOKS.md`)](./EXAMPLE_PLAYBOOKS.md)  
+Sample playbooks are provided in `examples/playbooks/`.
+
+For usage information,
+Refer to the [Sample Playbooks](./EXAMPLE_PLAYBOOKS_ja.md)
 (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS/)).
 
 ### Troubleshooting
