@@ -23,8 +23,8 @@ The `./example/playbooks/` directory contains the following playbooks:
 - An inventory file is required for executing any playbook.
 - Please create an inventory file `inventory.ini`
   following the "[Example Inventory File Configuration](./USER_GUIDE.md#example-inventory-file-configuration)"
-  in the User Guide.
-  (User Guide `USER_GUIDE.md` is included in the `docs` directory of this project)
+  in the [User Guide](./USER_GUIDE.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE/)).
 
 #### File Sharing Server
 
@@ -46,8 +46,8 @@ The `./example/playbooks/` directory contains the following playbooks:
   "[BIOS Firmware Update](./CONFIGURATION.md#bios-firmware-update)"
   and
   "[iRMC Firmware Update](./CONFIGURATION.md#irmc-firmware-update)"
-  sections in the Configuration Guide.
-  (Configuration Guide `CONFIGURATION.md` is included in the `docs` directory of this project)
+  sections in the [Configuration Guide](./CONFIGURATION.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/)).
 - Set up a TFTP server and place the obtained firmware on it.
 
 #### 2.2.3 Configuration in the Playbook
@@ -115,7 +115,8 @@ Obtain the following information:
 
 Obtain the following files as needed.
 For how to obtain them,
-refer to each section in the [Configuration Guide (`CONFIGURATION.md`)](./CONFIGURATION.md):
+refer to each section in the [Configuration Guide](./CONFIGURATION.md)
+(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/)):
 
 - Installer for ServerView Agents
 - Installer for ServerView RAID Manager
