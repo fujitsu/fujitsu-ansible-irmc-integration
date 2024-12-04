@@ -9,7 +9,7 @@ Therefore, it is recommended to view it on [github.com](https://github.com/fujit
 This project provides an Ansible collection for managing the PRIMERGY series, a product of Fsas Technologies Inc.
 
 - Ansible modules to control nodes via iRMC, the remote management feature of PRIMERGY
-- Ansible roles to set up iRMC devices and Windows Servers based on PRIMERGY's "Configuration Sheets"
+- Ansible roles to set up iRMC devices and Windows Servers based on PRIMERGY's "Environment and setting sheet"
 - Sample playbooks encompassing these modules and roles
 
 This guideline provides information for maintainers and developers of this project.
