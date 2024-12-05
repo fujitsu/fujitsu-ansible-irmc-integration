@@ -6,9 +6,9 @@ Therefore, it is recommended to view it on [github.com](https://github.com/fujit
 
 ## 1. Introduction
 
-This document is a guide for users of the Ansible collection `fujitsu.primergy`.  
+This document is a guide for users of Ansible collection `fujitsu.primergy`.  
 Ansible collections are packages that bundle Ansible playbooks, modules, roles, plugins, documentation, and more.  
-The Ansible collection `fujitsu.primergy` aims to automate configuration tasks
+Ansible collection `fujitsu.primergy` aims to automate configuration tasks
 based on PRIMERGY's "Environment and setting sheet" and provides Ansible roles and modules.
 
 This user guide provides information on setting up the Ansible collection,
@@ -37,7 +37,7 @@ This document is intended for users with basic knowledge of Ansible.
 - `requests_toolbelt` >= 1.0.0
 - `urllib3` >= 2.2.0
 
-### Setting Up the Ansible Execution Environment
+### Setting Up Ansible Execution Environment
 
 Create and activate a Python virtual environment (venv),
 then install the necessary Python modules including Ansible:
