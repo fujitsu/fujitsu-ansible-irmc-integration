@@ -10,14 +10,21 @@ Fujitsu PRIMERGY servers via iRMC.
 
 These collection and examples are intended to provide easy-to-follow and understandable solutions to manage
 Fujitsu PRIMERY server settings via iRMC.  
-See [User Guide (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE_ja/) more details.
+See User Guide for more details.
+
+- [User Guide (English)](./docs/USER_GUIDE.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE/))
+- [User Guide (Japanese)](./docs/USER_GUIDE_ja.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE_ja/))
 
 ## Contiributing
 
-See
-[Contribution Guide (English)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING/)
-[(Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING_ja/)
-more details.
+See Contribution Guidelines for more details.
+
+- [Contribution Guidelines (English)](./docs/CONTRIBUTING.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING/))
+- [Contribution Guidelines (Japanese)](./docs/CONTRIBUTING_ja.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING_ja/))
 
 ## Requirements
 
@@ -34,7 +41,12 @@ more details.
 ## Roles
 
 This collection provides roles for managing both iRMC settings and Windows Server 2022 configurations.  
-See [Configuration Gudie (Japanese)](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/) for details.
+See Configuration Gudie for more details.
+
+- [Configuration Gudie (English)](./docs/CONFIGURATION.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/))
+- [Configuration Gudie (Japanese)](./docs/CONFIGURATION_ja.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/))
 
 ### for iRMC
 
