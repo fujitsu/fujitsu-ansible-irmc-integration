@@ -26,7 +26,7 @@ You can obtain the "Environment and setting sheet (PRIMERGY)" using the followin
 
 1. <https://www.fsastech.com/products/pcserver/>
 2. Select the applicable model from
-   the product lineup（"製品ラインアップ"） > Manual（"マニュアル"） > Environment and setting sheet（"環境設定シート"）
+   Product lineup（"製品ラインアップ"） > Manual（"マニュアル"） > Environment and setting sheet（"環境設定シート"）
 
 ### iRMC User Guide
 
