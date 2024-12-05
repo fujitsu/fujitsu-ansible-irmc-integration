@@ -10,7 +10,7 @@ Fujitsu PRIMERGY servers via iRMC.
 
 These collection and examples are intended to provide easy-to-follow and understandable solutions to manage
 Fujitsu PRIMERY server settings via iRMC.  
-See User Guide more details.
+See User Guide for more details.
 
 - [User Guide (English)](./docs/USER_GUIDE.md)
   (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE/))
@@ -19,7 +19,7 @@ See User Guide more details.
 
 ## Contiributing
 
-See Contribution Guidelines more details.
+See Contribution Guidelines for more details.
 
 - [Contribution Guidelines (English)](./docs/CONTRIBUTING.md)
   (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONTRIBUTING/))
@@ -41,7 +41,7 @@ See Contribution Guidelines more details.
 ## Roles
 
 This collection provides roles for managing both iRMC settings and Windows Server 2022 configurations.  
-See Configuration Gudie more details.
+See Configuration Gudie for more details.
 
 - [Configuration Gudie (English)](./docs/CONFIGURATION.md)
   (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION/))
