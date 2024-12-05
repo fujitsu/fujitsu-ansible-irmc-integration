@@ -29,7 +29,10 @@ Ansibleコレクションのセットアップ方法やロールの使用例、
 
 #### OSとソフトウェア
 
-- Linux（Windowsの場合は「5. よくある質問 (FAQ)」の「WindowsでAnsibleを実行できますか？」を参照）
+- Linux
+  （Windowsの場合は「5. よくある質問 (FAQ)」の
+  「[WindowsでAnsibleを実行できますか？](#windowsでansibleを実行できますか)」
+  を参照）
 - Python 3.10
 
 #### Pythonモジュール
@@ -146,15 +149,18 @@ New-NetFirewallRule -Name "WinRM HTTP" -DisplayName "Allow WinRM over HTTP" -Ena
 [Ansible Galaxyのコレクションページ](https://galaxy.ansible.com/fujitsu/primergy)
 を参照してください。
 
-### 各ロールの使い方
+### ロールの使い方
 
-[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)
+[設定ガイド](./CONFIGURATION_ja.md)
 （link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/)）
 を参照してください。
 
 ### サンプルプレイブックの説明
 
-[サンプルプレイブック（`EXAMPLE_PLAYBOOKS_ja.md`）](./EXAMPLE_PLAYBOOKS_ja.md)
+`examples/playbooks/`にはサンプルのプレイブックが用意されています。
+
+使い方については、
+[サンプルプレイブック説明書](./EXAMPLE_PLAYBOOKS_ja.md)
 （link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/EXAMPLE_PLAYBOOKS_ja/)）
 を参照してください。
 
@@ -194,12 +200,18 @@ GitHub Issues: <https://github.com/fujitsu/fujitsu-ansible-irmc-integration/issu
 
 バグ報告の際は、以下の情報を含めていただけると対応がスムーズになります。
 
-- 目的と操作内容 - 設定の目的と、それを達成するために行った具体的な操作・設定内容を記載してください。
-- 発生した事象 - 実行結果や予期しない動作など、実際に起きた内容を具体的に記述してください。
-- 再現手順や状況 - 問題の再現に必要な手順や、発生した際の環境や状況を記述してください。
-- 使用環境（機器やバージョンなど） - 使用機器の機種名やBIOS・iRMCのバージョンを記述してください（ターゲットがiRMC機器の場合）。
+- **目的と操作内容**：
+  設定の目的と、それを達成するために行った具体的な操作・設定内容を記載してください。
+- **発生した事象**：
+  実行結果や予期しない動作など、実際に起きた内容を具体的に記述してください。
+- **再現手順や状況**：
+  問題の再現に必要な手順や、発生した際の環境や状況を記述してください。
+- **使用環境（機器やバージョンなど）**：
+  使用機器の機種名やBIOS・iRMCのバージョンを記述してください（ターゲットがiRMC機器の場合）。  
   本ドキュメントの項目「[iRMC機器への疎通テスト](#irmc機器への疎通テスト)」に記載した方法で`irmc_facts`を取得するのも良い方法です。
-- Ansible実行ログ - Ansible実行ログも添付していただけると原因の特定に役立ちます。特に`-vvv`オプションを使用した詳細なログがあるとより分析がしやすくなります。
+- **Ansible実行ログ**：
+  Ansible実行ログも添付していただけると原因の特定に役立ちます。
+  特に`-vvv`オプションを使用した詳細なログがあるとより分析がしやすくなります。
 
 ## 5. よくある質問 (FAQ)
 
