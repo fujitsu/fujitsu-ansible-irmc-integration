@@ -14,22 +14,27 @@
 - `primergy_setup_with_os_installation.yml`
 - `primergy_setup.yml`
 
-## 2. 使用方法・実行方法
+---
+
+## 2. 使用方法
 
 ### 2.1 共通の準備
 
 #### インベントリファイル
 
 - どのプレイブックを実行する場合においても、インベントリファイルは必要です。
-- [ユーザーガイド（`USER_GUIDE_ja.md`）](./USER_GUIDE_ja.md#インベントリファイルの設定例)
-  の「インベントリファイルの設定例」に従って、
-  イベントリファイル`inventory.ini`を作成してください。
-  （`USER_GUIDE_ja.md`は本プロジェクトの`docs`ディレクトリに含まれています）
+- [ユーザーガイド](./USER_GUIDE_ja.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/USER_GUIDE_ja/))
+  の
+  「[インベントリファイルの設定例](./USER_GUIDE_ja.md#インベントリファイルの設定例)」
+  に従って、イベントリファイル`inventory.ini`を作成してください。
 
 #### ファイル共有サーバー
 
 - BIOS・iRMCのファームウェアアップデートを実施する場合はtftpサーバーが必要です。
 - OSインストールを実施する場合はNFSまたはSMBサーバーが必要です。
+
+---
 
 ### 2.2 プレイブック`update_bios_and_irmc_firmware.yml`
 
@@ -40,9 +45,14 @@
 #### 2.2.2 準備
 
 - 機種に応じたファームウェアは事前に入手してください。
-  入手方法については[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)の
-  「BIOSファームウェア更新」と「iRMCファームウェア更新」を参照してください。
-  （`CONFIGURATION_ja.md`は本プロジェクトの`docs`ディレクトリに含まれています）
+  入手方法については
+  [設定ガイド](./CONFIGURATION_ja.md)
+  (link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/))
+  の
+  「[BIOSファームウェア更新](./CONFIGURATION_ja.md#biosファームウェア更新)」
+  と
+  「[iRMCファームウェア更新](./CONFIGURATION_ja.md#irmcファームウェア更新)」
+  を参照してください。
 - tftpサーバーを用意し、入手したファームウェアを配置してください。
 
 #### 2.2.3 プレイブックへの記載
@@ -69,6 +79,8 @@ ansible-playbook -i inventory.ini ./examples/playbooks/update_bios_and_irmc_firm
   その場合であってもiRMCのファームウェアアップデートは完了したか、
   もしくは実行中なのでiRMCにログインして、システム > 動作中のiRMCファームウェアから
   動作中のバージョンを確認してください。
+
+---
 
 ### 2.3 プレイブック`primergy_setup_with_os_installation.yml`（`primergy_setup.yml`）
 
@@ -109,7 +121,9 @@ OSインストールが必要ない場合は`primergy_setup.yml`を使用して�
     連携しているDNSサーバー（通常はドメインコントローラー自身）のIPアドレス
 
 必要に応じて、以下のファイルを入手してください。
-入手方法については[設定ガイド（`CONFIGURATION_ja.md`）](./CONFIGURATION_ja.md)の各項目を参照してください：
+入手方法については[設定ガイド](./CONFIGURATION_ja.md)
+(link to [galaxy.ansible.com](https://galaxy.ansible.com/ui/repo/published/fujitsu/primergy/docs/CONFIGURATION_ja/))
+の各項目を参照してください：
 
 - ServerView Agentsのインストーラー
 - ServerView RAID Managerのインストーラー
@@ -124,17 +138,19 @@ OSインストールが必要ない場合は`primergy_setup.yml`を使用して�
 - 設定が不要な箇所は`import_role`ディレクティブを含むブロックごとに
   無効化（削除かコメントアウト）してください。
 - 特に注意が必要な箇所について補足します：
-  - iRMCのユーザ登録`fujitsu.primergy.irmc_account_admin`で、
+  - **iRMCのユーザ登録 `fujitsu.primergy.irmc_account_admin`**：
     権限（`role`=`Administrator`や`ipmi.lan_privilege`=`OEM`）を不用意に変更すると、
     それ以降の設定タスクがエラーになる可能性がありますのでご注意ください。
-  - SSL証明書・CA証明書設定`fujitsu.primergy.irmc_set_certificate`で、
+  - **SSL証明書・CA証明書設定 `fujitsu.primergy.irmc_set_certificate`**：
     パラメタ`ssl_private_key_path`で指定したファイルは
     ヘッダとフッタをOpenSSL3.x形式にするため直接書き換えられます。
     オリジナルファイルを書き換えられたく無い場合はご注意ください。
     また、指定したファイルへの書き込み権限が必要です。
-  - iRMCのライセンスは機器ごとに発行されるため、
-    ライセンス登録`fujitsu.primergy.irmc_set_license`のパラメタ`license_keys`はiRMC機器ごとに記述する必要があります。
-    カレントディレクトリの下の`host_vars/<iRMC機器のIPアドレス>.yml`というファイルにパラメタ`license_keys`を記述してください。
+  - **ライセンス登録 `fujitsu.primergy.irmc_set_license`**：
+    iRMCのライセンスは機器ごとに発行されるため、
+    パラメタ`license_keys`はiRMC機器ごとに記述する必要があります。
+    カレントディレクトリの下の`host_vars/<iRMC機器のIPアドレス>.yml`というファイルに
+    パラメタ`license_keys`を記述してください。
 
     ```yaml
     # ./host_vars/192.0.2.128.yml
@@ -143,14 +159,14 @@ OSインストールが必要ない場合は`primergy_setup.yml`を使用して�
       - LICENSE-KEY2
     ```
 
-  - WindowsサーバーのDNS設定`fujitsu.primergy.win_dns`で、
+  - **WindowsサーバーのDNS設定 `fujitsu.primergy.win_dns`**：
     パラメタ`adapter_names`に`"*"`を指定した場合は全てのネットワークアダプタへの設定になります。
     特定のネットワークアダプタに設定したい場合は、そのアダプタ名を指定してください。
     アダプタ名はWindowsインストール後であれば`Get-NetAdapter`で調べることが出来ます。
-  - ドメイン参加`fujitsu.primergy.win_set_membership`でドメインに参加する場合は、
-    WindowsサーバーのDNS設定`fujitsu.primergy.win_dns`で１つ目のDNSサーバーに、
-    ドメインコントローラーと連携しているDNSサーバーを指定してください。
-  - データドライブ設定`fujitsu.primergy.win_data_drive`は、
+  - **ドメイン参加 `fujitsu.primergy.win_set_membership`**：
+    ドメインに参加する場合は、WindowsサーバーのDNS設定`fujitsu.primergy.win_dns`で、
+    １つ目のDNSサーバーにドメインコントローラーと連携しているDNSサーバーを指定してください。
+  - **データドライブ設定 `fujitsu.primergy.win_data_drive`**：
     パラメタ`disk_number`で指定したストレージに未割り当て領域が無い場合エラーになります。
     `disk_number`に0を指定する（つまり、OSをインストールしたストレージに割り当てる）場合は、
     OSインストール時に未割り当て領域が出来るようにパーティションを設定をする必要があります。
