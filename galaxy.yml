@@ -1,18 +1,15 @@
 namespace: fujitsu
-
 name: primergy
-
-version: 2.0.0
-
+version: 2.0.1
 readme: README.md
+description: Ansible iRMC Collection for PRIMERGY Distribution by Fsas Technologies Inc..
+repository: https://github.com/fujitsu/fujitsu-ansible-irmc-integration
 
 authors:
   - Shinya Hamano <hamano.shinya@fujitsu.com>
   - Yutaka Kamioka <yutaka.kamioka@fujitsu.com>
   - Jiajun Guo <guo.jiajun@fujitsu.com>
   - Tomohisa Nakai <nakai.tomohisa@fujitsu.com>
-
-description: Ansible iRMC Collection for PRIMERGY Distribution by Fsas Technologies Inc..
 
 license:
   - GPL-3.0-or-later
@@ -25,8 +22,6 @@ tags:
   - infrastructure
   - windows
   - tools
-
-repository: https://github.com/fujitsu/fujitsu-ansible-irmc-integration
 
 build_ignore:
   - examples
